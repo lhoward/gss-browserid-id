@@ -564,17 +564,15 @@ nico@cryptonector.com
 
 \end_layout
 
-\begin_deeper
 \begin_layout Abstract
-This document defines protocols, procedures and conventions to be implemented
- by peers implementing the Generic Security Service Application Program
- Interface (GSS-API) when using the BrowserID authentication mechanism.
+This document defines protocols, procedures and conventions for a Generic
+ Security Service Application Program Interface (GSS-API) security mechanism
+ based on the BrowserID authentication mechanism.
  Through the GS2 family of mechanisms defined in RFC 5801, these protocols
  also define how Simple Authentication and Security Layer (SASL, RFC 4422)
  applications may use BrowserID.
 \end_layout
 
-\end_deeper
 \begin_layout Standard
 \begin_inset CommandInset toc
 LatexCommand tableofcontents
@@ -592,6 +590,9 @@ Introduction
 BrowserID is a web-based three-party security protocol by which user agents
  can present to a Relying Party (RP) a signed assertion of e-mail address
  ownership.
+ BrowserID was intended to be used for web authentication.
+ We find BrowserID to be useful in general, therefore we define herein how
+ to use it in many more applications.
 \end_layout
 
 \begin_layout Standard
@@ -856,7 +857,7 @@ Interworking Architecture
 \end_layout
 
 \begin_layout Subsection
-Discovery
+Discovery and Negotiation
 \end_layout
 
 \begin_layout Standard
@@ -905,8 +906,7 @@ The GSS-API protocol involves a client, known as the initiator, sending
  tokens as necessary to complete the authentication or fail.
  The specific number of context tokens exchanged varies by security mechanism:
  in the case of the BrowserID mechanism, it is typically two (i.e.
- a single round trip), however it can be more in the case the initiator
- is restarting after a failed re-authentication attempt.
+ a single round trip), however it can be more in some cases.
  Once authentication is complete, the initiator and acceptor share a security
  context which identifies the peers and can optionally be used for integrity
  or confidentiality protecting subsequent application messages.
@@ -1001,13 +1001,28 @@ Naming
 \end_layout
 
 \begin_layout Subsection
-GSS_BROWSERID_NT_EMAIL_OR_SPN
+GSS_C_NT_BROWSERID_PRINCIPAL
 \end_layout
 
 \begin_layout Standard
 This name may contain an e-mail address or a service principal name.
- The encoding of service principal names is intended to be compatible with
- the Kerberos security protocol.
+ The encoding of service principal names is intended to be somewhat compatible
+ with the Kerberos 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4120
+\end_layout
+
+\end_inset
+
+ security protocol (without the realm name).
+ The following ABNF defines the 'name' rule that names of this type must
+ match.
+ [XXX Should we reference RFC2822 here? The Mozilla BrowserID docs sure
+ don't...
+ -Nico]
 \end_layout
 
 \begin_layout Standard
@@ -1087,11 +1102,85 @@ status open
 \end_layout
 
 \begin_layout Subsection
+GSS_C_NT_EMAIL
+\end_layout
+
+\begin_layout Standard
+This name may contain an e-mail address.
+\end_layout
+
+\begin_layout Subsection
+GSS_C_NT_SPN
+\end_layout
+
+\begin_layout Standard
+This name may contain a service principal name.
+ The encoding of service principal names is intended to be somewhat compatible
+ with the Kerberos security protocol (without realm names).
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+ char-normal = %x00-2E/%x30-3F/%x41-5B/%x5D-FF
+\end_layout
+
+\begin_layout Plain Layout
+
+ char-escaped = "
+\backslash
+" %x2F / "
+\backslash
+" %x40 / "
+\backslash
+" %x5C
+\end_layout
+
+\begin_layout Plain Layout
+
+ name-char = char-normal / char-escaped name-string = 1*name-char
+\end_layout
+
+\begin_layout Plain Layout
+
+ service-name = name-string
+\end_layout
+
+\begin_layout Plain Layout
+
+ service-host = name-string
+\end_layout
+
+\begin_layout Plain Layout
+
+ service-specific = name-string
+\end_layout
+
+\begin_layout Plain Layout
+
+ service-specifics = service-specific 0*("/" service-specifics)
+\end_layout
+
+\begin_layout Plain Layout
+
+ spn = service-name ["/" service-host [ "/" service-specifics]]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
 GSS_C_NT_USER_NAME
 \end_layout
 
 \begin_layout Standard
-This name is implicitly converted to a GSS_BROWSERID_NT_EMAIL_OR_SPN.
+This name is implicitly converted to a GSS_C_NT_EMAIL_OR_SPN.
  A default domain may be appended when importing names of this type.
 \end_layout
 
@@ -1151,6 +1240,36 @@ status open
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Name Canonicalization
+\end_layout
+
+\begin_layout Standard
+The BrowserID GSS-API mechanism performs no name canonicalization.
+ The mechanism's GSS_Canonicalize_name() returns an MN whose display form
+ is the same as the query form.
+\end_layout
+
+\begin_layout Subsection
+Exported Name Token Format
+\end_layout
+
+\begin_layout Standard
+The exported name token format for the BrowserID GSS-API mechanism is the
+ same as the query form, plus the standard exported name token format header
+ mandated by the GSS-API 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC2743
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
@@ -3350,6 +3469,30 @@ t> <street>BXB1-2/D04</street> <city>Boxborough</city> <region>MA</region>
  year='1989' day='1' month='August' /></front> <seriesInfo name='RFC' value='111
 3' /> <format type='TXT' octets='89293' target='http://www.rfc-editor.org/rfc/rfc1
 113.txt' /> </reference> 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Informative References
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC4120"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4120.xml"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
