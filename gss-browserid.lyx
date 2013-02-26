@@ -664,6 +664,7 @@ status open
 
 \begin_layout Plain Layout
 
+ 
 \end_layout
 
 \begin_layout Plain Layout
@@ -824,10 +825,12 @@ status open
 
 \begin_layout Plain Layout
 
+ 
 \end_layout
 
 \begin_layout Plain Layout
 
+ 
 \end_layout
 
 \end_inset
@@ -1008,19 +1011,18 @@ This name may contain an e-mail address or a service principal name.
 \end_layout
 
 \begin_layout Standard
-
 \begin_inset listings
 inline false
 status open
 
 \begin_layout Plain Layout
 
-char-normal = %x00-2E/%x30-3F/%x41-5B/%x5D-FF
+ char-normal = %x00-2E/%x30-3F/%x41-5B/%x5D-FF
 \end_layout
 
 \begin_layout Plain Layout
 
-char-escaped = "
+ char-escaped = "
 \backslash
 " %x2F / "
 \backslash
@@ -1031,52 +1033,52 @@ char-escaped = "
 
 \begin_layout Plain Layout
 
-name-char = char-normal / char-escaped name-string = 1*name-char
+ name-char = char-normal / char-escaped name-string = 1*name-char
 \end_layout
 
 \begin_layout Plain Layout
 
-user = name-string
+ user = name-string
 \end_layout
 
 \begin_layout Plain Layout
 
-domain = name-string
+ domain = name-string
 \end_layout
 
 \begin_layout Plain Layout
 
-email = user "@" domain
+ email = user "@" domain
 \end_layout
 
 \begin_layout Plain Layout
 
-service-name = name-string
+ service-name = name-string
 \end_layout
 
 \begin_layout Plain Layout
 
-service-host = name-string
+ service-host = name-string
 \end_layout
 
 \begin_layout Plain Layout
 
-service-specific = name-string
+ service-specific = name-string
 \end_layout
 
 \begin_layout Plain Layout
 
-service-specifics = service-specific 0*("/" service-specifics)
+ service-specifics = service-specific 0*("/" service-specifics)
 \end_layout
 
 \begin_layout Plain Layout
 
-spn = service-name ["/" service-host [ "/" service-specifics]]
+ spn = service-name ["/" service-host [ "/" service-specifics]]
 \end_layout
 
 \begin_layout Plain Layout
 
-name = email / spn
+ name = email / spn
 \end_layout
 
 \end_inset
@@ -1127,24 +1129,23 @@ A GSS-API service name is encoded into a BrowserID audience URL with the
 \end_layout
 
 \begin_layout Standard
-
 \begin_inset listings
 inline false
 status open
 
 \begin_layout Plain Layout
 
-spn = service-name ["/" service-host [ "/" service-specifics]]
+ spn = service-name ["/" service-host [ "/" service-specifics]]
 \end_layout
 
 \begin_layout Plain Layout
 
-gss-encoded-claims = base64-encode(gss-claims) 
+ gss-encoded-claims = base64-encode(gss-claims) 
 \end_layout
 
 \begin_layout Plain Layout
 
-audience = "urn:x-gss:" spn "#" gss-encoded-claims
+ audience = "urn:x-gss:" spn "#" gss-encoded-claims
 \end_layout
 
 \end_inset
@@ -1459,68 +1460,68 @@ RFC2743
 \end_layout
 
 \begin_layout Standard
-
 \begin_inset listings
 inline false
 status open
 
 \begin_layout Plain Layout
 
-GSS-API DEFINITIONS ::=         
+ GSS-API DEFINITIONS ::=         
 \end_layout
 
 \begin_layout Plain Layout
 
-		BEGIN
+ 		BEGIN
 \end_layout
 
 \begin_layout Plain Layout
 
+ 
 \end_layout
 
 \begin_layout Plain Layout
 
-		MechType ::= OBJECT IDENTIFIER
+ 		MechType ::= OBJECT IDENTIFIER
 \end_layout
 
 \begin_layout Plain Layout
 
-		-- representing BrowserID mechanism
+ 		-- representing BrowserID mechanism
 \end_layout
 
 \begin_layout Plain Layout
 
-		GSSAPI-Token ::=
+ 		GSSAPI-Token ::=
 \end_layout
 
 \begin_layout Plain Layout
 
-		[APPLICATION 0] IMPLICIT SEQUENCE {
+ 		[APPLICATION 0] IMPLICIT SEQUENCE {
 \end_layout
 
 \begin_layout Plain Layout
 
-			thisMech MechType,
+ 			thisMech MechType,
 \end_layout
 
 \begin_layout Plain Layout
 
-			innerToken ANY DEFINED BY thisMech
+ 			innerToken ANY DEFINED BY thisMech
 \end_layout
 
 \begin_layout Plain Layout
 
-				-- contents mechanism-specific
+ 				-- contents mechanism-specific
 \end_layout
 
 \begin_layout Plain Layout
 
-			}
+ 			}
 \end_layout
 
 \begin_layout Plain Layout
 
-		END
+ 		END
 \end_layout
 
 \end_inset
@@ -1953,27 +1954,27 @@ status open
 
 \begin_layout Plain Layout
 
-iat = issue time
+ iat = issue time
 \end_layout
 
 \begin_layout Plain Layout
 
-nonce = 64-bit base64 URL encoded random nonce
+ nonce = 64-bit base64 URL encoded random nonce
 \end_layout
 
 \begin_layout Plain Layout
 
-tkt = opaque ticket identifier
+ tkt = opaque ticket identifier
 \end_layout
 
 \begin_layout Plain Layout
 
-aud = audience containing service principal name
+ aud = audience containing service principal name
 \end_layout
 
 \begin_layout Plain Layout
 
-cbt = base64 URL encoding of channel binding application-specific data
+ cbt = base64 URL encoding of channel binding application-specific data
 \end_layout
 
 \end_inset
@@ -2023,52 +2024,52 @@ status open
 
 \begin_layout Plain Layout
 
-{ 
+ { 
 \end_layout
 
 \begin_layout Plain Layout
 
-	"exp": 1360158396188,
+ 	"exp": 1360158396188,
 \end_layout
 
 \begin_layout Plain Layout
 
-	"ecdh": {
+ 	"ecdh": {
 \end_layout
 
 \begin_layout Plain Layout
 
-		"crv": "P-256",
+ 		"crv": "P-256",
 \end_layout
 
 \begin_layout Plain Layout
 
-		"x": "JR5UPDgMLFPZwOGaKKSF24658tB1DccM1_oHPbCHeZg",
+ 		"x": "JR5UPDgMLFPZwOGaKKSF24658tB1DccM1_oHPbCHeZg",
 \end_layout
 
 \begin_layout Plain Layout
 
-		"y": "S45Esx_6DfE5-xdB3X7sIIJ16MwO0Y_RiDc-i5ZTLQ8"
+ 		"y": "S45Esx_6DfE5-xdB3X7sIIJ16MwO0Y_RiDc-i5ZTLQ8"
 \end_layout
 
 \begin_layout Plain Layout
 
-	},
+ 	},
 \end_layout
 
 \begin_layout Plain Layout
 
-	"nonce": "GnK2IBA42iQ",
+ 	"nonce": "GnK2IBA42iQ",
 \end_layout
 
 \begin_layout Plain Layout
 
-	"aud": "urn:x-gss:imap/mail.ietf.org"
+ 	"aud": "urn:x-gss:imap/mail.ietf.org"
 \end_layout
 
 \begin_layout Plain Layout
 
-}
+ }
 \end_layout
 
 \end_inset
