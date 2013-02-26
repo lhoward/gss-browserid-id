@@ -3011,10 +3011,19 @@ Normative References
 \end_layout
 
 \begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
 name "RFC2743"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml"
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -3082,10 +3091,19 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml"
 \end_layout
 
 \begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
 name "RFC4178"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4178.xml"
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -3113,10 +3131,19 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml"
 \end_layout
 
 \begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
 name "RFC5801"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml"
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -3201,6 +3228,9 @@ target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-json
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Flex EmbeddedBibXML
 status open
 
