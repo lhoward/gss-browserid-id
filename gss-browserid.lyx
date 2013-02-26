@@ -507,15 +507,17 @@ lukeh@padl.com
 
 \end_layout
 
+\begin_deeper
 \begin_layout Abstract
-This document proposes a classification scheme for HTTPbis authentication
- proposals, to help with analysis and selection.
+This document defines protocols, procedures and conventions to be implemented
+ by peers implementing the Generic Security Service Application Protocol
+ Interface (GSS-API) when using the BrowserID authentication mechanism.
+ Through the GS2 family of mechanisms defined in RFC 5801, these protocols
+ also define how Simple Authentication and Security Layer (SASL, RFC 4422)
+ applications may use BrowserID.
 \end_layout
 
-\begin_layout Abstract
-Two paragraph abstract, eh?
-\end_layout
-
+\end_deeper
 \begin_layout Standard
 \begin_inset CommandInset toc
 LatexCommand tableofcontents
