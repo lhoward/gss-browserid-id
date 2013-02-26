@@ -590,7 +590,8 @@ Introduction
 
 \begin_layout Standard
 BrowserID is a web-based three-party security protocol by which user agents
- can present a Relying Party (RP) a signed assertion of e-mail address ownership.
+ can present to a Relying Party (RP) a signed assertion of e-mail address
+ ownership.
 \end_layout
 
 \begin_layout Standard
@@ -637,8 +638,9 @@ RFC5801
 
 \begin_layout Standard
 The BrowserID mechanism described in this document reuses the existing web-based
- BrowserID protocol, but adds support for features useful to non-web application
-s, such as key exchange, mutual authentication, and fast re-authentication.
+ BrowserID protocol, but profiles it for use in applications that support
+ SASL or GSS-API, adding features such as key exchange, mutual authentication,
+ and fast re-authentication.
 \end_layout
 
 \begin_layout Standard
@@ -928,8 +930,17 @@ backed assertion
 \end_inset
 
 .) The RP fetches the public key for the IdP, validates the user's certificate
- (and those of any intermediate certifying parties) and then veirfies the
+ (and those of any intermediate certifying parties) and then verifies the
  assertion.
+\end_layout
+
+\begin_layout Standard
+The GSS BrowserID protocol extends this by having the RP always send back
+ a response assertion to the user agent, which at a minimum provides key
+ confirmation (for mechanisms that support key exchange) and indicates the
+ lifetime of the established security context.
+ In an extension of the base protocol, it can also allow the user agent
+ to mutually authenticate the RP.
 \end_layout
 
 \begin_layout Subsection
@@ -950,6 +961,11 @@ GSS_GetMIC() integrity for a message sent separately
 
 \begin_layout Description
 GSS_Pseudo_random() key derivation
+\end_layout
+
+\begin_layout Standard
+These services may be used with security contexts that have a shared session
+ key, to protect messages that are exchanged by the application protocol.
 \end_layout
 
 \begin_layout Section
@@ -987,6 +1003,8 @@ GSS_BROWSERID_NT_EMAIL_OR_SPN
 
 \begin_layout Standard
 This name may contain an e-mail address or a service principal name.
+ The encoding of service principal names is intended to be compatible with
+ the Kerberos security protocol.
 \end_layout
 
 \begin_layout Standard
@@ -1108,19 +1126,30 @@ A GSS-API service name is encoded into a BrowserID audience URL with the
  following syntax:
 \end_layout
 
-\begin_layout Literal
+\begin_layout Standard
+
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
 
 spn = service-name ["/" service-host [ "/" service-specifics]]
 \end_layout
 
-\begin_layout Literal
+\begin_layout Plain Layout
 
 gss-encoded-claims = base64-encode(gss-claims) 
 \end_layout
 
-\begin_layout Literal
+\begin_layout Plain Layout
 
 audience = "urn:x-gss:" spn "#" gss-encoded-claims
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1272,7 +1301,7 @@ Acceptor context token
 \begin_inset Text
 
 \begin_layout Plain Layout
-Unspecified
+TBD
 \end_layout
 
 \end_inset
@@ -1402,8 +1431,7 @@ Acceptor metadata token
 
 \begin_layout Standard
 Note that the token ID has a human-readable ASCII encoding to ease the implement
-ation of pure SASL implementations of this mechanism (i.e.
- it appears as if were an extension of the GS2 header).
+ation of pure SASL implementations of this mechanism.
 \end_layout
 
 \begin_layout Subsection
@@ -1501,9 +1529,18 @@ GSS-API DEFINITIONS ::=
 \end_layout
 
 \begin_layout Standard
-Note that unlike many other GSS-API mechanisms such as Kerberos and GSS
- EAP, this token framing is not used by NegoEx metadata or subsequent context
- tokens.
+Note that unlike many other GSS-API mechanisms such as Kerberos, this token
+ framing is not used by subsequent context or 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+NegoEx
+\end_layout
+
+\end_inset
+
+ metadata tokens.
  As such, pure SASL implementations of this mechanism do not need to deal
  with DER encoding the mechanism object identifier.
 \end_layout
@@ -2447,8 +2484,17 @@ NegoEx
 \end_layout
 
 \begin_layout Standard
-GSS BrowserID supports NegoEx for advertising RP certificates used in mutual
- authentication.
+GSS BrowserID supports 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+NegoEx
+\end_layout
+
+\end_inset
+
+ for advertising RP certificates used in mutual authentication.
 \end_layout
 
 \begin_layout Standard
@@ -3219,6 +3265,26 @@ status collapsed
 LatexCommand href
 name "JWT"
 target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-json-web-token.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "NegoEx"
+target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zhu-negoex.xml"
 
 \end_inset
 
