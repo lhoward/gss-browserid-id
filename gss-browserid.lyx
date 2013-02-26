@@ -3011,27 +3011,6 @@ Normative References
 \end_layout
 
 \begin_layout Standard
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "RFC4422"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
 name "RFC2743"
@@ -3042,17 +3021,15 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml"
 
 \end_layout
 
-\end_inset
-
-
+\begin_layout Standard
 \begin_inset Flex BibXML
 status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
-name "RFC5801"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml"
+name "RFC3961"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3961.xml"
 
 \end_inset
 
@@ -3062,57 +3039,9 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml"
 \end_inset
 
 
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "RFC4178"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4178.xml"
-
-\end_inset
-
-
 \end_layout
 
-\end_inset
-
-
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "RFC4121"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Flex BibXML
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "RFC5929"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
+\begin_layout Standard
 \begin_inset Flex BibXML
 status collapsed
 
@@ -3130,14 +3059,139 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4402.xml"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Flex BibXML
 status collapsed
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
-name "RFC3961"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3961.xml"
+name "RFC4121"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC4178"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4178.xml"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC4422"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC5801"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC5929"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "JWA"
+target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-web-algorithms.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "JWS"
+target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-json-web-signature.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "JWT"
+target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-json-web-token.xml"
 
 \end_inset
 
