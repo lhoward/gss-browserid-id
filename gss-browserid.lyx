@@ -3171,7 +3171,7 @@ status collapsed
 \begin_inset CommandInset href
 LatexCommand href
 name "JWS"
-target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-json-web-signature.xml"
+target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-web-signature.xml"
 
 \end_inset
 
