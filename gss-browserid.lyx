@@ -274,7 +274,7 @@ End
 \begin_body
 
 \begin_layout Title
-A GSS-API Mechanism for the BrowserID Authentication Protocol
+A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol
 \end_layout
 
 \begin_layout Standard
@@ -312,7 +312,7 @@ exp
 status open
 
 \begin_layout Plain Layout
-BrowserID GSS-API
+BrowserID SASL & GSS-API
 \end_layout
 
 \end_inset
@@ -507,10 +507,67 @@ lukeh@padl.com
 
 \end_layout
 
+\begin_layout Author
+Nicolas Williams 
+\begin_inset Flex AuthorOrg
+status collapsed
+
+\begin_layout Plain Layout
+Cryptonector, LLC
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Flex AuthorOrgAbbrev
+status collapsed
+
+\begin_layout Plain Layout
+Cryptonector
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Flex AuthorInitials
+status open
+
+\begin_layout Plain Layout
+N.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex AuthorSurname
+status collapsed
+
+\begin_layout Plain Layout
+Williams
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+\begin_inset Flex AuthorEmailAddr
+status collapsed
+
+\begin_layout Plain Layout
+nico@cryptonector.com
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_deeper
 \begin_layout Abstract
 This document defines protocols, procedures and conventions to be implemented
- by peers implementing the Generic Security Service Application Protocol
+ by peers implementing the Generic Security Service Application Program
  Interface (GSS-API) when using the BrowserID authentication mechanism.
  Through the GS2 family of mechanisms defined in RFC 5801, these protocols
  also define how Simple Authentication and Security Layer (SASL, RFC 4422)
@@ -532,24 +589,64 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-A paragraph.
-\begin_inset VSpace defskip
-\end_inset
-
- Text after a vspace (currently doesn't work due to a bug in LyX's XHTML
- exporter).
+BrowserID is a web-based three-party security protocol by which user agents
+ can present a Relying Party (RP) a signed assertion of e-mail address ownership.
 \end_layout
 
 \begin_layout Standard
-Another paragraph.
+The Simple Authentication and Security Layer (SASL) 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4422
 \end_layout
 
-\begin_layout RevisionRemark
-An editorial comment.
+\end_inset
+
+ is a framework for providing authentication and message protection services
+ via pluggable mechanisms.
+ Protocols that support it include IMAP, SMTP, and XMPP.
 \end_layout
 
-\begin_layout RevisionRemark
-Another comment.
+\begin_layout Standard
+The Generic Security Service Application Program Interface (GSS-API) 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC2743
+\end_layout
+
+\end_inset
+
+ provides a framework for authentication and message protection services
+ through a common programming interface.
+ This document conforms to the SASL and GSS-API bridge specified in 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC5801
+\end_layout
+
+\end_inset
+
+, so it defines both a SASL and GSS-API mechanism.
+\end_layout
+
+\begin_layout Standard
+The BrowserID mechanism described in this document reuses the existing web-based
+ BrowserID protocol, but adds support for features useful to non-web application
+s, such as key exchange, mutual authentication, and fast re-authentication.
+\end_layout
+
+\begin_layout Standard
+The following diagram illustrates the interactions between the three parties
+ in the GSS BrowserID protocol.
+ Note that the terms client, initiator and user agent (UA) are used interchangea
+bly in this document, as are server, acceptor and relying party (RP).
+ 
 \end_layout
 
 \begin_layout Standard
@@ -565,22 +662,170 @@ status open
 
 \begin_layout Plain Layout
 
-+=======================+
 \end_layout
 
 \begin_layout Plain Layout
 
-|     A box             |
+                    +------------+
 \end_layout
 
 \begin_layout Plain Layout
 
-|                       |
+                    | BrowserID  |
 \end_layout
 
 \begin_layout Plain Layout
 
-+=======================+
+                    | identity   |
+\end_layout
+
+\begin_layout Plain Layout
+
+                    | provider   |
+\end_layout
+
+\begin_layout Plain Layout
+
+                    +------------+
+\end_layout
+
+\begin_layout Plain Layout
+
+                      //      
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+                     //        
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+                    //          
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+                   //            
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   make signed    //              
+\backslash
+
+\backslash
+    fetch IdP public
+\end_layout
+
+\begin_layout Plain Layout
+
+   certificate   //                
+\backslash
+
+\backslash
+   key over HTTPS
+\end_layout
+
+\begin_layout Plain Layout
+
+   for user's   //                  
+\backslash
+
+\backslash
+  (RP may cache)
+\end_layout
+
+\begin_layout Plain Layout
+
+   public key  //                    
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+              //                      
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+             //                        
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+            //                          
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+           |/                            
+\backslash
+|
+\end_layout
+
+\begin_layout Plain Layout
+
+    +-------------+                     +-------------+
+\end_layout
+
+\begin_layout Plain Layout
+
+    | SASL or GSS |    GSS BrowserID    | SASL or GSS |
+\end_layout
+
+\begin_layout Plain Layout
+
+    | client/UA   |<------------------->| server/RP   |
+\end_layout
+
+\begin_layout Plain Layout
+
+    | (initiator) |                     | (acceptor)  |
+\end_layout
+
+\begin_layout Plain Layout
+
+    +-------------+                     +-------------+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
@@ -592,7 +837,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-A figure of some sort
+Interworking Architecture
 \end_layout
 
 \end_inset
@@ -603,79 +848,112 @@ A figure of some sort
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-A numbered list:
-\end_layout
-
-\begin_layout Enumerate
-Item 1...
-\begin_inset VSpace defskip
-\end_inset
-
-has two paragraphs, in a manner similar to xml2rfc (i.e., with vspace).
-\end_layout
-
-\begin_layout Enumerate
-Item 2 doesn't.
-\end_layout
-
-\begin_layout Standard
-Now an unnumbered list:
-\end_layout
-
-\begin_layout Itemize
-a bullet
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-with a nested list!
-\end_layout
-
-\end_deeper
-\begin_layout Itemize
-another
-\end_layout
-
-\begin_deeper
-\begin_layout Standard
-this one has a nested list with no bulleting.
- will it do?
-\end_layout
-
-\begin_layout Standard
-how about another?
-\end_layout
-
-\end_deeper
-\begin_layout Standard
-And:
-\end_layout
-
-\begin_layout Itemize
-something
-\end_layout
-
-\begin_layout Itemize
-or other
-\end_layout
-
-\begin_layout Standard
-Now a description list:
-\end_layout
-
-\begin_layout Description
-item1 description of item 1
-\end_layout
-
-\begin_layout Description
-item2 description of item 2
 \end_layout
 
 \begin_layout Subsection
-Conventions used in this document
+Discovery
+\end_layout
+
+\begin_layout Standard
+The means of discovering GSS-API peers and their supported mechanisms is
+ out of this specification's scope.
+ They may use SASL 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4422
+\end_layout
+
+\end_inset
+
+ or the Simple and Protected Negotiation mechanism (SPNEGO) 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4178
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Discovery of a BrowserID identity provider (IdP) for a user is described
+ in the BrowserID specification.
+ A domain publishes a document containing their public key and URIs for
+ authenticating and provisioning users, or pointer to an authority containing
+ such a document.
+\end_layout
+
+\begin_layout Subsection
+Authentication
+\end_layout
+
+\begin_layout Standard
+The GSS-API protocol involves a client, known as the initiator, sending
+ an initial security context token of a chosen GSS-API security mechanism
+ to a peer, known as the acceptor.
+ The two peers subsequently exchange, synchronously, as many security context
+ tokens as necessary to complete the authentication or fail.
+ The specific number of context tokens exchanged varies by security mechanism:
+ in the case of the BrowserID mechanism, it is typically two (i.e.
+ a single round trip), however it can be more in the case the initiator
+ is restarting after a failed re-authentication attempt.
+ Once authentication is complete, the initiator and acceptor share a security
+ context which identifies the peers and can optionally be used for integrity
+ or confidentiality protecting subsequent application messages.
+\end_layout
+
+\begin_layout Standard
+The BrowserID protocol, as defined outside this document, pertains to web
+ authentication only.
+ The user agent generates a short-term key pair, the public key of which
+ is signed by the user's IdP.
+ (The user must have previously authenticated to the IdP by some out-of-band
+ means.) The IdP returns a certificate for the user which is cached by the
+ user's browser.
+ When authenticating to a Relying Party (RP), the browser generates an identity
+ assertion containing the RP domain and an expiration time.
+ The user agent signs this and presents both the assertion and certificate
+ to the RP.
+ (The combination of an assertion and a certificate is termed a 
+\begin_inset Quotes eld
+\end_inset
+
+backed assertion
+\begin_inset Quotes erd
+\end_inset
+
+.) The RP fetches the public key for the IdP, validates the user's certificate
+ (and those of any intermediate certifying parties) and then veirfies the
+ assertion.
+\end_layout
+
+\begin_layout Subsection
+Message protection services
+\end_layout
+
+\begin_layout Standard
+GSS-API provides a number of a message protection services:
+\end_layout
+
+\begin_layout Description
+GSS_Wrap() integrity and optional confidentiality for a message
+\end_layout
+
+\begin_layout Description
+GSS_GetMIC() integrity for a message sent separately
+\end_layout
+
+\begin_layout Description
+GSS_Pseudo_random() key derivation
+\end_layout
+
+\begin_layout Section
+Requirements notation
 \end_layout
 
 \begin_layout Standard
@@ -694,81 +972,181 @@ RFC2119
 .
 \end_layout
 
-\begin_layout Section
-Details
+\begin_layout Standard
+The reader is assumed to be familiar with the terms used in the BrowserID
+ specification.
 \end_layout
 
-\begin_layout Standard
-Some text.
- Here's a protected
-\begin_inset space ~
-\end_inset
-
-space, and here's a bunch of them: 
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset space ~
-\end_inset
-
-, see?
+\begin_layout Section
+Naming
 \end_layout
 
 \begin_layout Subsection
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:A-sub-section"
+GSS_BROWSERID_NT_EMAIL_OR_SPN
+\end_layout
+
+\begin_layout Standard
+This name may contain an e-mail address or a service principal name.
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+char-normal = %x00-2E/%x30-3F/%x41-5B/%x5D-FF
+\end_layout
+
+\begin_layout Plain Layout
+
+char-escaped = "
+\backslash
+" %x2F / "
+\backslash
+" %x40 / "
+\backslash
+" %x5C
+\end_layout
+
+\begin_layout Plain Layout
+
+name-char = char-normal / char-escaped name-string = 1*name-char
+\end_layout
+
+\begin_layout Plain Layout
+
+user = name-string
+\end_layout
+
+\begin_layout Plain Layout
+
+domain = name-string
+\end_layout
+
+\begin_layout Plain Layout
+
+email = user "@" domain
+\end_layout
+
+\begin_layout Plain Layout
+
+service-name = name-string
+\end_layout
+
+\begin_layout Plain Layout
+
+service-host = name-string
+\end_layout
+
+\begin_layout Plain Layout
+
+service-specific = name-string
+\end_layout
+
+\begin_layout Plain Layout
+
+service-specifics = service-specific 0*("/" service-specifics)
+\end_layout
+
+\begin_layout Plain Layout
+
+spn = service-name ["/" service-host [ "/" service-specifics]]
+\end_layout
+
+\begin_layout Plain Layout
+
+name = email / spn
+\end_layout
 
 \end_inset
 
-A sub-section
+
+\end_layout
+
+\begin_layout Subsection
+GSS_C_NT_USER_NAME
 \end_layout
 
 \begin_layout Standard
-and
+This name is implicitly converted to a GSS_BROWSERID_NT_EMAIL_OR_SPN.
+ A default domain may be appended when importing names of this type.
 \end_layout
 
-\begin_layout Subsubsection
-A sub-sub-section
-\end_layout
-
-\begin_layout Standard
-cool
-\series medium
-.
+\begin_layout Subsection
+GSS_C_NT_HOSTBASED_SERVICE
 \end_layout
 
 \begin_layout Standard
-Now back to standard paragraphs...
- And now a table
+This name is transformed by replacing the 
+\begin_inset Quotes eld
+\end_inset
+
+@
+\begin_inset Quotes erd
+\end_inset
+
+ symbol with a 
+\begin_inset Quotes eld
+\end_inset
+
+/
+\begin_inset Quotes erd
+\end_inset
+
+, and then used as GSS_BROWSERID_NT_EMAIL_OR_SPN.
+\end_layout
+
+\begin_layout Subsection
+Audience encoding
+\end_layout
+
+\begin_layout Standard
+A GSS-API service name is encoded into a BrowserID audience URL with the
+ following syntax:
+\end_layout
+
+\begin_layout Literal
+
+spn = service-name ["/" service-host [ "/" service-specifics]]
+\end_layout
+
+\begin_layout Literal
+
+gss-encoded-claims = base64-encode(gss-claims) 
+\end_layout
+
+\begin_layout Literal
+
+audience = "urn:x-gss:" spn "#" gss-encoded-claims
+\end_layout
+
+\begin_layout Section
+Context tokens
+\end_layout
+
+\begin_layout Standard
+All context tokens include a two-byte token identifier followed by a backed
+ BrowserID assertion.
+ This document defines the following token IDs:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="3">
+<lyxtabular version="3" rows="6" columns="4">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="3cm">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
 <row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-a
+Section
 \end_layout
 
 \end_inset
@@ -777,7 +1155,16 @@ a
 \begin_inset Text
 
 \begin_layout Plain Layout
-b
+Token ID
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ASCII
 \end_layout
 
 \end_inset
@@ -786,7 +1173,1390 @@ b
 \begin_inset Text
 
 \begin_layout Plain Layout
-c
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Initial-context-token"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x632C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+c,
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Initiator context token
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Acceptor-context-token"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x432C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+C,
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Acceptor context token
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Unspecified
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x442C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+D,
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Context deletion token
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:NegoEx"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x6D2C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+m,
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Initiator metadata token
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:NegoEx"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x4D2C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+M,
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Acceptor metadata token
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that the token ID has a human-readable ASCII encoding to ease the implement
+ation of pure SASL implementations of this mechanism (i.e.
+ it appears as if were an extension of the GS2 header).
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Initial-context-token"
+
+\end_inset
+
+Initial context token
+\end_layout
+
+\begin_layout Standard
+The initial context token is framed per section 1 of 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC2743
+\end_layout
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+GSS-API DEFINITIONS ::=         
+\end_layout
+
+\begin_layout Plain Layout
+
+		BEGIN
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		MechType ::= OBJECT IDENTIFIER
+\end_layout
+
+\begin_layout Plain Layout
+
+		-- representing BrowserID mechanism
+\end_layout
+
+\begin_layout Plain Layout
+
+		GSSAPI-Token ::=
+\end_layout
+
+\begin_layout Plain Layout
+
+		[APPLICATION 0] IMPLICIT SEQUENCE {
+\end_layout
+
+\begin_layout Plain Layout
+
+			thisMech MechType,
+\end_layout
+
+\begin_layout Plain Layout
+
+			innerToken ANY DEFINED BY thisMech
+\end_layout
+
+\begin_layout Plain Layout
+
+				-- contents mechanism-specific
+\end_layout
+
+\begin_layout Plain Layout
+
+			}
+\end_layout
+
+\begin_layout Plain Layout
+
+		END
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note that unlike many other GSS-API mechanisms such as Kerberos and GSS
+ EAP, this token framing is not used by NegoEx metadata or subsequent context
+ tokens.
+ As such, pure SASL implementations of this mechanism do not need to deal
+ with DER encoding the mechanism object identifier.
+\end_layout
+
+\begin_layout Standard
+GSS BrowserID is a family of mechanisms, where the last element in the OID
+ arc indicates the 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4121
+\end_layout
+
+\end_inset
+
+ encryption type supported for message protection services.
+ The OID prefix is 1.3.6.1.4.1.5322.24.1.
+\end_layout
+
+\begin_layout Standard
+The innerToken consists of initiator context token token ID concatenated
+ with a backed assertion for the audience corresponding to the target name
+ passed into GSS_Init_sec_context().
+ In addition, the assertion may contain the following additional claims,
+ which are described later in this document:
+\end_layout
+
+\begin_layout Itemize
+Channel binding information
+\end_layout
+
+\begin_layout Itemize
+ECDH parameters for session key establishment
+\end_layout
+
+\begin_layout Standard
+The call to GSS_Init_sec_context() returns GSS_C_CONTINUE_NEEDED to indicate
+ that a subsequent token from the acceptor is expected.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Acceptor-context-token"
+
+\end_inset
+
+Acceptor context token
+\end_layout
+
+\begin_layout Standard
+Upon receiving a context token from the initiator, the acceptor validates
+ that the token is well formed and contains the correct mechanism OID and
+ token type.
+\end_layout
+
+\begin_layout Standard
+The acceptor then verifies the backed identity assertion per the BrowserID
+ specification.
+ This includes validating the expiry times, audience, certificate chain,
+ and assertion signature.
+ In the case of failure, an error token is generated and immediately returned.
+\end_layout
+
+\begin_layout Standard
+The acceptor then verifies the channel binding token, if present, and any
+ other GSS-specific claims in the assertion.
+ In case of failure, an error token is generated.
+\end_layout
+
+\begin_layout Standard
+If the 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC3961
+\end_layout
+
+\end_inset
+
+ encryption type for the selected mechanism is not ENCTYPE_NULL, the acceptor
+ generates a ECDH public key using the parameters received from the client,
+ and from it derives the RP Response Key (RRK).
+ The acceptor then generates a response assertion containing the ECDH public
+ key and context expiry time.
+ The response assertion is signed using the RP Response Key (RRK) unless
+ mutual authentication is desired, in which case it may be signed in the
+ acceptor's private key (see below).
+ The response token is encoded as a backed assertion with zero certificates.
+\end_layout
+
+\begin_layout Standard
+Finally, the context root key (CRK) is derived from the ECDH shared secret
+ and GSS_S_COMPLETE is returned, along with the initiator name from the
+ verified assertion.
+ Other assertion/certificate attributes MAY be made available via GSS_Get_name_a
+ttribute().
+\end_layout
+
+\begin_layout Subsection
+Initiator context completion
+\end_layout
+
+\begin_layout Standard
+Upon receiving the acceptor context token, the initiator unpacks the response
+ assertion and, if necessary, computes the ECDH shared secret and RRK.
+ The RRK is used to verify the response assertion unless mutual authentication
+ is desired, in which case the acceptor's public key will be used.
+\end_layout
+
+\begin_layout Standard
+The initiator sets the context expiry time with that received in the response
+ assertion.
+ If the context has expired, GSS_S_CONTEXT_EXPIRED is returned and context
+ establishment fails.
+\end_layout
+
+\begin_layout Standard
+The context root key (CRK) is derived from the ECDH shared secret and GSS_S_COMP
+LETE is returned to indicate the user is authenticated and the context is
+ ready for use.
+ No output token is emitted.
+\end_layout
+
+\begin_layout Subsection
+Extensions for mutual authentication
+\end_layout
+
+\begin_layout Standard
+Mutual authentication allows the acceptor to be authenticated to the initiator.
+ The initiator may return GSS_C_MUTUAL_FLAG flag to the caller.
+ The protocol is extended as follows to support this:
+\end_layout
+
+\begin_layout Subsubsection
+Initiator mutual authentication context token
+\end_layout
+
+\begin_layout Standard
+If the initiator requested GSS_C_MUTUAL_FLAG, a nonce is included in the
+ assertion to bind the initiator and acceptor tokens.
+\end_layout
+
+\begin_layout Subsubsection
+Acceptor mutual authentication context token
+\end_layout
+
+\begin_layout Standard
+If the acceptor has a private key available and received a nonce in the
+ initiator assertion, it signs the response using a private key rather than
+ the RP Response Key (RRK).
+ The response includes the nonce from the initiator's assertion.
+\end_layout
+
+\begin_layout Standard
+Note: while the response is a backed assertion, in order to take advantage
+ of existing keying infrastructures it is suggested that the X.509-encoded
+ certificate chain be included as a value for the "x5c" attribute in the
+ assertion (see JSON Web Signature section 4.1.6).
+\end_layout
+
+\begin_layout Subsubsection
+Initiator mutual authentication context completion
+\end_layout
+
+\begin_layout Standard
+The initiator verifies the nonce and the assertion signature, and validates
+ the certificate chain (which may be an X.509 certificate chain, in which
+ case trust anchors SHOULD be configurable both system-wide and specifically
+ for the BrowserID mechanism).
+\end_layout
+
+\begin_layout Standard
+If X.509 certificates are used, then either the audience URI must be present
+ in the URI subjectAltName, or the host component must be present as a value
+ for the DNS subjectAltName or as the least significant Common Name RDN.
+\end_layout
+
+\begin_layout Standard
+If JSON certificates are used, then either the audience URI must match the
+ "uri" key of the "principal" object in the certificate, or the host component
+ must match the "hostname" key.
+\end_layout
+
+\begin_layout Subsubsection
+Acceptor certificate advertisement
+\end_layout
+
+\begin_layout Standard
+The acceptor may include its certificate (and optionally any additional
+ certs), formatted as a backed assertion with an empty payload, in its NegoEx
+ metadata.
+\end_layout
+
+\begin_layout Subsection
+Extensions for fast re-authentication
+\end_layout
+
+\begin_layout Standard
+Fast re-authentication allows a context to be established without acquiring
+ a new BrowserID assertion.
+ Instead an assertion signed with a secret key derived from the initial
+ ECDH key exchange is used.
+ Re-authentication SHOULD not succeed beyond the user's certificate expiry
+ time, although for practical reasons it MAY.
+\end_layout
+
+\begin_layout Subsubsection
+Ticket generation
+\end_layout
+
+\begin_layout Standard
+If the acceptor supports re-authentication, the following steps are added
+ to the "acceptor to initiator" flow described above.
+\end_layout
+
+\begin_layout Enumerate
+A unique ticket identifier is generated.
+ The acceptor must be able to use this to retrieve the authenticator root
+ key, ticket expiry time, and any other attributes re-authenticated acceptor
+ contexts will need.
+\end_layout
+
+\begin_layout Enumerate
+The acceptor creates a JSON object containing the ticket identifier and
+ expiry time and returns it in the response to the initiator.
+\end_layout
+
+\begin_layout Standard
+The initiator MAY cache such tickets, along with the ARK and expiry time,
+ received from the acceptor in order to re-authenticate to it at a future
+ time.
+\end_layout
+
+\begin_layout Subsubsection
+Initiator re-authentication context token
+\end_layout
+
+\begin_layout Standard
+The initiator looks in its ticket cache for an unexpired ticket for the
+ target (acceptor).
+ If none is found, the normal authentication flow is performed.
+\end_layout
+
+\begin_layout Enumerate
+The initiator generates an authenticator containing: the current time, a
+ random nonce, the ticket identifier, and the target name (audience) and
+ channel bindings requested by the application.
+\end_layout
+
+\begin_layout Enumerate
+The initiator signs the authenticator using its copy of the ARK, using the
+ appropriate hash algorithm associated with the original context (only HS256
+ is presently specified).
+\end_layout
+
+\begin_layout Enumerate
+The authenticator is packed into a "backed" assertion with no certificates.
+\end_layout
+
+\begin_layout Enumerate
+The initiator generates an authenticator session key to be used in verifying
+ the response and in deriving the context root key.
+\end_layout
+
+\begin_layout Enumerate
+The assertion is sent to the acceptor.
+\end_layout
+
+\begin_layout Subsubsection
+Acceptor re-authentication context token
+\end_layout
+
+\begin_layout Enumerate
+The acceptor unpacks the authenticator assertion and looks for a ticket
+ in its cache matching the requested ticket ID.
+\end_layout
+
+\begin_layout Enumerate
+The acceptor validates that the ticket and authenticator have not expired.
+\end_layout
+
+\begin_layout Enumerate
+The acceptor verifies the authenticator using its copy of the ARK.
+\end_layout
+
+\begin_layout Enumerate
+The acceptor generates the ASK and derived the RRK and CRK from this.
+\end_layout
+
+\begin_layout Enumerate
+The acceptor generates a response and signs and returns it.
+ 
+\end_layout
+
+\begin_layout Standard
+If the ticket cannot be found, or the authentication fails, the acceptor
+ MAY return an error code in its response, permitting the initiator to recover
+ and fallback to generating a BrowserID assertion.
+ It MAY also include its local timestamp so that the initiator can perform
+ clock skew compensation.
+\end_layout
+
+\begin_layout Subsubsection
+Interaction with mutual authentication
+\end_layout
+
+\begin_layout Standard
+The mutual authentication state of a re-authenticated context is transitive.
+ The initiator MUST NOT return GSS_C_MUTUAL_FLAG for a re-authenticated
+ context unless the original context was mutually authenticated.
+\end_layout
+
+\begin_layout Standard
+As such, the initiator's ticket cache must store the mutual authentication
+ state of the original context.
+\end_layout
+
+\begin_layout Section
+Validation
+\end_layout
+
+\begin_layout Subsection
+Expiry times
+\end_layout
+
+\begin_layout Standard
+The expiry and, if present, issued-at and not-before times of all elements
+ in a backed assertion, MUST be validated.
+ This applies equally to re-authentication assertions, public key assertions,
+ and the entire certificate chain.
+ If the expiry time is absent, the issued-at time MUST be present, and the
+ JWT implicitly expires a configurable interval (typically five minutes)
+ after the issued-at time.
+\end_layout
+
+\begin_layout Standard
+The GSS context lifetime SHOULD NOT exceed the lifetime of the user's certificat
+e.
+\end_layout
+
+\begin_layout Standard
+The lifetime of a re-authentication ticket SHOULD NOT exceed the lifetime
+ of the user's certificate.
+ The acceptor MUST validate the ticket expiry time when performing re-authentica
+tion.
+\end_layout
+
+\begin_layout Standard
+Message protections services such as GSS_Wrap() SHOULD be available beyond
+ the GSS context lifetime for maximum application compatibility.
+\end_layout
+
+\begin_layout Subsection
+Audience
+\end_layout
+
+\begin_layout Standard
+If the credential passed to GSS_Accept_sec_context() is not for the identity
+ GSS_C_NO_NAME, then it MUST match the unpacked audience (that is, the audience
+ without the URN prefix and encoded claims dictionary).
+\end_layout
+
+\begin_layout Subsection
+Channel bindings
+\end_layout
+
+\begin_layout Standard
+If the acceptor passed in channel bindings to GSS_Accept_sec_context(),
+ the assertion MUST contain a matching channel binding claim.
+ (Only the application_data component is validated.) 
+\end_layout
+
+\begin_layout Subsection
+Signatures
+\end_layout
+
+\begin_layout Standard
+Signature validation on assertions is the same as for the web usage of BrowserID
+, with the addition that re-authentication assertions may be signed with
+ a symmetric key.
+\end_layout
+
+\begin_layout Subsection
+Replay detection
+\end_layout
+
+\begin_layout Standard
+The acceptor SHOULD maintain a cache of received assertions in order to
+ guard against replay attacks.
+ GSS_C_REPLAY_FLAG MUST NOT be returned if the implementation does not support
+ replay detection.
+\end_layout
+
+\begin_layout Section
+Fast re-authentication
+\end_layout
+
+\begin_layout Standard
+When using fast re-authentication, the initiator sends an assertion containing
+ the following payload:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+iat = issue time
+\end_layout
+
+\begin_layout Plain Layout
+
+nonce = 64-bit base64 URL encoded random nonce
+\end_layout
+
+\begin_layout Plain Layout
+
+tkt = opaque ticket identifier
+\end_layout
+
+\begin_layout Plain Layout
+
+aud = audience containing service principal name
+\end_layout
+
+\begin_layout Plain Layout
+
+cbt = base64 URL encoding of channel binding application-specific data
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The re-authentication assertion has an implicit expiry after the issue time.
+\end_layout
+
+\begin_layout Standard
+The ticket expiry time must be securely available to the acceptor, along
+ with the subject, issuer, audience, expiry time and ARK of the original
+ assertion.
+ One implementation choice may be to use the opaque ticket identifier as
+ a key into a dictionary containing this information (our implementation
+ does this, overloading the replay cache).
+ Another would be to encrypt this information in a long-term secret only
+ known to the acceptor and encode that in the opaque ticket identifier.
+\end_layout
+
+\begin_layout Standard
+The fast re-authentication assertion is signed using the authenticator root
+ key.
+\end_layout
+
+\begin_layout Section
+Assertion claims
+\end_layout
+
+\begin_layout Subsection
+Request assertion
+\end_layout
+
+\begin_layout Standard
+These claims are included in the assertion sent to the acceptor and are
+ authenticated by the initiator's private key and certificate chain.
+ Here is an example assertion containing Elliptic Curve Diffie-Hellman parameter
+s:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+{ 
+\end_layout
+
+\begin_layout Plain Layout
+
+	"exp": 1360158396188,
+\end_layout
+
+\begin_layout Plain Layout
+
+	"ecdh": {
+\end_layout
+
+\begin_layout Plain Layout
+
+		"crv": "P-256",
+\end_layout
+
+\begin_layout Plain Layout
+
+		"x": "JR5UPDgMLFPZwOGaKKSF24658tB1DccM1_oHPbCHeZg",
+\end_layout
+
+\begin_layout Plain Layout
+
+		"y": "S45Esx_6DfE5-xdB3X7sIIJ16MwO0Y_RiDc-i5ZTLQ8"
+\end_layout
+
+\begin_layout Plain Layout
+
+	},
+\end_layout
+
+\begin_layout Plain Layout
+
+	"nonce": "GnK2IBA42iQ",
+\end_layout
+
+\begin_layout Plain Layout
+
+	"aud": "urn:x-gss:imap/mail.ietf.org"
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+cbt
+\begin_inset Quotes erd
+\end_inset
+
+ (Channel Binding Token)
+\end_layout
+
+\begin_layout Standard
+This contains a channel binding token for binding the GSS context to an
+ outer channel (e.g.
+ see 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC5929
+\end_layout
+
+\end_inset
+
+).
+ Its value is the base64 URL encoding of the application-specific data component
+ of the channel bindings passed to GSS_Init_sec_context() or GSS_Accept_sec_cont
+ext().
+\end_layout
+
+\begin_layout Subsubsection
+"ecdh" (Elliptic Curve Diffie-Hellman key exchange)
+\end_layout
+
+\begin_layout Standard
+These contain ECDH key parameters for deriving a shared session key with
+ the relying party: "crv" contains the curve, "x" the X coordinate and "y"
+ the Y coordinate (see JWA section 5.2).
+\end_layout
+
+\begin_layout Standard
+The curve should have an equivalent strength to the negotiated 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4121
+\end_layout
+
+\end_inset
+
+ encryption type: at least P-256 MUST be used for browserid-aes128, and
+ P-521 for browserid-aes256.
+\end_layout
+
+\begin_layout Subsubsection
+"nonce" (Mutual authentication nonce)
+\end_layout
+
+\begin_layout Standard
+This is a random quantity of at least 64 bits, base 64 URL encoded, which
+ is used to bind the initiator and acceptor assertions, in the case where
+ mutual authentication is desired.
+\end_layout
+
+\begin_layout Subsection
+Response assertion
+\end_layout
+
+\begin_layout Standard
+The response assertion is sent from the acceptor to the initiator.
+ It is formatted as a backed assertion, however in the current specification
+ it consists of a single assertion with zero certificates; that is, it is
+ "unbacked".
+ It is encoded as a backed assertion in order to provide future support
+ for mutual authentication using native JSON certificates.
+ Such support is not defined by this specification; implementations SHOULD
+ reject backed response assertions.
+\end_layout
+
+\begin_layout Standard
+In the case of a key successfully being negotiated, it is signed with the
+ RP Response Key (RRK).
+ Alternatively, it may be signed with the acceptor's private RSA or DSA
+ key.
+ In this case, an X.509 certificate of is included in the "x5c" attribute
+ of the JWT header.
+\end_layout
+
+\begin_layout Standard
+The HMAC-SHA256 (HS256) algorithm MUST be supported by implementors of this
+ specification.
+\end_layout
+
+\begin_layout Standard
+If a key is unavailable, then the signature is absent and the value of the
+ "alg" header claim is "none".
+ No signature verification is required in this case, however the initiator
+ MUST NOT return GSS_C_COMPLETE unless the associated RFC3961 encryption
+ type for the mechanism OID is ENCTYPE_NULL.
+\end_layout
+
+\begin_layout Standard
+The response assertion payload may contain the following parameters.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+iat
+\begin_inset Quotes erd
+\end_inset
+
+ (Issued at time)
+\end_layout
+
+\begin_layout Standard
+The current acceptor time, in milliseconds since January 1, 1970.
+ This allows the initiator to compensate for clock differences when generating
+ assertions.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+ecdh
+\begin_inset Quotes erd
+\end_inset
+
+ (Elliptic Curve Diffie-Hellman key exchange)
+\end_layout
+
+\begin_layout Standard
+This contains a JSON object containing the coordinates of the acceptor's
+ ECDH public key.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+exp
+\begin_inset Quotes erd
+\end_inset
+
+ (Expiry time)
+\end_layout
+
+\begin_layout Standard
+This contains the time when the context expires.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+nonce
+\begin_inset Quotes erd
+\end_inset
+
+ (Mutual authentication nonce)
+\end_layout
+
+\begin_layout Standard
+The nonce as received from the initiator.
+ This SHOULD NOT be present unless a nonce was received from the initiator.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+tkt
+\begin_inset Quotes erd
+\end_inset
+
+ (Ticket)
+\end_layout
+
+\begin_layout Standard
+This contains a JSON object that may be used for re-authenticating to the
+ acceptor without acquiring an assertion.
+ Its usage is optional.
+ It has two properties: 
+\begin_inset Quotes eld
+\end_inset
+
+jti
+\begin_inset Quotes erd
+\end_inset
+
+, an opaque identifier to be presented in a re-authentication assertion;
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+exp
+\begin_inset Quotes erd
+\end_inset
+
+, the expiry time of the ticket.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+gss-maj
+\begin_inset Quotes erd
+\end_inset
+
+ (GSS major status code)
+\end_layout
+
+\begin_layout Standard
+This contains a GSS major status code represented as a number.
+ It MUST not be present if the acceptor did not return an error.
+ Its usage is optional.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+gss-min
+\begin_inset Quotes erd
+\end_inset
+
+ (GSS minor status code)
+\end_layout
+
+\begin_layout Standard
+This contains a GSS minor status code represented as a number.
+ It MUST not be present if the acceptor did not return an error and SHOULD
+ not be present if there is no minor status code for the given major error.
+ Its usage is optional.
+\end_layout
+
+\begin_layout Standard
+If GSSBID_REAUTH_FAILED is received, the initiator SHOULD attempt to send
+ another initial context token containing a fresh assertion.
+\end_layout
+
+\begin_layout Section
+Key derivation
+\end_layout
+
+\begin_layout Standard
+The following algorithm is used as the base algorithm for deriving keys:
+\end_layout
+
+\begin_layout Standard
+browserid-derive-key(K, salt) = HMAC(K, "BrowserID" || K || salt || 0x01)
+\end_layout
+
+\begin_layout Standard
+The HMAC hash algorithm for all currently specified key lengths is SHA256.
+ Note that the inclusion of K in the HMAC input is for interoperability
+ with some crypto implementations.
+\end_layout
+
+\begin_layout Subsection
+Diffie-Hellman Key (DHK)
+\end_layout
+
+\begin_layout Standard
+This key is the shared secret resulting from the ECDH exchange.
+ Its length corresponds to the selected EC curve.
+ It is never used without derivation and thus may be used with implementations
+ that do not expose the DH value directly.
+\end_layout
+
+\begin_layout Subsection
+Context Master Key (CMK)
+\end_layout
+
+\begin_layout Standard
+This is the Diffie-Hellman Key (DHK) for all initially authenticated contexts
+ and the Authenticator Session Key (ASK) for re-authenticated contexts.
+\end_layout
+
+\begin_layout Subsection
+RP Response Key (RRK)
+\end_layout
+
+\begin_layout Standard
+The response from the acceptor is signed using this key for fresh assertions:
+\end_layout
+
+\begin_layout Standard
+RRK = browserid-derive-key(CMK, "RRK") 
+\end_layout
+
+\begin_layout Subsection
+Context Root Key (CRK)
+\end_layout
+
+\begin_layout Standard
+The context root key is used for 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4121
+\end_layout
+
+\end_inset
+
+ message protection services, e.g.
+ GSS_Wrap() and GSS_Get_MIC().
+\end_layout
+
+\begin_layout Standard
+CRK = random-to-key(browserid-derive-key(CMK, "CRK"))
+\end_layout
+
+\begin_layout Subsection
+Authenticator Root Key (ARK)
+\end_layout
+
+\begin_layout Standard
+The authenticator root key (ARK) is used to sign authenticators used for
+ fast re-authentication.
+ It is derived as follows:
+\end_layout
+
+\begin_layout Standard
+ARK = browserid-derive-key(DHK, "ARK")
+\end_layout
+
+\begin_layout Subsection
+Authenticator Session Key (ASK)
+\end_layout
+
+\begin_layout Standard
+The authenticator session key (ASK) is used instead of the DHK for re-authentica
+ted contexts.
+ It is derived as follows:
+\end_layout
+
+\begin_layout Standard
+ASK = browserid-derive-key(ARK, authenticator-as-jwt)
+\end_layout
+
+\begin_layout Section
+GSS-API Extensions
+\end_layout
+
+\begin_layout Subsection
+PRF
+\end_layout
+
+\begin_layout Standard
+See 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4402
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsection
+Naming extensions
+\end_layout
+
+\begin_layout Standard
+The acceptor MAY surface attributes from the assertion and any certificates
+ using GSS_Get_name_attribute().
+ The URN prefix is "urn:ietf:params:gss:jwt".
+ The acceptor MUST filter any sensitive attributes before returning them
+ to the application.
+\end_layout
+
+\begin_layout Standard
+If a SAML assertion is present in the "saml" parameter of the leaf certificate,
+ it may be surfaced using the URN prefix "urn:ietf:params:gss:federated-saml-att
+ribute".
+\end_layout
+
+\begin_layout Standard
+Attributes from the assertion MUST be marked as unauthenticated unless otherwise
+ validated by the acceptor (e.g.
+ the audience).
+\end_layout
+
+\begin_layout Standard
+Attributes from certificates SHOULD be marked as authenticated.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:NegoEx"
+
+\end_inset
+
+NegoEx
+\end_layout
+
+\begin_layout Standard
+GSS BrowserID supports NegoEx for advertising RP certificates used in mutual
+ authentication.
+\end_layout
+
+\begin_layout Standard
+If the acceptor supports mutual authentication, it MAY include its certificate
+ and any additional certificates inside a backed assertion with an empty
+ payload as output for GSS_Query_meta_data().
+ The "assertion" is prepended with the two byte token identifier TOK_TYPE_ACCEPT
+OR_META_DATA.
+\end_layout
+
+\begin_layout Standard
+Upon receiving this, the initiator SHOULD display the certificate information
+ or fingerprint to the user and allow them to confirm it before committing
+ to authenticate.
+\end_layout
+
+\begin_layout Standard
+The NegoEx signing key is the output of GSS_Pseudo_random() with an input
+ of GSS_C_PRF_KEY_FULL and "gss-browserid-negoex-initiator" or "gss-browserid-ne
+goex-acceptor", depending on the party generating the signature.
+\end_layout
+
+\begin_layout Standard
+The NegoEx authentication scheme is the binary encoding of the following
+ hexadecimal string:
+\end_layout
+
+\begin_layout Standard
+535538008647F5BC624BD8076949F0
+\end_layout
+
+\begin_layout Standard
+where the third byte (zero above) is set to the 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC3961
+\end_layout
+
+\end_inset
+
+ encryption type for the selected mechanism.
+\end_layout
+
+\begin_layout Standard
+There is currently no initiator-sent metadata defined and acceptors should
+ ignore any sent.
+ The metadata is advisory and the initiator is free to ignore it.
+\end_layout
+
+\begin_layout Section
+IANA Considerations
+\end_layout
+
+\begin_layout Standard
+This specification creates a number of IANA registries.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:OID Registry"
+
+\end_inset
+
+OID Registry
+\end_layout
+
+\begin_layout Standard
+Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID (1.3.6.1.4.1.5322.24)
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Decimal
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
 \end_layout
 
 \end_inset
@@ -806,7 +2576,7 @@ c
 \begin_inset Text
 
 \begin_layout Plain Layout
-stuff
+Reserved
 \end_layout
 
 \end_inset
@@ -815,7 +2585,287 @@ stuff
 \begin_inset Text
 
 \begin_layout Plain Layout
-what
+Reserved
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+mechanisms
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A sub-arc containing BrowserID mechanisms
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+nametypes
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A sub-arc containing BrowserID name types
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID.mechanisms (1.3.6.1.4.1.5322.
+24.1)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Decimal
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+gss-browserid-null
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+The NULL security mechanism
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+17
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+gss-browserid-aes128
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+The aes128-cts-hmac-sha1-96 mechanism
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+18
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+gss-browserid-aes256
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+The aes256-cts-hmac-sha1-96 mechanism
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID.nametypes (1.3.6.1.4.1.5322.2
+4.2)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Decimal
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Reserved
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Reserved
 \end_layout
 
 \end_inset
@@ -835,7 +2885,7 @@ what
 \begin_inset Text
 
 \begin_layout Plain Layout
-foo
+GSS_BROWSERID_NT_EMAIL_OR_SPN
 \end_layout
 
 \end_inset
@@ -844,7 +2894,7 @@ foo
 \begin_inset Text
 
 \begin_layout Plain Layout
-bar
+
 \end_layout
 
 \end_inset
@@ -857,16 +2907,97 @@ bar
 
 \end_layout
 
-\begin_layout Standard
-And some text after it.
- See also section 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:A-sub-section"
+\begin_layout Subsection
+SASL Registry
+\end_layout
 
+\begin_layout Standard
+Subject: Registration of SASL mechanisms BROWSERID-AES128 and BROWSERID-AES128-P
+LUS
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
 \end_inset
 
-.
+
+\end_layout
+
+\begin_layout Standard
+SASL mechanism names: BROWSERID-AES128 and BROWSERID-AES128-PLUS
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Security considerations: See RFC 5801 and draft-howard-gss-browserid
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Published specification (recommended): draft-howard-gss-browserid
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Person & email address to contact for further information:
+\end_layout
+
+\begin_layout Standard
+Luke Howard lukeh@padl.com
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Intended usage: common
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Owner/Change controller: iesg@ietf.org
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace defskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note: This mechanism describes the GSS BrowserID mechanism used with the
+ aes128-cts-hmac-sha1-96 enctype.
+ The GSS-API OID for this mechanism is 1.3.6.1.4.1.5322.24.1.17.
+ As described in RFC 5801 a PLUS variant of this mechanism is also required.
 \end_layout
 
 \begin_layout Section
@@ -880,6 +3011,142 @@ Normative References
 \end_layout
 
 \begin_layout Standard
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC4422"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC2743"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC5801"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC4178"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4178.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC4121"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC5929"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC4402"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4402.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC3961"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3961.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \begin_inset Flex EmbeddedBibXML
 status open
 
@@ -936,35 +3203,6 @@ t> <street>BXB1-2/D04</street> <city>Boxborough</city> <region>MA</region>
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Section
-\start_of_appendix
-First Appendix
-\end_layout
-
-\begin_layout Standard
-Appendici.
-\end_layout
-
-\begin_layout Subsection
-Sub-Appendix
-\end_layout
-
-\begin_layout Standard
-Whatever.
-\end_layout
-
-\begin_layout Section
-Last Appendix
-\end_layout
-
-\begin_layout Standard
-Last word.
-\end_layout
-
-\begin_layout --Separator--
 
 \end_layout
 
