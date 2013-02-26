@@ -1,0 +1,1495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "file:///home/nico/I-Ds/gss-browserid-id/../test/src/../data/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="GENERATOR" content="LyX 2.0.0" />
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<title>A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol</title>
+
+<!-- Text Class Preamble -->
+<style type="text/css">
+div.toc {
+margin: 2em 0em;
+border-style: solid;
+border-width: 2px 0px;
+padding: 1em 0em;
+}
+div.tochead { font-size: x-large; font-weight: bold; }
+div.lyxtoc-0 {
+margin: 2em 0em 0em 0em;
+font-size: xx-large;
+font-weight: bold;
+}
+div.lyxtoc-1 {
+margin: 1em 0em 0em 0em;
+font-size: x-large;
+font-weight: bold;
+}
+div.lyxtoc-2 {
+margin: 0em 0em 0em 1em;
+font-size: large;
+font-weight: normal;
+}
+div.lyxtoc-3 { margin: 0em 0em 0em 0.5em; font-size: medium; }
+div.lyxtoc-4 { margin: 0em 0em 0em 0.5em; }
+div.lyxtoc-5 { margin: 0em 0em 0em 0.5em; }
+div.lyxtoc-6 { margin: 0em 0em 0em 0.5em; }
+a.tocentry {
+text-decoration: none;
+color: black;
+}
+a.tocentry:visited { color: black; }
+a.tocarrow {
+font-weight: bold;
+text-decoration: none;
+color: #909090;
+}
+a.tocarrow:visited { color: #C0C0C0; }
+</style>
+
+<!-- Preamble Snippets -->
+<style type="text/css">
+table { border: 1px solid black; display: inline-block; }
+td { border: 1px solid black; padding: 0.5ex; }
+</style>
+
+<!-- Layout-provided Styles -->
+<style type='text/css'>
+h1.title {
+font-size: x-large;
+margin-bottom: 1ex;
+text-align: center;
+
+}
+div.standard {
+text-align: left;
+
+}
+div.plain_layout {
+text-align: left;
+
+}
+div.author {
+font-size: large;
+margin-top: 1.3ex;
+margin-bottom: 0.7ex;
+text-align: center;
+
+}
+div.abstract {
+font-size: small;
+margin-top: 0.7ex;
+margin-bottom: 0.7ex;
+margin-left: 3ex;
+margin-right: 3ex;
+text-align: left;
+
+}
+div.abstract_label {
+font-weight: bold;
+font-size: large;
+text-align: center;
+
+}
+
+div.abstract {
+margin: 4ex;
+}
+div.abstract_item {
+font-size: small;
+padding-top: 1ex;
+}
+div.abstract_label {
+font-weight: bold;
+}
+h2.section {
+font-weight: bold;
+font-size: x-large;
+margin-top: 1.3ex;
+margin-bottom: 0.7ex;
+text-align: left;
+
+}
+h3.subsection {
+font-weight: bold;
+font-size: large;
+margin-top: 0.9ex;
+margin-bottom: 0.5ex;
+text-align: left;
+
+}
+dl.description dt { font-weight: bold; }
+ul.itemize {
+margin-top: 0.7ex;
+margin-bottom: 0.7ex;
+margin-left: 3ex;
+text-align: left;
+
+}
+h4.subsubsection {
+font-weight: bold;
+font-size: medium;
+margin-top: 0.7ex;
+margin-bottom: 0.4ex;
+text-align: left;
+
+}
+ol.enumerate {
+margin-top: 0.7ex;
+margin-bottom: 0.7ex;
+margin-left: 3ex;
+text-align: left;
+
+}
+div.flex_docname {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_ipr {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_intendedstatus {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_titleabbrev {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_ietfarea {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_xml_rfckeyword {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_updates {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_pi_toc {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_pi_symrefs {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_pi_tocindent {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_pi {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authororg {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authororgabbrev {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authorinitials {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authorsurname {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authoraddrstreet {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authoraddrcity {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authoraddrregion {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authoraddrcountry {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authoraddrcode {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_authoremailaddr {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_entityxref {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.float {
+border: 2px solid black;
+text-align: center;
+}
+div.listings {
+font-family: monospace;
+}
+div.float-caption {
+text-align: center;
+border: 2px solid black;
+padding: 1ex;
+margin: 1ex;
+}
+div.flex_bibxml {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+div.flex_embeddedbibxml {
+font-family: serif;
+font-weight: normal;
+font-style: normal;
+font-variant: normal;
+font-size: medium;
+}
+</style>
+</head>
+<body>
+<h1 class="title"><a id='magicparlabel-1' />
+A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol</h1>
+<div class="standard"><a id='magicparlabel-2' />
+<div class="flex_docname"><div class="plain_layout"><a id='magicparlabel-6' />
+draft-howard-gss-browserid-00.txt</div>
+</div><div class="flex_ipr"><div class="plain_layout"><a id='magicparlabel-10' />
+trust200902</div>
+</div><div class="flex_intendedstatus"><div class="plain_layout"><a id='magicparlabel-14' />
+exp</div>
+</div><div class="flex_titleabbrev"><div class="plain_layout"><a id='magicparlabel-18' />
+BrowserID SASL &amp; GSS-API</div>
+</div><div class="flex_ietfarea"><div class="plain_layout"><a id='magicparlabel-22' />
+Security Area</div>
+</div><div class="flex_xml_rfckeyword"><div class="plain_layout"><a id='magicparlabel-26' />
+Internet-Draft</div>
+</div><div class="flex_updates"><div class="plain_layout"><a id='magicparlabel-30' />
+</div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-31' />
+<div class="flex_pi_toc"><div class="plain_layout"><a id='magicparlabel-35' />
+yes</div>
+</div><div class="flex_pi_symrefs"><div class="plain_layout"><a id='magicparlabel-39' />
+yes</div>
+</div><div class="flex_pi_tocindent"><div class="plain_layout"><a id='magicparlabel-43' />
+no</div>
+</div><div class="flex_pi"><div class="plain_layout"><a id='magicparlabel-47' />
+comments="yes"</div>
+</div><div class="flex_pi"><div class="plain_layout"><a id='magicparlabel-51' />
+inline="yes"</div>
+</div></div>
+
+<div class="author"><div class="author_item"><a id='magicparlabel-52' />
+Luke Howard <div class="flex_authororg"><div class="plain_layout"><a id='magicparlabel-56' />
+PADL Software</div>
+</div> <div class="flex_authororgabbrev"><div class="plain_layout"><a id='magicparlabel-60' />
+PADL</div>
+</div> <div class="flex_authorinitials"><div class="plain_layout"><a id='magicparlabel-64' />
+L.</div>
+</div> <div class="flex_authorsurname"><div class="plain_layout"><a id='magicparlabel-68' />
+Howard</div>
+</div> <div class="flex_authoraddrstreet"><div class="plain_layout"><a id='magicparlabel-72' />
+PO Box 59</div>
+</div><div class="flex_authoraddrcity"><div class="plain_layout"><a id='magicparlabel-76' />
+Central Park</div>
+</div> <div class="flex_authoraddrregion"><div class="plain_layout"><a id='magicparlabel-80' />
+VIC</div>
+</div> <div class="flex_authoraddrcountry"><div class="plain_layout"><a id='magicparlabel-84' />
+Australia</div>
+</div> <div class="flex_authoraddrcode"><div class="plain_layout"><a id='magicparlabel-88' />
+3145</div>
+</div> <div class="flex_authoremailaddr"><div class="plain_layout"><a id='magicparlabel-92' />
+lukeh@padl.com</div>
+</div></div>
+<div class="author_item"><a id='magicparlabel-93' />
+Nicolas Williams <div class="flex_authororg"><div class="plain_layout"><a id='magicparlabel-97' />
+Cryptonector, LLC</div>
+</div> <div class="flex_authororgabbrev"><div class="plain_layout"><a id='magicparlabel-101' />
+Cryptonector</div>
+</div> <div class="flex_authorinitials"><div class="plain_layout"><a id='magicparlabel-105' />
+N.</div>
+</div><div class="flex_authorsurname"><div class="plain_layout"><a id='magicparlabel-109' />
+Williams</div>
+</div></div>
+<div class="author_item"><a id='magicparlabel-110' />
+<div class="flex_authoremailaddr"><div class="plain_layout"><a id='magicparlabel-114' />
+nico@cryptonector.com</div>
+</div></div>
+
+<div class="abstract"><div class="abstract_label">Abstract</div>
+<div class="abstract_item"><a id='magicparlabel-115' />
+This document defines protocols, procedures and conventions to be implemented by peers implementing the Generic Security Service Application Program Interface (GSS-API) when using the BrowserID authentication mechanism. Through the GS2 family of mechanisms defined in RFC 5801, these protocols also define how Simple Authentication and Security Layer (SASL, RFC 4422) applications may use BrowserID.</div>
+</div>
+</div>
+<div class="standard"><a id='magicparlabel-116' />
+</div>
+<div class='toc'><div class='tochead part_'>Table of Contents</div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-117' class='tocentry'>1 Introduction</a> <a href='#magicparlabel-117' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-173' class='tocentry'>1.1 Discovery</a> <a href='#magicparlabel-173' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-184' class='tocentry'>1.2 Authentication</a> <a href='#magicparlabel-184' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-188' class='tocentry'>1.3 Message protection services</a> <a href='#magicparlabel-188' class='tocarrow'>&gt;</a></div>
+</div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-194' class='tocentry'>2 Requirements notation</a> <a href='#magicparlabel-194' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-201' class='tocentry'>3 Naming</a> <a href='#magicparlabel-201' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-202' class='tocentry'>3.1 GSS_BROWSERID_NT_EMAIL_OR_SPN</a> <a href='#magicparlabel-202' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-220' class='tocentry'>3.2 GSS_C_NT_USER_NAME</a> <a href='#magicparlabel-220' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-222' class='tocentry'>3.3 GSS_C_NT_HOSTBASED_SERVICE</a> <a href='#magicparlabel-222' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-224' class='tocentry'>3.4 Audience encoding</a> <a href='#magicparlabel-224' class='tocarrow'>&gt;</a></div>
+</div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-233' class='tocentry'>4 Context tokens</a> <a href='#magicparlabel-233' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-367' class='tocentry'>4.1 Initial context token</a> <a href='#magicparlabel-367' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-403' class='tocentry'>4.2 Acceptor context token</a> <a href='#magicparlabel-403' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-413' class='tocentry'>4.3 Initiator context completion</a> <a href='#magicparlabel-413' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-417' class='tocentry'>4.4 Extensions for mutual authentication</a> <a href='#magicparlabel-417' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-419' class='tocentry'>4.4.1 Initiator mutual authentication context token</a> <a href='#magicparlabel-419' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-421' class='tocentry'>4.4.2 Acceptor mutual authentication context token</a> <a href='#magicparlabel-421' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-424' class='tocentry'>4.4.3 Initiator mutual authentication context completion</a> <a href='#magicparlabel-424' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-428' class='tocentry'>4.4.4 Acceptor certificate advertisement</a> <a href='#magicparlabel-428' class='tocarrow'>&gt;</a></div>
+</div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-430' class='tocentry'>4.5 Extensions for fast re-authentication</a> <a href='#magicparlabel-430' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-432' class='tocentry'>4.5.1 Ticket generation</a> <a href='#magicparlabel-432' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-437' class='tocentry'>4.5.2 Initiator re-authentication context token</a> <a href='#magicparlabel-437' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-444' class='tocentry'>4.5.3 Acceptor re-authentication context token</a> <a href='#magicparlabel-444' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-451' class='tocentry'>4.5.4 Interaction with mutual authentication</a> <a href='#magicparlabel-451' class='tocarrow'>&gt;</a></div>
+</div>
+</div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-454' class='tocentry'>5 Validation</a> <a href='#magicparlabel-454' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-455' class='tocentry'>5.1 Expiry times</a> <a href='#magicparlabel-455' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-460' class='tocentry'>5.2 Audience</a> <a href='#magicparlabel-460' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-462' class='tocentry'>5.3 Channel bindings</a> <a href='#magicparlabel-462' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-464' class='tocentry'>5.4 Signatures</a> <a href='#magicparlabel-464' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-466' class='tocentry'>5.5 Replay detection</a> <a href='#magicparlabel-466' class='tocarrow'>&gt;</a></div>
+</div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-468' class='tocentry'>6 Fast re-authentication</a> <a href='#magicparlabel-468' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-482' class='tocentry'>7 Assertion claims</a> <a href='#magicparlabel-482' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-483' class='tocentry'>7.1 Request assertion</a> <a href='#magicparlabel-483' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-499' class='tocentry'>7.1.1 cbt (Channel Binding Token)</a> <a href='#magicparlabel-499' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-505' class='tocentry'>7.1.2 "ecdh" (Elliptic Curve Diffie-Hellman key exchange)</a> <a href='#magicparlabel-505' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-512' class='tocentry'>7.1.3 "nonce" (Mutual authentication nonce)</a> <a href='#magicparlabel-512' class='tocarrow'>&gt;</a></div>
+</div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-514' class='tocentry'>7.2 Response assertion</a> <a href='#magicparlabel-514' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-520' class='tocentry'>7.2.1 iat (Issued at time)</a> <a href='#magicparlabel-520' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-522' class='tocentry'>7.2.2 ecdh (Elliptic Curve Diffie-Hellman key exchange)</a> <a href='#magicparlabel-522' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-524' class='tocentry'>7.2.3 exp (Expiry time)</a> <a href='#magicparlabel-524' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-526' class='tocentry'>7.2.4 nonce (Mutual authentication nonce)</a> <a href='#magicparlabel-526' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-528' class='tocentry'>7.2.5 tkt (Ticket)</a> <a href='#magicparlabel-528' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-530' class='tocentry'>7.2.6 gss-maj (GSS major status code)</a> <a href='#magicparlabel-530' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-3'><a href='#magicparlabel-532' class='tocentry'>7.2.7 gss-min (GSS minor status code)</a> <a href='#magicparlabel-532' class='tocarrow'>&gt;</a></div>
+</div>
+</div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-535' class='tocentry'>8 Key derivation</a> <a href='#magicparlabel-535' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-539' class='tocentry'>8.1 Diffie-Hellman Key (DHK)</a> <a href='#magicparlabel-539' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-541' class='tocentry'>8.2 Context Master Key (CMK)</a> <a href='#magicparlabel-541' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-543' class='tocentry'>8.3 RP Response Key (RRK)</a> <a href='#magicparlabel-543' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-546' class='tocentry'>8.4 Context Root Key (CRK)</a> <a href='#magicparlabel-546' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-553' class='tocentry'>8.5 Authenticator Root Key (ARK)</a> <a href='#magicparlabel-553' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-556' class='tocentry'>8.6 Authenticator Session Key (ASK)</a> <a href='#magicparlabel-556' class='tocarrow'>&gt;</a></div>
+</div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-559' class='tocentry'>9 GSS-API Extensions</a> <a href='#magicparlabel-559' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-560' class='tocentry'>9.1 PRF</a> <a href='#magicparlabel-560' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-566' class='tocentry'>9.2 Naming extensions</a> <a href='#magicparlabel-566' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-571' class='tocentry'>9.3 NegoEx</a> <a href='#magicparlabel-571' class='tocarrow'>&gt;</a></div>
+</div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-588' class='tocentry'>10 IANA Considerations</a> <a href='#magicparlabel-588' class='tocarrow'>&gt;</a>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-590' class='tocentry'>10.1 OID Registry</a> <a href='#magicparlabel-590' class='tocarrow'>&gt;</a></div>
+
+<div class='lyxtoc-2'><a href='#magicparlabel-791' class='tocentry'>10.2 SASL Registry</a> <a href='#magicparlabel-791' class='tocarrow'>&gt;</a></div>
+</div>
+
+<div class='lyxtoc-1'><a href='#magicparlabel-808' class='tocentry'>11 Normative References</a> <a href='#magicparlabel-808' class='tocarrow'>&gt;</a></div>
+</div>
+
+<h2 class="section"><span class="section_label">1</span> <a id='magicparlabel-117' />
+Introduction</h2>
+<div class="standard"><a id='magicparlabel-118' />
+BrowserID is a web-based three-party security protocol by which user agents can present to a Relying Party (RP) a signed assertion of e-mail address ownership.</div>
+
+<div class="standard"><a id='magicparlabel-119' />
+The Simple Authentication and Security Layer (SASL) <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-123' />
+RFC4422</div>
+</div> is a framework for providing authentication and message protection services via pluggable mechanisms. Protocols that support it include IMAP, SMTP, and XMPP.</div>
+
+<div class="standard"><a id='magicparlabel-124' />
+The Generic Security Service Application Program Interface (GSS-API) <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-128' />
+RFC2743</div>
+</div> provides a framework for authentication and message protection services through a common programming interface. This document conforms to the SASL and GSS-API bridge specified in <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-132' />
+RFC5801</div>
+</div>, so it defines both a SASL and GSS-API mechanism.</div>
+
+<div class="standard"><a id='magicparlabel-133' />
+The BrowserID mechanism described in this document reuses the existing web-based BrowserID protocol, but profiles it for use in applications that support SASL or GSS-API, adding features such as key exchange, mutual authentication, and fast re-authentication.</div>
+
+<div class="standard"><a id='magicparlabel-134' />
+The following diagram illustrates the interactions between the three parties in the GSS BrowserID protocol. Note that the terms client, initiator and user agent (UA) are used interchangeably in this document, as are server, acceptor and relying party (RP). </div>
+
+<div class="standard"><a id='magicparlabel-135' />
+</div>
+<div class='float float-figure'><div class="plain_layout"><a id='magicparlabel-139' />
+</div>
+<div class='float float-listings'><pre> 
+                    +&mdash;&mdash;&mdash;&mdash;+
+                    | BrowserID  |
+                    | identity   |
+                    | provider   |
+                    +&mdash;&mdash;&mdash;&mdash;+
+                      //      \\
+                     //        \\
+                    //          \\
+                   //            \\
+   make signed    //              \\    fetch IdP public
+   certificate   //                \\   key over HTTPS
+   for user's   //                  \\  (RP may cache)
+   public key  //                    \\
+              //                      \\
+             //                        \\
+            //                          \\
+           |/                            \|
+    +&mdash;&mdash;&mdash;&mdash;-+                     +&mdash;&mdash;&mdash;&mdash;-+
+    | SASL or GSS |    GSS BrowserID    | SASL or GSS |
+    | client/UA   |&lt;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;-&gt;| server/RP   |
+    | (initiator) |                     | (acceptor)  |
+    +&mdash;&mdash;&mdash;&mdash;-+                     +&mdash;&mdash;&mdash;&mdash;-+
+ 
+ </pre></div>
+
+
+<div class="plain_layout"><a id='magicparlabel-168' />
+<div class='float-caption float-caption-figure'>Figure 1:<div class="plain_layout"><a id='magicparlabel-172' />
+Interworking Architecture</div>
+</div></div>
+</div>
+
+<h3 class="subsection"><span class="subsection_label">1.1</span> <a id='magicparlabel-173' />
+Discovery</h3>
+<div class="standard"><a id='magicparlabel-174' />
+The means of discovering GSS-API peers and their supported mechanisms is out of this specification's scope. They may use SASL <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-178' />
+RFC4422</div>
+</div> or the Simple and Protected Negotiation mechanism (SPNEGO) <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-182' />
+RFC4178</div>
+</div>.</div>
+
+<div class="standard"><a id='magicparlabel-183' />
+Discovery of a BrowserID identity provider (IdP) for a user is described in the BrowserID specification. A domain publishes a document containing their public key and URIs for authenticating and provisioning users, or pointer to an authority containing such a document.</div>
+<h3 class="subsection"><span class="subsection_label">1.2</span> <a id='magicparlabel-184' />
+Authentication</h3>
+<div class="standard"><a id='magicparlabel-185' />
+The GSS-API protocol involves a client, known as the initiator, sending an initial security context token of a chosen GSS-API security mechanism to a peer, known as the acceptor. The two peers subsequently exchange, synchronously, as many security context tokens as necessary to complete the authentication or fail. The specific number of context tokens exchanged varies by security mechanism: in the case of the BrowserID mechanism, it is typically two (i.e. a single round trip), however it can be more in the case the initiator is restarting after a failed re-authentication attempt. Once authentication is complete, the initiator and acceptor share a security context which identifies the peers and can optionally be used for integrity or confidentiality protecting subsequent application messages.</div>
+
+<div class="standard"><a id='magicparlabel-186' />
+The BrowserID protocol, as defined outside this document, pertains to web authentication only. The user agent generates a short-term key pair, the public key of which is signed by the user's IdP. (The user must have previously authenticated to the IdP by some out-of-band means.) The IdP returns a certificate for the user which is cached by the user's browser. When authenticating to a Relying Party (RP), the browser generates an identity assertion containing the RP domain and an expiration time. The user agent signs this and presents both the assertion and certificate to the RP. (The combination of an assertion and a certificate is termed a &ldquo;backed assertion&rdquo;.) The RP fetches the public key for the IdP, validates the user's certificate (and those of any intermediate certifying parties) and then verifies the assertion.</div>
+
+<div class="standard"><a id='magicparlabel-187' />
+The GSS BrowserID protocol extends this by having the RP always send back a response assertion to the user agent, which at a minimum provides key confirmation (for mechanisms that support key exchange) and indicates the lifetime of the established security context. In an extension of the base protocol, it can also allow the user agent to mutually authenticate the RP.</div>
+<h3 class="subsection"><span class="subsection_label">1.3</span> <a id='magicparlabel-188' />
+Message protection services</h3>
+<div class="standard"><a id='magicparlabel-189' />
+GSS-API provides a number of a message protection services:</div>
+
+<dl class='description'><dt class="description_label">GSS_Wrap()</dt>
+<dd class="description_item"><a id='magicparlabel-190' />
+ integrity and optional confidentiality for a message</dd>
+<dt class="description_label">GSS_GetMIC()</dt>
+<dd class="description_item"><a id='magicparlabel-191' />
+ integrity for a message sent separately</dd>
+<dt class="description_label">GSS_Pseudo_random()</dt>
+<dd class="description_item"><a id='magicparlabel-192' />
+ key derivation</dd>
+</dl>
+<div class="standard"><a id='magicparlabel-193' />
+These services may be used with security contexts that have a shared session key, to protect messages that are exchanged by the application protocol.</div>
+<h2 class="section"><span class="section_label">2</span> <a id='magicparlabel-194' />
+Requirements notation</h2>
+<div class="standard"><a id='magicparlabel-195' />
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-199' />
+RFC2119</div>
+</div>.</div>
+
+<div class="standard"><a id='magicparlabel-200' />
+The reader is assumed to be familiar with the terms used in the BrowserID specification.</div>
+<h2 class="section"><span class="section_label">3</span> <a id='magicparlabel-201' />
+Naming</h2>
+<h3 class="subsection"><span class="subsection_label">3.1</span> <a id='magicparlabel-202' />
+GSS_BROWSERID_NT_EMAIL_OR_SPN</h3>
+<div class="standard"><a id='magicparlabel-203' />
+This name may contain an e-mail address or a service principal name. The encoding of service principal names is intended to be compatible with the Kerberos security protocol.</div>
+
+<div class="standard"><a id='magicparlabel-204' />
+</div>
+<div class='float float-listings'><pre> char-normal = %x00-2E/%x30-3F/%x41-5B/%x5D-FF
+ char-escaped = "\" %x2F / "\" %x40 / "\" %x5C
+ name-char = char-normal / char-escaped name-string = 1*name-char
+ user = name-string
+ domain = name-string
+ email = user "@" domain
+ service-name = name-string
+ service-host = name-string
+ service-specific = name-string
+ service-specifics = service-specific 0*("/" service-specifics)
+ spn = service-name ["/" service-host [ "/" service-specifics]]
+ name = email / spn</pre></div>
+
+<h3 class="subsection"><span class="subsection_label">3.2</span> <a id='magicparlabel-220' />
+GSS_C_NT_USER_NAME</h3>
+<div class="standard"><a id='magicparlabel-221' />
+This name is implicitly converted to a GSS_BROWSERID_NT_EMAIL_OR_SPN. A default domain may be appended when importing names of this type.</div>
+<h3 class="subsection"><span class="subsection_label">3.3</span> <a id='magicparlabel-222' />
+GSS_C_NT_HOSTBASED_SERVICE</h3>
+<div class="standard"><a id='magicparlabel-223' />
+This name is transformed by replacing the &ldquo;@&rdquo; symbol with a &ldquo;/&rdquo;, and then used as GSS_BROWSERID_NT_EMAIL_OR_SPN.</div>
+<h3 class="subsection"><span class="subsection_label">3.4</span> <a id='magicparlabel-224' />
+Audience encoding</h3>
+<div class="standard"><a id='magicparlabel-225' />
+A GSS-API service name is encoded into a BrowserID audience URL with the following syntax:</div>
+
+<div class="standard"><a id='magicparlabel-226' />
+</div>
+<div class='float float-listings'><pre> spn = service-name ["/" service-host [ "/" service-specifics]]
+ gss-encoded-claims = base64-encode(gss-claims) 
+ audience = "urn:x-gss:" spn "#" gss-encoded-claims</pre></div>
+
+<h2 class="section"><span class="section_label">4</span> <a id='magicparlabel-233' />
+Context tokens</h2>
+<div class="standard"><a id='magicparlabel-234' />
+All context tokens include a two-byte token identifier followed by a backed BrowserID assertion. This document defines the following token IDs:</div>
+
+<div class="standard"><a id='magicparlabel-235' />
+
+
+
+<table><tbody><tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-296' />
+Section</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-299' />
+Token ID</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-302' />
+ASCII</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-305' />
+Description</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-308' />
+<a href="#sub_Initial_context_token">4.1</a></div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-311' />
+0x632C</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-314' />
+c,</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-317' />
+Initiator context token</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-320' />
+<a href="#sub_Acceptor_context_token">4.2</a></div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-323' />
+0x432C</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-326' />
+C,</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-329' />
+Acceptor context token</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-332' />
+TBD</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-335' />
+0x442C</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-338' />
+D,</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-341' />
+Context deletion token</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-344' />
+<a href="#sub_NegoEx">9.3</a></div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-347' />
+0x6D2C</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-350' />
+m,</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-353' />
+Initiator metadata token</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-356' />
+<a href="#sub_NegoEx">9.3</a></div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-359' />
+0x4D2C</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-362' />
+M,</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-365' />
+Acceptor metadata token</div>
+</td>
+</tr></tbody>
+</table>
+</div>
+
+<div class="standard"><a id='magicparlabel-366' />
+Note that the token ID has a human-readable ASCII encoding to ease the implementation of pure SASL implementations of this mechanism.</div>
+<h3 class="subsection"><span class="subsection_label">4.1</span> <a id='magicparlabel-367' />
+<a id="sub_Initial_context_token" />
+Initial context token</h3>
+<div class="standard"><a id='magicparlabel-368' />
+The initial context token is framed per section 1 of <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-372' />
+RFC2743</div>
+</div>:</div>
+
+<div class="standard"><a id='magicparlabel-373' />
+</div>
+<div class='float float-listings'><pre> GSS-API DEFINITIONS ::=         
+ 		BEGIN
+ 
+ 		MechType ::= OBJECT IDENTIFIER
+ 		&ndash; representing BrowserID mechanism
+ 		GSSAPI-Token ::=
+ 		[APPLICATION 0] IMPLICIT SEQUENCE {
+ 			thisMech MechType,
+ 			innerToken ANY DEFINED BY thisMech
+ 				&ndash; contents mechanism-specific
+ 			}
+ 		END</pre></div>
+
+
+<div class="standard"><a id='magicparlabel-389' />
+Note that unlike many other GSS-API mechanisms such as Kerberos, this token framing is not used by subsequent context or <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-393' />
+I-D.zhu-negoex</div>
+</div> metadata tokens. As such, pure SASL implementations of this mechanism do not need to deal with DER encoding the mechanism object identifier.</div>
+
+<div class="standard"><a id='magicparlabel-394' />
+GSS BrowserID is a family of mechanisms, where the last element in the OID arc indicates the <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-398' />
+RFC4121</div>
+</div> encryption type supported for message protection services. The OID prefix is 1.3.6.1.4.1.5322.24.1.</div>
+
+<div class="standard"><a id='magicparlabel-399' />
+The innerToken consists of initiator context token token ID concatenated with a backed assertion for the audience corresponding to the target name passed into GSS_Init_sec_context(). In addition, the assertion may contain the following additional claims, which are described later in this document:</div>
+
+<ul class="itemize"><li class="itemize_item"><a id='magicparlabel-400' />
+Channel binding information</li>
+<li class="itemize_item"><a id='magicparlabel-401' />
+ECDH parameters for session key establishment</li>
+</ul>
+<div class="standard"><a id='magicparlabel-402' />
+The call to GSS_Init_sec_context() returns GSS_C_CONTINUE_NEEDED to indicate that a subsequent token from the acceptor is expected.</div>
+<h3 class="subsection"><span class="subsection_label">4.2</span> <a id='magicparlabel-403' />
+<a id="sub_Acceptor_context_token" />
+Acceptor context token</h3>
+<div class="standard"><a id='magicparlabel-404' />
+Upon receiving a context token from the initiator, the acceptor validates that the token is well formed and contains the correct mechanism OID and token type.</div>
+
+<div class="standard"><a id='magicparlabel-405' />
+The acceptor then verifies the backed identity assertion per the BrowserID specification. This includes validating the expiry times, audience, certificate chain, and assertion signature. In the case of failure, an error token is generated and immediately returned.</div>
+
+<div class="standard"><a id='magicparlabel-406' />
+The acceptor then verifies the channel binding token, if present, and any other GSS-specific claims in the assertion. In case of failure, an error token is generated.</div>
+
+<div class="standard"><a id='magicparlabel-407' />
+If the <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-411' />
+RFC3961</div>
+</div> encryption type for the selected mechanism is not ENCTYPE_NULL, the acceptor generates a ECDH public key using the parameters received from the client, and from it derives the RP Response Key (RRK). The acceptor then generates a response assertion containing the ECDH public key and context expiry time. The response assertion is signed using the RP Response Key (RRK) unless mutual authentication is desired, in which case it may be signed in the acceptor's private key (see below). The response token is encoded as a backed assertion with zero certificates.</div>
+
+<div class="standard"><a id='magicparlabel-412' />
+Finally, the context root key (CRK) is derived from the ECDH shared secret and GSS_S_COMPLETE is returned, along with the initiator name from the verified assertion. Other assertion/certificate attributes MAY be made available via GSS_Get_name_attribute().</div>
+<h3 class="subsection"><span class="subsection_label">4.3</span> <a id='magicparlabel-413' />
+Initiator context completion</h3>
+<div class="standard"><a id='magicparlabel-414' />
+Upon receiving the acceptor context token, the initiator unpacks the response assertion and, if necessary, computes the ECDH shared secret and RRK. The RRK is used to verify the response assertion unless mutual authentication is desired, in which case the acceptor's public key will be used.</div>
+
+<div class="standard"><a id='magicparlabel-415' />
+The initiator sets the context expiry time with that received in the response assertion. If the context has expired, GSS_S_CONTEXT_EXPIRED is returned and context establishment fails.</div>
+
+<div class="standard"><a id='magicparlabel-416' />
+The context root key (CRK) is derived from the ECDH shared secret and GSS_S_COMPLETE is returned to indicate the user is authenticated and the context is ready for use. No output token is emitted.</div>
+<h3 class="subsection"><span class="subsection_label">4.4</span> <a id='magicparlabel-417' />
+Extensions for mutual authentication</h3>
+<div class="standard"><a id='magicparlabel-418' />
+Mutual authentication allows the acceptor to be authenticated to the initiator. The initiator may return GSS_C_MUTUAL_FLAG flag to the caller. The protocol is extended as follows to support this:</div>
+<h4 class="subsubsection"><span class="subsubsection_label">4.4.1</span> <a id='magicparlabel-419' />
+Initiator mutual authentication context token</h4>
+<div class="standard"><a id='magicparlabel-420' />
+If the initiator requested GSS_C_MUTUAL_FLAG, a nonce is included in the assertion to bind the initiator and acceptor tokens.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">4.4.2</span> <a id='magicparlabel-421' />
+Acceptor mutual authentication context token</h4>
+<div class="standard"><a id='magicparlabel-422' />
+If the acceptor has a private key available and received a nonce in the initiator assertion, it signs the response using a private key rather than the RP Response Key (RRK). The response includes the nonce from the initiator's assertion.</div>
+
+<div class="standard"><a id='magicparlabel-423' />
+Note: while the response is a backed assertion, in order to take advantage of existing keying infrastructures it is suggested that the X.509-encoded certificate chain be included as a value for the "x5c" attribute in the assertion (see JSON Web Signature section 4.1.6).</div>
+<h4 class="subsubsection"><span class="subsubsection_label">4.4.3</span> <a id='magicparlabel-424' />
+Initiator mutual authentication context completion</h4>
+<div class="standard"><a id='magicparlabel-425' />
+The initiator verifies the nonce and the assertion signature, and validates the certificate chain (which may be an X.509 certificate chain, in which case trust anchors SHOULD be configurable both system-wide and specifically for the BrowserID mechanism).</div>
+
+<div class="standard"><a id='magicparlabel-426' />
+If X.509 certificates are used, then either the audience URI must be present in the URI subjectAltName, or the host component must be present as a value for the DNS subjectAltName or as the least significant Common Name RDN.</div>
+
+<div class="standard"><a id='magicparlabel-427' />
+If JSON certificates are used, then either the audience URI must match the "uri" key of the "principal" object in the certificate, or the host component must match the "hostname" key.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">4.4.4</span> <a id='magicparlabel-428' />
+Acceptor certificate advertisement</h4>
+<div class="standard"><a id='magicparlabel-429' />
+The acceptor may include its certificate (and optionally any additional certs), formatted as a backed assertion with an empty payload, in its NegoEx metadata.</div>
+<h3 class="subsection"><span class="subsection_label">4.5</span> <a id='magicparlabel-430' />
+Extensions for fast re-authentication</h3>
+<div class="standard"><a id='magicparlabel-431' />
+Fast re-authentication allows a context to be established without acquiring a new BrowserID assertion. Instead an assertion signed with a secret key derived from the initial ECDH key exchange is used. Re-authentication SHOULD not succeed beyond the user's certificate expiry time, although for practical reasons it MAY.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">4.5.1</span> <a id='magicparlabel-432' />
+Ticket generation</h4>
+<div class="standard"><a id='magicparlabel-433' />
+If the acceptor supports re-authentication, the following steps are added to the "acceptor to initiator" flow described above.</div>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-434' />
+A unique ticket identifier is generated. The acceptor must be able to use this to retrieve the authenticator root key, ticket expiry time, and any other attributes re-authenticated acceptor contexts will need.</li>
+<li class="enumerate_item"><a id='magicparlabel-435' />
+The acceptor creates a JSON object containing the ticket identifier and expiry time and returns it in the response to the initiator.</li>
+</ol>
+<div class="standard"><a id='magicparlabel-436' />
+The initiator MAY cache such tickets, along with the ARK and expiry time, received from the acceptor in order to re-authenticate to it at a future time.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">4.5.2</span> <a id='magicparlabel-437' />
+Initiator re-authentication context token</h4>
+<div class="standard"><a id='magicparlabel-438' />
+The initiator looks in its ticket cache for an unexpired ticket for the target (acceptor). If none is found, the normal authentication flow is performed.</div>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-439' />
+The initiator generates an authenticator containing: the current time, a random nonce, the ticket identifier, and the target name (audience) and channel bindings requested by the application.</li>
+<li class="enumerate_item"><a id='magicparlabel-440' />
+The initiator signs the authenticator using its copy of the ARK, using the appropriate hash algorithm associated with the original context (only HS256 is presently specified).</li>
+<li class="enumerate_item"><a id='magicparlabel-441' />
+The authenticator is packed into a "backed" assertion with no certificates.</li>
+<li class="enumerate_item"><a id='magicparlabel-442' />
+The initiator generates an authenticator session key to be used in verifying the response and in deriving the context root key.</li>
+<li class="enumerate_item"><a id='magicparlabel-443' />
+The assertion is sent to the acceptor.</li>
+</ol>
+<h4 class="subsubsection"><span class="subsubsection_label">4.5.3</span> <a id='magicparlabel-444' />
+Acceptor re-authentication context token</h4>
+
+<ol class="enumerate"><li class="enumerate_item"><a id='magicparlabel-445' />
+The acceptor unpacks the authenticator assertion and looks for a ticket in its cache matching the requested ticket ID.</li>
+<li class="enumerate_item"><a id='magicparlabel-446' />
+The acceptor validates that the ticket and authenticator have not expired.</li>
+<li class="enumerate_item"><a id='magicparlabel-447' />
+The acceptor verifies the authenticator using its copy of the ARK.</li>
+<li class="enumerate_item"><a id='magicparlabel-448' />
+The acceptor generates the ASK and derived the RRK and CRK from this.</li>
+<li class="enumerate_item"><a id='magicparlabel-449' />
+The acceptor generates a response and signs and returns it. </li>
+</ol>
+<div class="standard"><a id='magicparlabel-450' />
+If the ticket cannot be found, or the authentication fails, the acceptor MAY return an error code in its response, permitting the initiator to recover and fallback to generating a BrowserID assertion. It MAY also include its local timestamp so that the initiator can perform clock skew compensation.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">4.5.4</span> <a id='magicparlabel-451' />
+Interaction with mutual authentication</h4>
+<div class="standard"><a id='magicparlabel-452' />
+The mutual authentication state of a re-authenticated context is transitive. The initiator MUST NOT return GSS_C_MUTUAL_FLAG for a re-authenticated context unless the original context was mutually authenticated.</div>
+
+<div class="standard"><a id='magicparlabel-453' />
+As such, the initiator's ticket cache must store the mutual authentication state of the original context.</div>
+<h2 class="section"><span class="section_label">5</span> <a id='magicparlabel-454' />
+Validation</h2>
+<h3 class="subsection"><span class="subsection_label">5.1</span> <a id='magicparlabel-455' />
+Expiry times</h3>
+<div class="standard"><a id='magicparlabel-456' />
+The expiry and, if present, issued-at and not-before times of all elements in a backed assertion, MUST be validated. This applies equally to re-authentication assertions, public key assertions, and the entire certificate chain. If the expiry time is absent, the issued-at time MUST be present, and the JWT implicitly expires a configurable interval (typically five minutes) after the issued-at time.</div>
+
+<div class="standard"><a id='magicparlabel-457' />
+The GSS context lifetime SHOULD NOT exceed the lifetime of the user's certificate.</div>
+
+<div class="standard"><a id='magicparlabel-458' />
+The lifetime of a re-authentication ticket SHOULD NOT exceed the lifetime of the user's certificate. The acceptor MUST validate the ticket expiry time when performing re-authentication.</div>
+
+<div class="standard"><a id='magicparlabel-459' />
+Message protections services such as GSS_Wrap() SHOULD be available beyond the GSS context lifetime for maximum application compatibility.</div>
+<h3 class="subsection"><span class="subsection_label">5.2</span> <a id='magicparlabel-460' />
+Audience</h3>
+<div class="standard"><a id='magicparlabel-461' />
+If the credential passed to GSS_Accept_sec_context() is not for the identity GSS_C_NO_NAME, then it MUST match the unpacked audience (that is, the audience without the URN prefix and encoded claims dictionary).</div>
+<h3 class="subsection"><span class="subsection_label">5.3</span> <a id='magicparlabel-462' />
+Channel bindings</h3>
+<div class="standard"><a id='magicparlabel-463' />
+If the acceptor passed in channel bindings to GSS_Accept_sec_context(), the assertion MUST contain a matching channel binding claim. (Only the application_data component is validated.) </div>
+<h3 class="subsection"><span class="subsection_label">5.4</span> <a id='magicparlabel-464' />
+Signatures</h3>
+<div class="standard"><a id='magicparlabel-465' />
+Signature validation on assertions is the same as for the web usage of BrowserID, with the addition that re-authentication assertions may be signed with a symmetric key.</div>
+<h3 class="subsection"><span class="subsection_label">5.5</span> <a id='magicparlabel-466' />
+Replay detection</h3>
+<div class="standard"><a id='magicparlabel-467' />
+The acceptor SHOULD maintain a cache of received assertions in order to guard against replay attacks. GSS_C_REPLAY_FLAG MUST NOT be returned if the implementation does not support replay detection.</div>
+<h2 class="section"><span class="section_label">6</span> <a id='magicparlabel-468' />
+Fast re-authentication</h2>
+<div class="standard"><a id='magicparlabel-469' />
+When using fast re-authentication, the initiator sends an assertion containing the following payload:</div>
+
+<div class="standard"><a id='magicparlabel-470' />
+</div>
+<div class='float float-listings'><pre> iat = issue time
+ nonce = 64-bit base64 URL encoded random nonce
+ tkt = opaque ticket identifier
+ aud = audience containing service principal name
+ cbt = base64 URL encoding of channel binding application-specific data</pre></div>
+
+
+<div class="standard"><a id='magicparlabel-479' />
+The re-authentication assertion has an implicit expiry after the issue time.</div>
+
+<div class="standard"><a id='magicparlabel-480' />
+The ticket expiry time must be securely available to the acceptor, along with the subject, issuer, audience, expiry time and ARK of the original assertion. One implementation choice may be to use the opaque ticket identifier as a key into a dictionary containing this information (our implementation does this, overloading the replay cache). Another would be to encrypt this information in a long-term secret only known to the acceptor and encode that in the opaque ticket identifier.</div>
+
+<div class="standard"><a id='magicparlabel-481' />
+The fast re-authentication assertion is signed using the authenticator root key.</div>
+<h2 class="section"><span class="section_label">7</span> <a id='magicparlabel-482' />
+Assertion claims</h2>
+<h3 class="subsection"><span class="subsection_label">7.1</span> <a id='magicparlabel-483' />
+Request assertion</h3>
+<div class="standard"><a id='magicparlabel-484' />
+These claims are included in the assertion sent to the acceptor and are authenticated by the initiator's private key and certificate chain. Here is an example assertion containing Elliptic Curve Diffie-Hellman parameters:</div>
+
+<div class="standard"><a id='magicparlabel-485' />
+</div>
+<div class='float float-listings'><pre> { 
+ 	"exp": 1360158396188,
+ 	"ecdh": {
+ 		"crv": "P-256",
+ 		"x": "JR5UPDgMLFPZwOGaKKSF24658tB1DccM1_oHPbCHeZg",
+ 		"y": "S45Esx_6DfE5-xdB3X7sIIJ16MwO0Y_RiDc-i5ZTLQ8"
+ 	},
+ 	"nonce": "GnK2IBA42iQ",
+ 	"aud": "urn:x-gss:imap/mail.ietf.org"
+ }</pre></div>
+
+<h4 class="subsubsection"><span class="subsubsection_label">7.1.1</span> <a id='magicparlabel-499' />
+&ldquo;cbt&rdquo; (Channel Binding Token)</h4>
+<div class="standard"><a id='magicparlabel-500' />
+This contains a channel binding token for binding the GSS context to an outer channel (e.g. see <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-504' />
+RFC5929</div>
+</div>). Its value is the base64 URL encoding of the application-specific data component of the channel bindings passed to GSS_Init_sec_context() or GSS_Accept_sec_context().</div>
+<h4 class="subsubsection"><span class="subsubsection_label">7.1.2</span> <a id='magicparlabel-505' />
+"ecdh" (Elliptic Curve Diffie-Hellman key exchange)</h4>
+<div class="standard"><a id='magicparlabel-506' />
+These contain ECDH key parameters for deriving a shared session key with the relying party: "crv" contains the curve, "x" the X coordinate and "y" the Y coordinate (see JWA section 5.2).</div>
+
+<div class="standard"><a id='magicparlabel-507' />
+The curve should have an equivalent strength to the negotiated <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-511' />
+RFC4121</div>
+</div> encryption type: at least P-256 MUST be used for browserid-aes128, and P-521 for browserid-aes256.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">7.1.3</span> <a id='magicparlabel-512' />
+"nonce" (Mutual authentication nonce)</h4>
+<div class="standard"><a id='magicparlabel-513' />
+This is a random quantity of at least 64 bits, base 64 URL encoded, which is used to bind the initiator and acceptor assertions, in the case where mutual authentication is desired.</div>
+<h3 class="subsection"><span class="subsection_label">7.2</span> <a id='magicparlabel-514' />
+Response assertion</h3>
+<div class="standard"><a id='magicparlabel-515' />
+The response assertion is sent from the acceptor to the initiator. It is formatted as a backed assertion, however in the current specification it consists of a single assertion with zero certificates; that is, it is "unbacked". It is encoded as a backed assertion in order to provide future support for mutual authentication using native JSON certificates. Such support is not defined by this specification; implementations SHOULD reject backed response assertions.</div>
+
+<div class="standard"><a id='magicparlabel-516' />
+In the case of a key successfully being negotiated, it is signed with the RP Response Key (RRK). Alternatively, it may be signed with the acceptor's private RSA or DSA key. In this case, an X.509 certificate of is included in the "x5c" attribute of the JWT header.</div>
+
+<div class="standard"><a id='magicparlabel-517' />
+The HMAC-SHA256 (HS256) algorithm MUST be supported by implementors of this specification.</div>
+
+<div class="standard"><a id='magicparlabel-518' />
+If a key is unavailable, then the signature is absent and the value of the "alg" header claim is "none". No signature verification is required in this case, however the initiator MUST NOT return GSS_C_COMPLETE unless the associated RFC3961 encryption type for the mechanism OID is ENCTYPE_NULL.</div>
+
+<div class="standard"><a id='magicparlabel-519' />
+The response assertion payload may contain the following parameters.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">7.2.1</span> <a id='magicparlabel-520' />
+&ldquo;iat&rdquo; (Issued at time)</h4>
+<div class="standard"><a id='magicparlabel-521' />
+The current acceptor time, in milliseconds since January 1, 1970. This allows the initiator to compensate for clock differences when generating assertions.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">7.2.2</span> <a id='magicparlabel-522' />
+&ldquo;ecdh&rdquo; (Elliptic Curve Diffie-Hellman key exchange)</h4>
+<div class="standard"><a id='magicparlabel-523' />
+This contains a JSON object containing the coordinates of the acceptor's ECDH public key.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">7.2.3</span> <a id='magicparlabel-524' />
+&ldquo;exp&rdquo; (Expiry time)</h4>
+<div class="standard"><a id='magicparlabel-525' />
+This contains the time when the context expires.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">7.2.4</span> <a id='magicparlabel-526' />
+&ldquo;nonce&rdquo; (Mutual authentication nonce)</h4>
+<div class="standard"><a id='magicparlabel-527' />
+The nonce as received from the initiator. This SHOULD NOT be present unless a nonce was received from the initiator.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">7.2.5</span> <a id='magicparlabel-528' />
+&ldquo;tkt&rdquo; (Ticket)</h4>
+<div class="standard"><a id='magicparlabel-529' />
+This contains a JSON object that may be used for re-authenticating to the acceptor without acquiring an assertion. Its usage is optional. It has two properties: &ldquo;jti&rdquo;, an opaque identifier to be presented in a re-authentication assertion; and &ldquo;exp&rdquo;, the expiry time of the ticket.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">7.2.6</span> <a id='magicparlabel-530' />
+&ldquo;gss-maj&rdquo; (GSS major status code)</h4>
+<div class="standard"><a id='magicparlabel-531' />
+This contains a GSS major status code represented as a number. It MUST not be present if the acceptor did not return an error. Its usage is optional.</div>
+<h4 class="subsubsection"><span class="subsubsection_label">7.2.7</span> <a id='magicparlabel-532' />
+&ldquo;gss-min&rdquo; (GSS minor status code)</h4>
+<div class="standard"><a id='magicparlabel-533' />
+This contains a GSS minor status code represented as a number. It MUST not be present if the acceptor did not return an error and SHOULD not be present if there is no minor status code for the given major error. Its usage is optional.</div>
+
+<div class="standard"><a id='magicparlabel-534' />
+If GSSBID_REAUTH_FAILED is received, the initiator SHOULD attempt to send another initial context token containing a fresh assertion.</div>
+<h2 class="section"><span class="section_label">8</span> <a id='magicparlabel-535' />
+Key derivation</h2>
+<div class="standard"><a id='magicparlabel-536' />
+The following algorithm is used as the base algorithm for deriving keys:</div>
+
+<div class="standard"><a id='magicparlabel-537' />
+browserid-derive-key(K, salt) = HMAC(K, "BrowserID" || K || salt || 0x01)</div>
+
+<div class="standard"><a id='magicparlabel-538' />
+The HMAC hash algorithm for all currently specified key lengths is SHA256. Note that the inclusion of K in the HMAC input is for interoperability with some crypto implementations.</div>
+<h3 class="subsection"><span class="subsection_label">8.1</span> <a id='magicparlabel-539' />
+Diffie-Hellman Key (DHK)</h3>
+<div class="standard"><a id='magicparlabel-540' />
+This key is the shared secret resulting from the ECDH exchange. Its length corresponds to the selected EC curve. It is never used without derivation and thus may be used with implementations that do not expose the DH value directly.</div>
+<h3 class="subsection"><span class="subsection_label">8.2</span> <a id='magicparlabel-541' />
+Context Master Key (CMK)</h3>
+<div class="standard"><a id='magicparlabel-542' />
+This is the Diffie-Hellman Key (DHK) for all initially authenticated contexts and the Authenticator Session Key (ASK) for re-authenticated contexts.</div>
+<h3 class="subsection"><span class="subsection_label">8.3</span> <a id='magicparlabel-543' />
+RP Response Key (RRK)</h3>
+<div class="standard"><a id='magicparlabel-544' />
+The response from the acceptor is signed using this key for fresh assertions:</div>
+
+<div class="standard"><a id='magicparlabel-545' />
+RRK = browserid-derive-key(CMK, "RRK") </div>
+<h3 class="subsection"><span class="subsection_label">8.4</span> <a id='magicparlabel-546' />
+Context Root Key (CRK)</h3>
+<div class="standard"><a id='magicparlabel-547' />
+The context root key is used for <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-551' />
+RFC4121</div>
+</div> message protection services, e.g. GSS_Wrap() and GSS_Get_MIC().</div>
+
+<div class="standard"><a id='magicparlabel-552' />
+CRK = random-to-key(browserid-derive-key(CMK, "CRK"))</div>
+<h3 class="subsection"><span class="subsection_label">8.5</span> <a id='magicparlabel-553' />
+Authenticator Root Key (ARK)</h3>
+<div class="standard"><a id='magicparlabel-554' />
+The authenticator root key (ARK) is used to sign authenticators used for fast re-authentication. It is derived as follows:</div>
+
+<div class="standard"><a id='magicparlabel-555' />
+ARK = browserid-derive-key(DHK, "ARK")</div>
+<h3 class="subsection"><span class="subsection_label">8.6</span> <a id='magicparlabel-556' />
+Authenticator Session Key (ASK)</h3>
+<div class="standard"><a id='magicparlabel-557' />
+The authenticator session key (ASK) is used instead of the DHK for re-authenticated contexts. It is derived as follows:</div>
+
+<div class="standard"><a id='magicparlabel-558' />
+ASK = browserid-derive-key(ARK, authenticator-as-jwt)</div>
+<h2 class="section"><span class="section_label">9</span> <a id='magicparlabel-559' />
+GSS-API Extensions</h2>
+<h3 class="subsection"><span class="subsection_label">9.1</span> <a id='magicparlabel-560' />
+PRF</h3>
+<div class="standard"><a id='magicparlabel-561' />
+See <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-565' />
+RFC4402</div>
+</div>. </div>
+<h3 class="subsection"><span class="subsection_label">9.2</span> <a id='magicparlabel-566' />
+Naming extensions</h3>
+<div class="standard"><a id='magicparlabel-567' />
+The acceptor MAY surface attributes from the assertion and any certificates using GSS_Get_name_attribute(). The URN prefix is "urn:ietf:params:gss:jwt". The acceptor MUST filter any sensitive attributes before returning them to the application.</div>
+
+<div class="standard"><a id='magicparlabel-568' />
+If a SAML assertion is present in the "saml" parameter of the leaf certificate, it may be surfaced using the URN prefix "urn:ietf:params:gss:federated-saml-attribute".</div>
+
+<div class="standard"><a id='magicparlabel-569' />
+Attributes from the assertion MUST be marked as unauthenticated unless otherwise validated by the acceptor (e.g. the audience).</div>
+
+<div class="standard"><a id='magicparlabel-570' />
+Attributes from certificates SHOULD be marked as authenticated.</div>
+<h3 class="subsection"><span class="subsection_label">9.3</span> <a id='magicparlabel-571' />
+<a id="sub_NegoEx" />
+NegoEx</h3>
+<div class="standard"><a id='magicparlabel-572' />
+GSS BrowserID supports <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-576' />
+I-D.zhu-negoex</div>
+</div> for advertising RP certificates used in mutual authentication.</div>
+
+<div class="standard"><a id='magicparlabel-577' />
+If the acceptor supports mutual authentication, it MAY include its certificate and any additional certificates inside a backed assertion with an empty payload as output for GSS_Query_meta_data(). The "assertion" is prepended with the two byte token identifier TOK_TYPE_ACCEPTOR_META_DATA.</div>
+
+<div class="standard"><a id='magicparlabel-578' />
+Upon receiving this, the initiator SHOULD display the certificate information or fingerprint to the user and allow them to confirm it before committing to authenticate.</div>
+
+<div class="standard"><a id='magicparlabel-579' />
+The NegoEx signing key is the output of GSS_Pseudo_random() with an input of GSS_C_PRF_KEY_FULL and "gss-browserid-negoex-initiator" or "gss-browserid-negoex-acceptor", depending on the party generating the signature.</div>
+
+<div class="standard"><a id='magicparlabel-580' />
+The NegoEx authentication scheme is the binary encoding of the following hexadecimal string:</div>
+
+<div class="standard"><a id='magicparlabel-581' />
+535538008647F5BC624BD8076949F0</div>
+
+<div class="standard"><a id='magicparlabel-582' />
+where the third byte (zero above) is set to the <div class="flex_entityxref"><div class="plain_layout"><a id='magicparlabel-586' />
+RFC3961</div>
+</div> encryption type for the selected mechanism.</div>
+
+<div class="standard"><a id='magicparlabel-587' />
+There is currently no initiator-sent metadata defined and acceptors should ignore any sent. The metadata is advisory and the initiator is free to ignore it.</div>
+<h2 class="section"><span class="section_label">10</span> <a id='magicparlabel-588' />
+IANA Considerations</h2>
+<div class="standard"><a id='magicparlabel-589' />
+This specification creates a number of IANA registries.</div>
+<h3 class="subsection"><span class="subsection_label">10.1</span> <a id='magicparlabel-590' />
+<a id="sub_OID_Registry" />
+OID Registry</h3>
+<div class="standard"><a id='magicparlabel-591' />
+Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID (1.3.6.1.4.1.5322.24)</div>
+
+<div class="standard"><a id='magicparlabel-592' />
+</div>
+
+<div class="standard"><a id='magicparlabel-593' />
+
+
+
+<table><tbody><tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-629' />
+Decimal</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-632' />
+Name</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-635' />
+Description</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-638' />
+0</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-641' />
+Reserved</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-644' />
+Reserved</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-647' />
+1</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-650' />
+mechanisms</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-653' />
+A sub-arc containing BrowserID mechanisms</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-656' />
+2</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-659' />
+nametypes</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-662' />
+A sub-arc containing BrowserID name types</div>
+</td>
+</tr></tbody>
+</table>
+</div>
+
+<div class="standard"><a id='magicparlabel-663' />
+Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID.mechanisms (1.3.6.1.4.1.5322.24.1)</div>
+<div style='height:2ex'></div>
+
+<div class="standard"><a id='magicparlabel-664' />
+
+
+
+<table><tbody><tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-700' />
+Decimal</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-703' />
+Name</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-706' />
+Description</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-709' />
+0</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-712' />
+gss-browserid-null</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-715' />
+The NULL security mechanism</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-718' />
+17</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-721' />
+gss-browserid-aes128</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-724' />
+The aes128-cts-hmac-sha1-96 mechanism</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-727' />
+18</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-730' />
+gss-browserid-aes256</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-733' />
+The aes256-cts-hmac-sha1-96 mechanism</div>
+</td>
+</tr></tbody>
+</table>
+</div>
+
+<div class="standard"><a id='magicparlabel-734' />
+</div>
+<div style='height:2ex'></div>
+
+<div class="standard"><a id='magicparlabel-735' />
+Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID.nametypes (1.3.6.1.4.1.5322.24.2)</div>
+
+<div class="standard"><a id='magicparlabel-736' />
+
+
+
+<table><tbody><tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-766' />
+Decimal</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-769' />
+Name</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-772' />
+Description</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-775' />
+0</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-778' />
+Reserved</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-781' />
+Reserved</div>
+</td>
+</tr>
+<tr><td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-784' />
+1</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-787' />
+GSS_BROWSERID_NT_EMAIL_OR_SPN</div>
+</td>
+
+<td align='center' valign='top'><div class="plain_layout"><a id='magicparlabel-790' />
+</div>
+</td>
+</tr></tbody>
+</table>
+</div>
+<h3 class="subsection"><span class="subsection_label">10.2</span> <a id='magicparlabel-791' />
+SASL Registry</h3>
+<div class="standard"><a id='magicparlabel-792' />
+Subject: Registration of SASL mechanisms BROWSERID-AES128 and BROWSERID-AES128-PLUS</div>
+
+<div class="standard"><a id='magicparlabel-793' />
+</div>
+<div style='height:2ex'></div>
+
+<div class="standard"><a id='magicparlabel-794' />
+SASL mechanism names: BROWSERID-AES128 and BROWSERID-AES128-PLUS</div>
+
+<div class="standard"><a id='magicparlabel-795' />
+</div>
+<div style='height:2ex'></div>
+
+<div class="standard"><a id='magicparlabel-796' />
+Security considerations: See RFC 5801 and draft-howard-gss-browserid</div>
+
+<div class="standard"><a id='magicparlabel-797' />
+</div>
+<div style='height:2ex'></div>
+
+<div class="standard"><a id='magicparlabel-798' />
+Published specification (recommended): draft-howard-gss-browserid</div>
+
+<div class="standard"><a id='magicparlabel-799' />
+</div>
+<div style='height:2ex'></div>
+
+<div class="standard"><a id='magicparlabel-800' />
+Person &amp; email address to contact for further information:</div>
+
+<div class="standard"><a id='magicparlabel-801' />
+Luke Howard lukeh@padl.com</div>
+
+<div class="standard"><a id='magicparlabel-802' />
+</div>
+<div style='height:2ex'></div>
+
+<div class="standard"><a id='magicparlabel-803' />
+Intended usage: common</div>
+
+<div class="standard"><a id='magicparlabel-804' />
+</div>
+<div style='height:2ex'></div>
+
+<div class="standard"><a id='magicparlabel-805' />
+Owner/Change controller: iesg@ietf.org</div>
+
+<div class="standard"><a id='magicparlabel-806' />
+</div>
+<div style='height:2ex'></div>
+
+<div class="standard"><a id='magicparlabel-807' />
+Note: This mechanism describes the GSS BrowserID mechanism used with the aes128-cts-hmac-sha1-96 enctype. The GSS-API OID for this mechanism is 1.3.6.1.4.1.5322.24.1.17. As described in RFC 5801 a PLUS variant of this mechanism is also required.</div>
+<h2 class="section"><span class="section_label">11</span> <a id='magicparlabel-808' />
+<a id="sec_References" />
+Normative References</h2>
+<div class="standard"><a id='magicparlabel-809' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-813' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml">RFC2743</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-814' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-818' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.3961.xml">RFC3961</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-819' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-823' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4402.xml">RFC4402</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-824' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-828' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml">RFC4121</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-829' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-833' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4178.xml">RFC4178</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-834' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-838' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml">RFC4422</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-839' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-843' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml">RFC5801</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-844' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-848' />
+<a href="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml">RFC5929</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-849' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-853' />
+<a href="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-web-algorithms.xml">JWA</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-854' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-858' />
+<a href="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-web-signature.xml">JWS</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-859' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-863' />
+<a href="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-json-web-token.xml">JWT</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-864' />
+<div class="flex_bibxml"><div class="plain_layout"><a id='magicparlabel-868' />
+<a href="http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zhu-negoex.xml">NegoEx</a></div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-869' />
+<div class="flex_embeddedbibxml"><div class="plain_layout"><a id='magicparlabel-873' />
+&lt;reference anchor='RFC2119'&gt; &lt;front&gt; &lt;title abbrev='RFC Key Words'&gt;Key words for use in RFCs to Indicate Requirement Levels&lt;/title&gt; &lt;author initials='S.' surname='Bradner' fullname='Scott Bradner'&gt; &lt;organization&gt;Harvard University&lt;/organization&gt; &lt;address&gt; &lt;postal&gt; &lt;street&gt;1350 Mass. Ave.&lt;/street&gt; &lt;street&gt;Cambridge&lt;/street&gt; &lt;street&gt;MA 02138&lt;/street&gt;&lt;/postal&gt; &lt;phone&gt;- +1 617 495 3864&lt;/phone&gt; &lt;email&gt;sob@harvard.edu&lt;/email&gt;&lt;/address&gt;&lt;/author&gt; &lt;date year='1997' month='March' /&gt; &lt;area&gt;General&lt;/area&gt; &lt;keyword&gt;keyword&lt;/keyword&gt; &lt;abstract&gt; &lt;t&gt; In many standards track documents several words are used to signify the requirements in the specification. These words are often capitalized. This document defines these words as they should be interpreted in IETF documents. Authors who follow these guidelines should incorporate this phrase near the beginning of their document: &lt;list&gt; &lt;t&gt; The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119. &lt;/t&gt;&lt;/list&gt;&lt;/t&gt; &lt;t&gt; Note that the force of these words is modified by the requirement level of the document in which they are used. &lt;/t&gt;&lt;/abstract&gt;&lt;/front&gt; &lt;seriesInfo name='BCP' value='14' /&gt; &lt;seriesInfo name='RFC' value='2119' /&gt; &lt;format type='TXT' octets='4723' target='http://www.rfc-editor.org/rfc/rfc2119.txt' /&gt; &lt;format type='HTML' octets='17970' target='http://xml.resource.org/public/rfc/html/rfc2119.html' /&gt; &lt;format type='XML' octets='5777' target='http://xml.resource.org/public/rfc/xml/rfc2119.xml' /&gt; &lt;/reference&gt; </div>
+</div></div>
+
+<div class="standard"><a id='magicparlabel-874' />
+<div class="flex_embeddedbibxml"><div class="plain_layout"><a id='magicparlabel-878' />
+&lt;reference anchor='RFC1113'&gt; &lt;front&gt; &lt;title abbrev='Mail Privacy: Procedures'&gt;Privacy enhancement for Internet electronic mail: Part I - message encipherment and authentication procedures&lt;/title&gt; &lt;author initials='J.' surname='Linn' fullname='John Linn'&gt; &lt;organization&gt;Digital Equipment Corporation (DEC), Secure Systems&lt;/organization&gt; &lt;address&gt; &lt;postal&gt; &lt;street&gt;85 Swanson Road&lt;/street&gt; &lt;street&gt;BXB1-2/D04&lt;/street&gt; &lt;city&gt;Boxborough&lt;/city&gt; &lt;region&gt;MA&lt;/region&gt; &lt;code&gt;01719-1326&lt;/code&gt; &lt;country&gt;US&lt;/country&gt;&lt;/postal&gt; &lt;phone&gt;+1 508 264 5491&lt;/phone&gt; &lt;email&gt;Linn@ultra.enet.dec.com&lt;/email&gt;&lt;/address&gt;&lt;/author&gt; &lt;date year='1989' day='1' month='August' /&gt;&lt;/front&gt; &lt;seriesInfo name='RFC' value='1113' /&gt; &lt;format type='TXT' octets='89293' target='http://www.rfc-editor.org/rfc/rfc1113.txt' /&gt; &lt;/reference&gt; </div>
+</div></div>
+</body>
+</html>

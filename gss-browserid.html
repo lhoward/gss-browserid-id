@@ -1,0 +1,401 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en"><head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/"><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><title>A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol</title><style type="text/css" title="Xml2Rfc (sans serif)">
+a {
+  text-decoration: none;
+}
+a.smpl {
+  color: black;
+}
+a:hover {
+  text-decoration: underline;
+}
+a:active {
+  text-decoration: underline;
+}
+address {
+  margin-top: 1em;
+  margin-left: 2em;
+  font-style: normal;
+}
+body {
+  color: black;
+  font-family: verdana, helvetica, arial, sans-serif;
+  font-size: 10pt;
+  margin-right: 2em;
+}
+cite {
+  font-style: normal;
+}
+dl {
+  margin-left: 2em;
+}
+ul.empty {
+  list-style-type: none;
+}
+ul.empty li {
+  margin-top: .5em;
+}
+dl p {
+  margin-left: 0em;
+}
+dt {
+  margin-top: .5em;
+}
+h1 {
+  font-size: 14pt;
+  line-height: 21pt;
+  page-break-after: avoid;
+}
+h1.np {
+  page-break-before: always;
+}
+h1 a {
+  color: #333333;
+}
+h2 {
+  font-size: 12pt;
+  line-height: 15pt;
+  page-break-after: avoid;
+}
+h3, h4, h5, h6 {
+  font-size: 10pt;
+  page-break-after: avoid;
+}
+h2 a, h3 a, h4 a, h5 a, h6 a {
+  color: black;
+}
+img {
+  margin-left: 3em;
+}
+li {
+  margin-left: 2em;
+}
+ol {
+  margin-left: 2em;
+}
+ol.la {
+  list-style-type: lower-alpha;
+}
+ol.ua {
+  list-style-type: upper-alpha;
+}
+ol p {
+  margin-left: 0em;
+}
+p {
+  margin-left: 2em;
+}
+pre {
+  margin-left: 3em;
+  background-color: lightyellow;
+  padding: .25em;
+  page-break-inside: avoid;
+}
+pre.text2 {
+  border-style: dotted;
+  border-width: 1px;
+  background-color: #f0f0f0;
+  width: 69em;
+}
+pre.inline {
+  background-color: white;
+  padding: 0em;
+}
+pre.text {
+  border-style: dotted;
+  border-width: 1px;
+  background-color: #f8f8f8;
+  width: 69em;
+}
+pre.drawing {
+  border-style: solid;
+  border-width: 1px;
+  background-color: #f8f8f8;
+  padding: 2em;
+}
+table {
+  margin-left: 2em;
+}
+table.tt {
+  vertical-align: top;
+}
+table.full {
+  border-style: outset;
+  border-width: 1px;
+}
+table.headers {
+  border-style: outset;
+  border-width: 1px;
+}
+table.tt td {
+  vertical-align: top;
+}
+table.full td {
+  border-style: inset;
+  border-width: 1px;
+}
+table.tt th {
+  vertical-align: top;
+}
+table.full th {
+  border-style: inset;
+  border-width: 1px;
+}
+table.headers th {
+  border-style: none none inset none;
+  border-width: 1px;
+}
+table.left {
+  margin-right: auto;
+}
+table.right {
+  margin-left: auto;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+caption {
+  caption-side: bottom;
+  font-weight: bold;
+  font-size: 9pt;
+  margin-top: .5em;
+}
+
+table.header {
+  border-spacing: 1px;
+  width: 95%;
+  font-size: 10pt;
+  color: white;
+}
+td.top {
+  vertical-align: top;
+}
+td.topnowrap {
+  vertical-align: top;
+  white-space: nowrap; 
+}
+table.header td {
+  background-color: gray;
+  width: 50%;
+}
+table.header a {
+  color: white;
+}
+td.reference {
+  vertical-align: top;
+  white-space: nowrap;
+  padding-right: 1em;
+}
+thead {
+  display:table-header-group;
+}
+ul.toc, ul.toc ul {
+  list-style: none;
+  margin-left: 1.5em;
+  padding-left: 0em;
+}
+ul.toc li {
+  line-height: 150%;
+  font-weight: bold;
+  font-size: 10pt;
+  margin-left: 0em;
+}
+ul.toc li li {
+  line-height: normal;
+  font-weight: normal;
+  font-size: 9pt;
+  margin-left: 0em;
+}
+li.excluded {
+  font-size: 0pt;
+}
+ul p {
+  margin-left: 0em;
+}
+
+.comment {
+  background-color: yellow;
+}
+.center {
+  text-align: center;
+}
+.error {
+  color: red;
+  font-style: italic;
+  font-weight: bold;
+}
+.figure {
+  font-weight: bold;
+  text-align: center;
+  font-size: 9pt;
+}
+.filename {
+  color: #333333;
+  font-weight: bold;
+  font-size: 12pt;
+  line-height: 21pt;
+  text-align: center;
+}
+.fn {
+  font-weight: bold;
+}
+.hidden {
+  display: none;
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+.title {
+  color: #990000;
+  font-size: 18pt;
+  line-height: 18pt;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 36pt;
+}
+.vcardline {
+  display: block;
+}
+.warning {
+  font-size: 14pt;
+  background-color: yellow;
+}
+
+
+@media print {
+  .noprint {
+    display: none;
+  }
+  
+  a {
+    color: black;
+    text-decoration: none;
+  }
+
+  table.header {
+    width: 90%;
+  }
+
+  td.header {
+    width: 50%;
+    color: black;
+    background-color: white;
+    vertical-align: top;
+    font-size: 12pt;
+  }
+
+  ul.toc a::after {
+    content: leader('.') target-counter(attr(href), page);
+  }
+  
+  ul.ind li li a {
+    content: target-counter(attr(href), page);
+  }
+  
+  .print2col {
+    column-count: 2;
+    -moz-column-count: 2;
+    column-fill: auto;
+  }
+}
+
+@page {
+  @top-left {
+       content: "Internet-Draft"; 
+  } 
+  @top-right {
+       content: "February 2013"; 
+  } 
+  @top-center {
+       content: "BrowserID SASL & GSS-API"; 
+  } 
+  @bottom-left {
+       content: "Howard, et al."; 
+  } 
+  @bottom-center {
+       content: "Expires August 30, 2013"; 
+  } 
+  @bottom-right {
+       content: "[Page " counter(page) "]"; 
+  } 
+}
+
+@page:first { 
+    @top-left {
+      content: normal;
+    }
+    @top-right {
+      content: normal;
+    }
+    @top-center {
+      content: normal;
+    }
+}
+</style><link rel="Contents" href="#rfc.toc"><link rel="Author" href="#rfc.authors"><link rel="Copyright" href="#rfc.copyrightnotice"><link rel="Chapter" title="1 Introduction" href="#rfc.section.1"><link rel="Chapter" title="2 Requirements notation" href="#rfc.section.2"><link rel="Chapter" title="3 Naming" href="#rfc.section.3"><link rel="Chapter" title="4 Context tokens" href="#rfc.section.4"><link rel="Chapter" title="5 Validation" href="#rfc.section.5"><link rel="Chapter" title="6 Fast re-authentication" href="#rfc.section.6"><link rel="Chapter" title="7 Assertion claims" href="#rfc.section.7"><link rel="Chapter" title="8 Key derivation" href="#rfc.section.8"><link rel="Chapter" title="9 GSS-API Extensions" href="#rfc.section.9"><link rel="Chapter" title="10 IANA Considerations" href="#rfc.section.10"><link rel="Chapter" href="#rfc.section.11" title="11 Normative References"><meta name="generator" content="http://greenbytes.de/tech/webdav/rfc2629.xslt, Revision 1.580, 2012-06-03 11:18:18, XSLT vendor: SAXON 9.0.0.4 from Saxonica http://www.saxonica.com/"><meta name="keywords" content="Internet-Draft"><link rel="schema.dct" href="http://purl.org/dc/terms/"><meta name="dct.creator" content="Howard, L."><meta name="dct.creator" content="Williams, N."><meta name="dct.creator" content=", ."><meta name="dct.identifier" content="urn:ietf:id:draft-howard-gss-browserid-00.txt"><meta name="dct.issued" scheme="ISO8601" content="2013-02-26"><meta name="dct.abstract" content="This document defines protocols, procedures and conventions to be implemented by peers implementing the Generic Security Service Application Program Interface (GSS-API) when using the BrowserID authentication mechanism. Through the GS2 family of mechanisms defined in RFC 5801, these protocols also define how Simple Authentication and Security Layer (SASL, RFC 4422) applications may use BrowserID."><meta name="description" content="This document defines protocols, procedures and conventions to be implemented by peers implementing the Generic Security Service Application Program Interface (GSS-API) when using the BrowserID authentication mechanism. Through the GS2 family of mechanisms defined in RFC 5801, these protocols also define how Simple Authentication and Security Layer (SASL, RFC 4422) applications may use BrowserID."></head><body><table class="header"><tbody><tr><td class="left">Network Working Group</td><td class="right">L. Howard</td></tr><tr><td class="left">Internet-Draft</td><td class="right">PADL</td></tr><tr><td class="left">Intended status: Experimental</td><td class="right">N. Williams</td></tr><tr><td class="left">Expires: August 30, 2013</td><td class="right">Cryptonector</td></tr><tr><td class="left"></td><td class="right">. </td></tr><tr><td class="left"></td><td class="right">February 26, 2013</td></tr></tbody></table><p class="title">A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol<br><span class="filename">draft-howard-gss-browserid-00.txt</span></p><h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1><p>This document defines protocols, procedures and conventions to be implemented by peers implementing the Generic Security Service Application Program Interface (GSS-API) when using the BrowserID authentication mechanism. Through the GS2 family of mechanisms defined in RFC 5801, these protocols also define how Simple Authentication and Security Layer (SASL, RFC 4422) applications may use BrowserID.</p><h1><a id="rfc.status" href="#rfc.status">Status of this Memo</a></h1><p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p><p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF). Note that other groups may also distribute working documents as Internet-Drafts. The list of current Internet-Drafts is at <a href="http://datatracker.ietf.org/drafts/current/">http://datatracker.ietf.org/drafts/current/</a>.</p><p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time. It is inappropriate to use Internet-Drafts as reference material or to cite them other than as &#8220;work in progress&#8221;.</p><p>This Internet-Draft will expire on August 30, 2013.</p><h1><a id="rfc.copyrightnotice" href="#rfc.copyrightnotice">Copyright Notice</a></h1><p>Copyright © 2013 IETF Trust and the persons identified as the document authors. All rights reserved.</p><p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (<a href="http://trustee.ietf.org/license-info">http://trustee.ietf.org/license-info</a>) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p><hr class="noprint"><h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1><ul class="toc"><li>1.&nbsp;&nbsp;&nbsp;<a href="#d1e631">Introduction</a><ul><li>1.1&nbsp;&nbsp;&nbsp;<a href="#d1e693">Discovery</a></li><li>1.2&nbsp;&nbsp;&nbsp;<a href="#d1e717">Authentication</a></li><li>1.3&nbsp;&nbsp;&nbsp;<a href="#d1e732">Message protection services</a></li></ul></li><li>2.&nbsp;&nbsp;&nbsp;<a href="#d1e761">Requirements notation</a></li><li>3.&nbsp;&nbsp;&nbsp;<a href="#d1e779">Naming</a><ul><li>3.1&nbsp;&nbsp;&nbsp;<a href="#d1e785">GSS_BROWSERID_NT_EMAIL_OR_SPN</a></li><li>3.2&nbsp;&nbsp;&nbsp;<a href="#d1e801">GSS_C_NT_USER_NAME</a></li><li>3.3&nbsp;&nbsp;&nbsp;<a href="#d1e810">GSS_C_NT_HOSTBASED_SERVICE</a></li><li>3.4&nbsp;&nbsp;&nbsp;<a href="#d1e819">Audience encoding</a></li></ul></li><li>4.&nbsp;&nbsp;&nbsp;<a href="#d1e834">Context tokens</a><ul><li>4.1&nbsp;&nbsp;&nbsp;<a href="#sub_Initial_context_token">Initial context token</a></li><li>4.2&nbsp;&nbsp;&nbsp;<a href="#sub_Acceptor_context_token">Acceptor context token</a></li><li>4.3&nbsp;&nbsp;&nbsp;<a href="#d1e1071">Initiator context completion</a></li><li>4.4&nbsp;&nbsp;&nbsp;<a href="#d1e1086">Extensions for mutual authentication</a><ul><li>4.4.1&nbsp;&nbsp;&nbsp;<a href="#d1e1096">Initiator mutual authentication context token</a></li><li>4.4.2&nbsp;&nbsp;&nbsp;<a href="#d1e1105">Acceptor mutual authentication context token</a></li><li>4.4.3&nbsp;&nbsp;&nbsp;<a href="#d1e1117">Initiator mutual authentication context completion</a></li><li>4.4.4&nbsp;&nbsp;&nbsp;<a href="#d1e1132">Acceptor certificate advertisement</a></li></ul></li><li>4.5&nbsp;&nbsp;&nbsp;<a href="#d1e1142">Extensions for fast re-authentication</a><ul><li>4.5.1&nbsp;&nbsp;&nbsp;<a href="#d1e1151">Ticket generation</a></li><li>4.5.2&nbsp;&nbsp;&nbsp;<a href="#d1e1170">Initiator re-authentication context token</a></li><li>4.5.3&nbsp;&nbsp;&nbsp;<a href="#d1e1195">Acceptor re-authentication context token</a></li><li>4.5.4&nbsp;&nbsp;&nbsp;<a href="#d1e1221">Interaction with mutual authentication</a></li></ul></li></ul></li><li>5.&nbsp;&nbsp;&nbsp;<a href="#d1e1233">Validation</a><ul><li>5.1&nbsp;&nbsp;&nbsp;<a href="#d1e1239">Expiry times</a></li><li>5.2&nbsp;&nbsp;&nbsp;<a href="#d1e1257">Audience</a></li><li>5.3&nbsp;&nbsp;&nbsp;<a href="#d1e1267">Channel bindings</a></li><li>5.4&nbsp;&nbsp;&nbsp;<a href="#d1e1276">Signatures</a></li><li>5.5&nbsp;&nbsp;&nbsp;<a href="#d1e1285">Replay detection</a></li></ul></li><li>6.&nbsp;&nbsp;&nbsp;<a href="#d1e1294">Fast re-authentication</a></li><li>7.&nbsp;&nbsp;&nbsp;<a href="#d1e1319">Assertion claims</a><ul><li>7.1&nbsp;&nbsp;&nbsp;<a href="#d1e1325">Request assertion</a><ul><li>7.1.1&nbsp;&nbsp;&nbsp;<a href="#d1e1340">&#8220;cbt&#8221; (Channel Binding Token)</a></li><li>7.1.2&nbsp;&nbsp;&nbsp;<a href="#d1e1355">"ecdh" (Elliptic Curve Diffie-Hellman key exchange)</a></li><li>7.1.3&nbsp;&nbsp;&nbsp;<a href="#d1e1374">"nonce" (Mutual authentication nonce)</a></li></ul></li><li>7.2&nbsp;&nbsp;&nbsp;<a href="#d1e1383">Response assertion</a><ul><li>7.2.1&nbsp;&nbsp;&nbsp;<a href="#d1e1404">&#8220;iat&#8221; (Issued at time)</a></li><li>7.2.2&nbsp;&nbsp;&nbsp;<a href="#d1e1414">&#8220;ecdh&#8221; (Elliptic Curve Diffie-Hellman key exchange)</a></li><li>7.2.3&nbsp;&nbsp;&nbsp;<a href="#d1e1423">&#8220;exp&#8221; (Expiry time)</a></li><li>7.2.4&nbsp;&nbsp;&nbsp;<a href="#d1e1432">&#8220;nonce&#8221; (Mutual authentication nonce)</a></li><li>7.2.5&nbsp;&nbsp;&nbsp;<a href="#d1e1441">&#8220;tkt&#8221; (Ticket)</a></li><li>7.2.6&nbsp;&nbsp;&nbsp;<a href="#d1e1450">&#8220;gss-maj&#8221; (GSS major status code)</a></li><li>7.2.7&nbsp;&nbsp;&nbsp;<a href="#d1e1460">&#8220;gss-min&#8221; (GSS minor status code)</a></li></ul></li></ul></li><li>8.&nbsp;&nbsp;&nbsp;<a href="#d1e1472">Key derivation</a><ul><li>8.1&nbsp;&nbsp;&nbsp;<a href="#d1e1487">Diffie-Hellman Key (DHK)</a></li><li>8.2&nbsp;&nbsp;&nbsp;<a href="#d1e1496">Context Master Key (CMK)</a></li><li>8.3&nbsp;&nbsp;&nbsp;<a href="#d1e1506">RP Response Key (RRK)</a></li><li>8.4&nbsp;&nbsp;&nbsp;<a href="#d1e1518">Context Root Key (CRK)</a></li><li>8.5&nbsp;&nbsp;&nbsp;<a href="#d1e1536">Authenticator Root Key (ARK)</a></li><li>8.6&nbsp;&nbsp;&nbsp;<a href="#d1e1548">Authenticator Session Key (ASK)</a></li></ul></li><li>9.&nbsp;&nbsp;&nbsp;<a href="#d1e1561">GSS-API Extensions</a><ul><li>9.1&nbsp;&nbsp;&nbsp;<a href="#d1e1567">PRF</a></li><li>9.2&nbsp;&nbsp;&nbsp;<a href="#d1e1582">Naming extensions</a></li><li>9.3&nbsp;&nbsp;&nbsp;<a href="#sub_NegoEx">NegoEx</a></li></ul></li><li>10.&nbsp;&nbsp;&nbsp;<a href="#d1e1645">IANA Considerations</a><ul><li>10.1&nbsp;&nbsp;&nbsp;<a href="#sub_OID_Registry">OID Registry</a></li><li>10.2&nbsp;&nbsp;&nbsp;<a href="#d1e1874">SASL Registry</a></li></ul></li><li>11.&nbsp;&nbsp;&nbsp;<a href="#rfc.references">Normative References</a></li><li><a href="#rfc.authors">Authors' Addresses</a></li></ul><ul class="toc"><li>Figures
+        <ul><li><a href="#rfc.figure.1">Figure 1: Interworking Architecture</a></li></ul></li></ul><hr class="noprint"><h1 id="rfc.section.1" class="np"><a href="#rfc.section.1">1.</a>&nbsp;<a id="d1e631" href="#d1e631">Introduction</a></h1><p id="rfc.section.1.p.1">BrowserID is a web-based three-party security protocol by which user agents can present to a Relying Party (RP) a signed assertion of e-mail address ownership.</p><p id="rfc.section.1.p.2">The Simple Authentication and Security Layer (SASL) <a href="#RFC4422"><cite title="Simple Authentication and Security Layer (SASL)">[RFC4422]</cite></a> is a framework for providing authentication and message protection services via pluggable mechanisms. Protocols that support it include IMAP, SMTP, and XMPP.</p><p id="rfc.section.1.p.3">The Generic Security Service Application Program Interface (GSS-API) <a href="#RFC2743"><cite title="Generic Security Service Application Program Interface Version 2, Update 1">[RFC2743]</cite></a> provides a framework for authentication and message protection services through a common programming interface. This document conforms to the SASL and GSS-API bridge specified in <a href="#RFC5801"><cite title="Using Generic Security Service Application Program Interface (GSS-API) Mechanisms in Simple Authentication and Security Layer (SASL): The GS2 Mechanism Family">[RFC5801]</cite></a>, so it defines both a SASL and GSS-API mechanism.</p><p id="rfc.section.1.p.4">The BrowserID mechanism described in this document reuses the existing web-based BrowserID protocol, but profiles it for use in applications that support SASL or GSS-API, adding features such as key exchange, mutual authentication, and fast re-authentication.</p><p id="rfc.section.1.p.5">The following diagram illustrates the interactions between the three parties in the GSS BrowserID protocol. Note that the terms client, initiator and user agent (UA) are used interchangeably in this document, as are server, acceptor and relying party (RP).</p><p id="rfc.section.1.p.7"> </p><div id="magicparlabel-172"></div><div id="rfc.figure.1"></div><pre> 
+                    +--------+
+                    | BrowserID  |
+                    | identity   |
+                    | provider   |
+                    +--------+
+                      //      \\
+                     //        \\
+                    //          \\
+                   //            \\
+   make signed    //              \\    fetch IdP public
+   certificate   //                \\   key over HTTPS
+   for user's   //                  \\  (RP may cache)
+   public key  //                    \\
+              //                      \\
+             //                        \\
+            //                          \\
+           |/                            \|
+    +---------+                     +---------+
+    | SASL or GSS |    GSS BrowserID    | SASL or GSS |
+    | client/UA   |&lt;-------------&gt;| server/RP   |
+    | (initiator) |                     | (acceptor)  |
+    +---------+                     +---------+
+ 
+ </pre><p class="figure">Figure 1: Interworking Architecture</p><h2 id="rfc.section.1.1"><a href="#rfc.section.1.1">1.1</a>&nbsp;<a id="d1e693" href="#d1e693">Discovery</a></h2><p id="rfc.section.1.1.p.1">The means of discovering GSS-API peers and their supported mechanisms is out of this specification's scope. They may use SASL <a href="#RFC4422"><cite title="Simple Authentication and Security Layer (SASL)">[RFC4422]</cite></a> or the Simple and Protected Negotiation mechanism (SPNEGO) <a href="#RFC4178"><cite title="The Simple and Protected Generic Security Service Application Program Interface (GSS-API) Negotiation Mechanism">[RFC4178]</cite></a>.</p><p id="rfc.section.1.1.p.2">Discovery of a BrowserID identity provider (IdP) for a user is described in the BrowserID specification. A domain publishes a document containing their public key and URIs for authenticating and provisioning users, or pointer to an authority containing such a document.</p><h2 id="rfc.section.1.2"><a href="#rfc.section.1.2">1.2</a>&nbsp;<a id="d1e717" href="#d1e717">Authentication</a></h2><p id="rfc.section.1.2.p.1">The GSS-API protocol involves a client, known as the initiator, sending an initial security context token of a chosen GSS-API security mechanism to a peer, known as the acceptor. The two peers subsequently exchange, synchronously, as many security context tokens as necessary to complete the authentication or fail. The specific number of context tokens exchanged varies by security mechanism: in the case of the BrowserID mechanism, it is typically two (i.e. a single round trip), however it can be more in the case the initiator is restarting after a failed re-authentication attempt. Once authentication is complete, the initiator and acceptor share a security context which identifies the peers and can optionally be used for integrity or confidentiality protecting subsequent application messages.</p><p id="rfc.section.1.2.p.2">The BrowserID protocol, as defined outside this document, pertains to web authentication only. The user agent generates a short-term key pair, the public key of which is signed by the user's IdP. (The user must have previously authenticated to the IdP by some out-of-band means.) The IdP returns a certificate for the user which is cached by the user's browser. When authenticating to a Relying Party (RP), the browser generates an identity assertion containing the RP domain and an expiration time. The user agent signs this and presents both the assertion and certificate to the RP. (The combination of an assertion and a certificate is termed a &#8220;backed assertion&#8221;.) The RP fetches the public key for the IdP, validates the user's certificate (and those of any intermediate certifying parties) and then verifies the assertion.</p><p id="rfc.section.1.2.p.3">The GSS BrowserID protocol extends this by having the RP always send back a response assertion to the user agent, which at a minimum provides key confirmation (for mechanisms that support key exchange) and indicates the lifetime of the established security context. In an extension of the base protocol, it can also allow the user agent to mutually authenticate the RP.</p><h2 id="rfc.section.1.3"><a href="#rfc.section.1.3">1.3</a>&nbsp;<a id="d1e732" href="#d1e732">Message protection services</a></h2><p id="rfc.section.1.3.p.1">GSS-API provides a number of a message protection services:</p><p id="rfc.section.1.3.p.2"> </p><dl><dt>GSS_Wrap()</dt><dd>integrity and optional confidentiality for a message</dd><dt>GSS_GetMIC()</dt><dd>integrity for a message sent separately</dd><dt>GSS_Pseudo_random()</dt><dd>key derivation</dd></dl><p id="rfc.section.1.3.p.3">These services may be used with security contexts that have a shared session key, to protect messages that are exchanged by the application protocol.</p><hr class="noprint"><h1 id="rfc.section.2" class="np"><a href="#rfc.section.2">2.</a>&nbsp;<a id="d1e761" href="#d1e761">Requirements notation</a></h1><p id="rfc.section.2.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="#RFC2119"><cite title="Key words for use in RFCs to Indicate Requirement Levels">[RFC2119]</cite></a>.</p><p id="rfc.section.2.p.2">The reader is assumed to be familiar with the terms used in the BrowserID specification.</p><hr class="noprint"><h1 id="rfc.section.3" class="np"><a href="#rfc.section.3">3.</a>&nbsp;<a id="d1e779" href="#d1e779">Naming</a></h1><h2 id="rfc.section.3.1"><a href="#rfc.section.3.1">3.1</a>&nbsp;<a id="d1e785" href="#d1e785">GSS_BROWSERID_NT_EMAIL_OR_SPN</a></h2><p id="rfc.section.3.1.p.1">This name may contain an e-mail address or a service principal name. The encoding of service principal names is intended to be compatible with the Kerberos security protocol.</p><p id="rfc.section.3.1.p.3"> </p><div id="rfc.figure.u.1"></div><pre> char-normal = %x00-2E/%x30-3F/%x41-5B/%x5D-FF
+ char-escaped = "\" %x2F / "\" %x40 / "\" %x5C
+ name-char = char-normal / char-escaped name-string = 1*name-char
+ user = name-string
+ domain = name-string
+ email = user "@" domain
+ service-name = name-string
+ service-host = name-string
+ service-specific = name-string
+ service-specifics = service-specific 0*("/" service-specifics)
+ spn = service-name ["/" service-host [ "/" service-specifics]]
+ name = email / spn</pre><h2 id="rfc.section.3.2"><a href="#rfc.section.3.2">3.2</a>&nbsp;<a id="d1e801" href="#d1e801">GSS_C_NT_USER_NAME</a></h2><p id="rfc.section.3.2.p.1">This name is implicitly converted to a GSS_BROWSERID_NT_EMAIL_OR_SPN. A default domain may be appended when importing names of this type.</p><h2 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3</a>&nbsp;<a id="d1e810" href="#d1e810">GSS_C_NT_HOSTBASED_SERVICE</a></h2><p id="rfc.section.3.3.p.1">This name is transformed by replacing the &#8220;@&#8221; symbol with a &#8220;/&#8221;, and then used as GSS_BROWSERID_NT_EMAIL_OR_SPN.</p><h2 id="rfc.section.3.4"><a href="#rfc.section.3.4">3.4</a>&nbsp;<a id="d1e819" href="#d1e819">Audience encoding</a></h2><p id="rfc.section.3.4.p.1">A GSS-API service name is encoded into a BrowserID audience URL with the following syntax:</p><p id="rfc.section.3.4.p.3"> </p><div id="rfc.figure.u.2"></div><pre> spn = service-name ["/" service-host [ "/" service-specifics]]
+ gss-encoded-claims = base64-encode(gss-claims) 
+ audience = "urn:x-gss:" spn "#" gss-encoded-claims</pre><hr class="noprint"><h1 id="rfc.section.4" class="np"><a href="#rfc.section.4">4.</a>&nbsp;<a id="d1e834" href="#d1e834">Context tokens</a></h1><p id="rfc.section.4.p.1">All context tokens include a two-byte token identifier followed by a backed BrowserID assertion. This document defines the following token IDs:</p><div id="rfc.table.u.1"><table class="tt full center" cellpadding="3" cellspacing="0"><thead><tr><th class="center">Section</th><th class="center">Token ID</th><th class="center">ASCII</th><th class="center">Description</th></tr></thead><tbody><tr><td class="center">4.1</td><td class="center">0x632C</td><td class="center">c,</td><td class="center">Initiator context token</td></tr><tr><td class="center">4.2</td><td class="center">0x432C</td><td class="center">C,</td><td class="center">Acceptor context token</td></tr><tr><td class="center">TBD</td><td class="center">0x442C</td><td class="center">D,</td><td class="center">Context deletion token</td></tr><tr><td class="center">9.3</td><td class="center">0x6D2C</td><td class="center">m,</td><td class="center">Initiator metadata token</td></tr><tr><td class="center">9.3</td><td class="center">0x4D2C</td><td class="center">M,</td><td class="center">Acceptor metadata token</td></tr></tbody></table></div><p id="rfc.section.4.p.2">Note that the token ID has a human-readable ASCII encoding to ease the implementation of pure SASL implementations of this mechanism.</p><h2 id="rfc.section.4.1"><a href="#rfc.section.4.1">4.1</a>&nbsp;<a id="sub_Initial_context_token" href="#sub_Initial_context_token">Initial context token</a></h2><p id="rfc.section.4.1.p.1">The initial context token is framed per section 1 of <a href="#RFC2743"><cite title="Generic Security Service Application Program Interface Version 2, Update 1">[RFC2743]</cite></a>:</p><p id="rfc.section.4.1.p.3"> </p><div id="rfc.figure.u.3"></div><pre> GSS-API DEFINITIONS ::=         
+ 		BEGIN
+ 
+ 		MechType ::= OBJECT IDENTIFIER
+ 		-- representing BrowserID mechanism
+ 		GSSAPI-Token ::=
+ 		[APPLICATION 0] IMPLICIT SEQUENCE {
+ 			thisMech MechType,
+ 			innerToken ANY DEFINED BY thisMech
+ 				-- contents mechanism-specific
+ 			}
+ 		END</pre><p id="rfc.section.4.1.p.4">Note that unlike many other GSS-API mechanisms such as Kerberos, this token framing is not used by subsequent context or <a href="#I-D.zhu-negoex"><cite title="SPNEGO Extended Negotiation (NEGOEX) Security Mechanism">[I-D.zhu-negoex]</cite></a> metadata tokens. As such, pure SASL implementations of this mechanism do not need to deal with DER encoding the mechanism object identifier.</p><p id="rfc.section.4.1.p.5">GSS BrowserID is a family of mechanisms, where the last element in the OID arc indicates the <a href="#RFC4121"><cite title="The Kerberos Version 5 Generic Security Service Application Program Interface (GSS-API) Mechanism: Version 2">[RFC4121]</cite></a> encryption type supported for message protection services. The OID prefix is 1.3.6.1.4.1.5322.24.1.</p><p id="rfc.section.4.1.p.6">The innerToken consists of initiator context token token ID concatenated with a backed assertion for the audience corresponding to the target name passed into GSS_Init_sec_context(). In addition, the assertion may contain the following additional claims, which are described later in this document:</p><p id="rfc.section.4.1.p.7"> </p><ul><li>Channel binding information</li><li>ECDH parameters for session key establishment</li></ul><p id="rfc.section.4.1.p.8">The call to GSS_Init_sec_context() returns GSS_C_CONTINUE_NEEDED to indicate that a subsequent token from the acceptor is expected.</p><h2 id="rfc.section.4.2"><a href="#rfc.section.4.2">4.2</a>&nbsp;<a id="sub_Acceptor_context_token" href="#sub_Acceptor_context_token">Acceptor context token</a></h2><p id="rfc.section.4.2.p.1">Upon receiving a context token from the initiator, the acceptor validates that the token is well formed and contains the correct mechanism OID and token type.</p><p id="rfc.section.4.2.p.2">The acceptor then verifies the backed identity assertion per the BrowserID specification. This includes validating the expiry times, audience, certificate chain, and assertion signature. In the case of failure, an error token is generated and immediately returned.</p><p id="rfc.section.4.2.p.3">The acceptor then verifies the channel binding token, if present, and any other GSS-specific claims in the assertion. In case of failure, an error token is generated.</p><p id="rfc.section.4.2.p.4">If the <a href="#RFC3961"><cite title="Encryption and Checksum Specifications for Kerberos 5">[RFC3961]</cite></a> encryption type for the selected mechanism is not ENCTYPE_NULL, the acceptor generates a ECDH public key using the parameters received from the client, and from it derives the RP Response Key (RRK). The acceptor then generates a response assertion containing the ECDH public key and context expiry time. The response assertion is signed using the RP Response Key (RRK) unless mutual authentication is desired, in which case it may be signed in the acceptor's private key (see below). The response token is encoded as a backed assertion with zero certificates.</p><p id="rfc.section.4.2.p.5">Finally, the context root key (CRK) is derived from the ECDH shared secret and GSS_S_COMPLETE is returned, along with the initiator name from the verified assertion. Other assertion/certificate attributes MAY be made available via GSS_Get_name_attribute().</p><h2 id="rfc.section.4.3"><a href="#rfc.section.4.3">4.3</a>&nbsp;<a id="d1e1071" href="#d1e1071">Initiator context completion</a></h2><p id="rfc.section.4.3.p.1">Upon receiving the acceptor context token, the initiator unpacks the response assertion and, if necessary, computes the ECDH shared secret and RRK. The RRK is used to verify the response assertion unless mutual authentication is desired, in which case the acceptor's public key will be used.</p><p id="rfc.section.4.3.p.2">The initiator sets the context expiry time with that received in the response assertion. If the context has expired, GSS_S_CONTEXT_EXPIRED is returned and context establishment fails.</p><p id="rfc.section.4.3.p.3">The context root key (CRK) is derived from the ECDH shared secret and GSS_S_COMPLETE is returned to indicate the user is authenticated and the context is ready for use. No output token is emitted.</p><h2 id="rfc.section.4.4"><a href="#rfc.section.4.4">4.4</a>&nbsp;<a id="d1e1086" href="#d1e1086">Extensions for mutual authentication</a></h2><p id="rfc.section.4.4.p.1">Mutual authentication allows the acceptor to be authenticated to the initiator. The initiator may return GSS_C_MUTUAL_FLAG flag to the caller. The protocol is extended as follows to support this:</p><h3 id="rfc.section.4.4.1"><a href="#rfc.section.4.4.1">4.4.1</a>&nbsp;<a id="d1e1096" href="#d1e1096">Initiator mutual authentication context token</a></h3><p id="rfc.section.4.4.1.p.1">If the initiator requested GSS_C_MUTUAL_FLAG, a nonce is included in the assertion to bind the initiator and acceptor tokens.</p><h3 id="rfc.section.4.4.2"><a href="#rfc.section.4.4.2">4.4.2</a>&nbsp;<a id="d1e1105" href="#d1e1105">Acceptor mutual authentication context token</a></h3><p id="rfc.section.4.4.2.p.1">If the acceptor has a private key available and received a nonce in the initiator assertion, it signs the response using a private key rather than the RP Response Key (RRK). The response includes the nonce from the initiator's assertion.</p><p id="rfc.section.4.4.2.p.2">Note: while the response is a backed assertion, in order to take advantage of existing keying infrastructures it is suggested that the X.509-encoded certificate chain be included as a value for the "x5c" attribute in the assertion (see JSON Web Signature section 4.1.6).</p><h3 id="rfc.section.4.4.3"><a href="#rfc.section.4.4.3">4.4.3</a>&nbsp;<a id="d1e1117" href="#d1e1117">Initiator mutual authentication context completion</a></h3><p id="rfc.section.4.4.3.p.1">The initiator verifies the nonce and the assertion signature, and validates the certificate chain (which may be an X.509 certificate chain, in which case trust anchors SHOULD be configurable both system-wide and specifically for the BrowserID mechanism).</p><p id="rfc.section.4.4.3.p.2">If X.509 certificates are used, then either the audience URI must be present in the URI subjectAltName, or the host component must be present as a value for the DNS subjectAltName or as the least significant Common Name RDN.</p><p id="rfc.section.4.4.3.p.3">If JSON certificates are used, then either the audience URI must match the "uri" key of the "principal" object in the certificate, or the host component must match the "hostname" key.</p><h3 id="rfc.section.4.4.4"><a href="#rfc.section.4.4.4">4.4.4</a>&nbsp;<a id="d1e1132" href="#d1e1132">Acceptor certificate advertisement</a></h3><p id="rfc.section.4.4.4.p.1">The acceptor may include its certificate (and optionally any additional certs), formatted as a backed assertion with an empty payload, in its NegoEx metadata.</p><h2 id="rfc.section.4.5"><a href="#rfc.section.4.5">4.5</a>&nbsp;<a id="d1e1142" href="#d1e1142">Extensions for fast re-authentication</a></h2><p id="rfc.section.4.5.p.1">Fast re-authentication allows a context to be established without acquiring a new BrowserID assertion. Instead an assertion signed with a secret key derived from the initial ECDH key exchange is used. Re-authentication SHOULD not succeed beyond the user's certificate expiry time, although for practical reasons it MAY.</p><h3 id="rfc.section.4.5.1"><a href="#rfc.section.4.5.1">4.5.1</a>&nbsp;<a id="d1e1151" href="#d1e1151">Ticket generation</a></h3><p id="rfc.section.4.5.1.p.1">If the acceptor supports re-authentication, the following steps are added to the "acceptor to initiator" flow described above.</p><p id="rfc.section.4.5.1.p.2"> </p><ol><li>A unique ticket identifier is generated. The acceptor must be able to use this to retrieve the authenticator root key, ticket expiry time, and any other attributes re-authenticated acceptor contexts will need.</li><li>The acceptor creates a JSON object containing the ticket identifier and expiry time and returns it in the response to the initiator.</li></ol><p id="rfc.section.4.5.1.p.3">The initiator MAY cache such tickets, along with the ARK and expiry time, received from the acceptor in order to re-authenticate to it at a future time.</p><h3 id="rfc.section.4.5.2"><a href="#rfc.section.4.5.2">4.5.2</a>&nbsp;<a id="d1e1170" href="#d1e1170">Initiator re-authentication context token</a></h3><p id="rfc.section.4.5.2.p.1">The initiator looks in its ticket cache for an unexpired ticket for the target (acceptor). If none is found, the normal authentication flow is performed.</p><p id="rfc.section.4.5.2.p.2"> </p><ol><li>The initiator generates an authenticator containing: the current time, a random nonce, the ticket identifier, and the target name (audience) and channel bindings requested by the application.</li><li>The initiator signs the authenticator using its copy of the ARK, using the appropriate hash algorithm associated with the original context (only HS256 is presently specified).</li><li>The authenticator is packed into a "backed" assertion with no certificates.</li><li>The initiator generates an authenticator session key to be used in verifying the response and in deriving the context root key.</li><li>The assertion is sent to the acceptor.</li></ol><h3 id="rfc.section.4.5.3"><a href="#rfc.section.4.5.3">4.5.3</a>&nbsp;<a id="d1e1195" href="#d1e1195">Acceptor re-authentication context token</a></h3><p id="rfc.section.4.5.3.p.1"> </p><ol><li>The acceptor unpacks the authenticator assertion and looks for a ticket in its cache matching the requested ticket ID.</li><li>The acceptor validates that the ticket and authenticator have not expired.</li><li>The acceptor verifies the authenticator using its copy of the ARK.</li><li>The acceptor generates the ASK and derived the RRK and CRK from this.</li><li>The acceptor generates a response and signs and returns it.</li></ol><p id="rfc.section.4.5.3.p.2">If the ticket cannot be found, or the authentication fails, the acceptor MAY return an error code in its response, permitting the initiator to recover and fallback to generating a BrowserID assertion. It MAY also include its local timestamp so that the initiator can perform clock skew compensation.</p><h3 id="rfc.section.4.5.4"><a href="#rfc.section.4.5.4">4.5.4</a>&nbsp;<a id="d1e1221" href="#d1e1221">Interaction with mutual authentication</a></h3><p id="rfc.section.4.5.4.p.1">The mutual authentication state of a re-authenticated context is transitive. The initiator MUST NOT return GSS_C_MUTUAL_FLAG for a re-authenticated context unless the original context was mutually authenticated.</p><p id="rfc.section.4.5.4.p.2">As such, the initiator's ticket cache must store the mutual authentication state of the original context.</p><hr class="noprint"><h1 id="rfc.section.5" class="np"><a href="#rfc.section.5">5.</a>&nbsp;<a id="d1e1233" href="#d1e1233">Validation</a></h1><h2 id="rfc.section.5.1"><a href="#rfc.section.5.1">5.1</a>&nbsp;<a id="d1e1239" href="#d1e1239">Expiry times</a></h2><p id="rfc.section.5.1.p.1">The expiry and, if present, issued-at and not-before times of all elements in a backed assertion, MUST be validated. This applies equally to re-authentication assertions, public key assertions, and the entire certificate chain. If the expiry time is absent, the issued-at time MUST be present, and the JWT implicitly expires a configurable interval (typically five minutes) after the issued-at time.</p><p id="rfc.section.5.1.p.2">The GSS context lifetime SHOULD NOT exceed the lifetime of the user's certificate.</p><p id="rfc.section.5.1.p.3">The lifetime of a re-authentication ticket SHOULD NOT exceed the lifetime of the user's certificate. The acceptor MUST validate the ticket expiry time when performing re-authentication.</p><p id="rfc.section.5.1.p.4">Message protections services such as GSS_Wrap() SHOULD be available beyond the GSS context lifetime for maximum application compatibility.</p><h2 id="rfc.section.5.2"><a href="#rfc.section.5.2">5.2</a>&nbsp;<a id="d1e1257" href="#d1e1257">Audience</a></h2><p id="rfc.section.5.2.p.1">If the credential passed to GSS_Accept_sec_context() is not for the identity GSS_C_NO_NAME, then it MUST match the unpacked audience (that is, the audience without the URN prefix and encoded claims dictionary).</p><h2 id="rfc.section.5.3"><a href="#rfc.section.5.3">5.3</a>&nbsp;<a id="d1e1267" href="#d1e1267">Channel bindings</a></h2><p id="rfc.section.5.3.p.1">If the acceptor passed in channel bindings to GSS_Accept_sec_context(), the assertion MUST contain a matching channel binding claim. (Only the application_data component is validated.)</p><h2 id="rfc.section.5.4"><a href="#rfc.section.5.4">5.4</a>&nbsp;<a id="d1e1276" href="#d1e1276">Signatures</a></h2><p id="rfc.section.5.4.p.1">Signature validation on assertions is the same as for the web usage of BrowserID, with the addition that re-authentication assertions may be signed with a symmetric key.</p><h2 id="rfc.section.5.5"><a href="#rfc.section.5.5">5.5</a>&nbsp;<a id="d1e1285" href="#d1e1285">Replay detection</a></h2><p id="rfc.section.5.5.p.1">The acceptor SHOULD maintain a cache of received assertions in order to guard against replay attacks. GSS_C_REPLAY_FLAG MUST NOT be returned if the implementation does not support replay detection.</p><hr class="noprint"><h1 id="rfc.section.6" class="np"><a href="#rfc.section.6">6.</a>&nbsp;<a id="d1e1294" href="#d1e1294">Fast re-authentication</a></h1><p id="rfc.section.6.p.1">When using fast re-authentication, the initiator sends an assertion containing the following payload:</p><p id="rfc.section.6.p.3"> </p><div id="rfc.figure.u.4"></div><pre> iat = issue time
+ nonce = 64-bit base64 URL encoded random nonce
+ tkt = opaque ticket identifier
+ aud = audience containing service principal name
+ cbt = base64 URL encoding of channel binding application-specific data</pre><p id="rfc.section.6.p.4">The re-authentication assertion has an implicit expiry after the issue time.</p><p id="rfc.section.6.p.5">The ticket expiry time must be securely available to the acceptor, along with the subject, issuer, audience, expiry time and ARK of the original assertion. One implementation choice may be to use the opaque ticket identifier as a key into a dictionary containing this information (our implementation does this, overloading the replay cache). Another would be to encrypt this information in a long-term secret only known to the acceptor and encode that in the opaque ticket identifier.</p><p id="rfc.section.6.p.6">The fast re-authentication assertion is signed using the authenticator root key.</p><hr class="noprint"><h1 id="rfc.section.7" class="np"><a href="#rfc.section.7">7.</a>&nbsp;<a id="d1e1319" href="#d1e1319">Assertion claims</a></h1><h2 id="rfc.section.7.1"><a href="#rfc.section.7.1">7.1</a>&nbsp;<a id="d1e1325" href="#d1e1325">Request assertion</a></h2><p id="rfc.section.7.1.p.1">These claims are included in the assertion sent to the acceptor and are authenticated by the initiator's private key and certificate chain. Here is an example assertion containing Elliptic Curve Diffie-Hellman parameters:</p><p id="rfc.section.7.1.p.3"> </p><div id="rfc.figure.u.5"></div><pre> { 
+ 	"exp": 1360158396188,
+ 	"ecdh": {
+ 		"crv": "P-256",
+ 		"x": "JR5UPDgMLFPZwOGaKKSF24658tB1DccM1_oHPbCHeZg",
+ 		"y": "S45Esx_6DfE5-xdB3X7sIIJ16MwO0Y_RiDc-i5ZTLQ8"
+ 	},
+ 	"nonce": "GnK2IBA42iQ",
+ 	"aud": "urn:x-gss:imap/mail.ietf.org"
+ }</pre><h3 id="rfc.section.7.1.1"><a href="#rfc.section.7.1.1">7.1.1</a>&nbsp;<a id="d1e1340" href="#d1e1340">&#8220;cbt&#8221; (Channel Binding Token)</a></h3><p id="rfc.section.7.1.1.p.1">This contains a channel binding token for binding the GSS context to an outer channel (e.g. see <a href="#RFC5929"><cite title="Channel Bindings for TLS">[RFC5929]</cite></a>). Its value is the base64 URL encoding of the application-specific data component of the channel bindings passed to GSS_Init_sec_context() or GSS_Accept_sec_context().</p><h3 id="rfc.section.7.1.2"><a href="#rfc.section.7.1.2">7.1.2</a>&nbsp;<a id="d1e1355" href="#d1e1355">"ecdh" (Elliptic Curve Diffie-Hellman key exchange)</a></h3><p id="rfc.section.7.1.2.p.1">These contain ECDH key parameters for deriving a shared session key with the relying party: "crv" contains the curve, "x" the X coordinate and "y" the Y coordinate (see JWA section 5.2).</p><p id="rfc.section.7.1.2.p.2">The curve should have an equivalent strength to the negotiated <a href="#RFC4121"><cite title="The Kerberos Version 5 Generic Security Service Application Program Interface (GSS-API) Mechanism: Version 2">[RFC4121]</cite></a> encryption type: at least P-256 MUST be used for browserid-aes128, and P-521 for browserid-aes256.</p><h3 id="rfc.section.7.1.3"><a href="#rfc.section.7.1.3">7.1.3</a>&nbsp;<a id="d1e1374" href="#d1e1374">"nonce" (Mutual authentication nonce)</a></h3><p id="rfc.section.7.1.3.p.1">This is a random quantity of at least 64 bits, base 64 URL encoded, which is used to bind the initiator and acceptor assertions, in the case where mutual authentication is desired.</p><h2 id="rfc.section.7.2"><a href="#rfc.section.7.2">7.2</a>&nbsp;<a id="d1e1383" href="#d1e1383">Response assertion</a></h2><p id="rfc.section.7.2.p.1">The response assertion is sent from the acceptor to the initiator. It is formatted as a backed assertion, however in the current specification it consists of a single assertion with zero certificates; that is, it is "unbacked". It is encoded as a backed assertion in order to provide future support for mutual authentication using native JSON certificates. Such support is not defined by this specification; implementations SHOULD reject backed response assertions.</p><p id="rfc.section.7.2.p.2">In the case of a key successfully being negotiated, it is signed with the RP Response Key (RRK). Alternatively, it may be signed with the acceptor's private RSA or DSA key. In this case, an X.509 certificate of is included in the "x5c" attribute of the JWT header.</p><p id="rfc.section.7.2.p.3">The HMAC-SHA256 (HS256) algorithm MUST be supported by implementors of this specification.</p><p id="rfc.section.7.2.p.4">If a key is unavailable, then the signature is absent and the value of the "alg" header claim is "none". No signature verification is required in this case, however the initiator MUST NOT return GSS_C_COMPLETE unless the associated RFC3961 encryption type for the mechanism OID is ENCTYPE_NULL.</p><p id="rfc.section.7.2.p.5">The response assertion payload may contain the following parameters.</p><h3 id="rfc.section.7.2.1"><a href="#rfc.section.7.2.1">7.2.1</a>&nbsp;<a id="d1e1404" href="#d1e1404">&#8220;iat&#8221; (Issued at time)</a></h3><p id="rfc.section.7.2.1.p.1">The current acceptor time, in milliseconds since January 1, 1970. This allows the initiator to compensate for clock differences when generating assertions.</p><h3 id="rfc.section.7.2.2"><a href="#rfc.section.7.2.2">7.2.2</a>&nbsp;<a id="d1e1414" href="#d1e1414">&#8220;ecdh&#8221; (Elliptic Curve Diffie-Hellman key exchange)</a></h3><p id="rfc.section.7.2.2.p.1">This contains a JSON object containing the coordinates of the acceptor's ECDH public key.</p><h3 id="rfc.section.7.2.3"><a href="#rfc.section.7.2.3">7.2.3</a>&nbsp;<a id="d1e1423" href="#d1e1423">&#8220;exp&#8221; (Expiry time)</a></h3><p id="rfc.section.7.2.3.p.1">This contains the time when the context expires.</p><h3 id="rfc.section.7.2.4"><a href="#rfc.section.7.2.4">7.2.4</a>&nbsp;<a id="d1e1432" href="#d1e1432">&#8220;nonce&#8221; (Mutual authentication nonce)</a></h3><p id="rfc.section.7.2.4.p.1">The nonce as received from the initiator. This SHOULD NOT be present unless a nonce was received from the initiator.</p><h3 id="rfc.section.7.2.5"><a href="#rfc.section.7.2.5">7.2.5</a>&nbsp;<a id="d1e1441" href="#d1e1441">&#8220;tkt&#8221; (Ticket)</a></h3><p id="rfc.section.7.2.5.p.1">This contains a JSON object that may be used for re-authenticating to the acceptor without acquiring an assertion. Its usage is optional. It has two properties: &#8220;jti&#8221;, an opaque identifier to be presented in a re-authentication assertion; and &#8220;exp&#8221;, the expiry time of the ticket.</p><h3 id="rfc.section.7.2.6"><a href="#rfc.section.7.2.6">7.2.6</a>&nbsp;<a id="d1e1450" href="#d1e1450">&#8220;gss-maj&#8221; (GSS major status code)</a></h3><p id="rfc.section.7.2.6.p.1">This contains a GSS major status code represented as a number. It MUST not be present if the acceptor did not return an error. Its usage is optional.</p><h3 id="rfc.section.7.2.7"><a href="#rfc.section.7.2.7">7.2.7</a>&nbsp;<a id="d1e1460" href="#d1e1460">&#8220;gss-min&#8221; (GSS minor status code)</a></h3><p id="rfc.section.7.2.7.p.1">This contains a GSS minor status code represented as a number. It MUST not be present if the acceptor did not return an error and SHOULD not be present if there is no minor status code for the given major error. Its usage is optional.</p><p id="rfc.section.7.2.7.p.2">If GSSBID_REAUTH_FAILED is received, the initiator SHOULD attempt to send another initial context token containing a fresh assertion.</p><hr class="noprint"><h1 id="rfc.section.8" class="np"><a href="#rfc.section.8">8.</a>&nbsp;<a id="d1e1472" href="#d1e1472">Key derivation</a></h1><p id="rfc.section.8.p.1">The following algorithm is used as the base algorithm for deriving keys:</p><p id="rfc.section.8.p.2">browserid-derive-key(K, salt) = HMAC(K, "BrowserID" || K || salt || 0x01)</p><p id="rfc.section.8.p.3">The HMAC hash algorithm for all currently specified key lengths is SHA256. Note that the inclusion of K in the HMAC input is for interoperability with some crypto implementations.</p><h2 id="rfc.section.8.1"><a href="#rfc.section.8.1">8.1</a>&nbsp;<a id="d1e1487" href="#d1e1487">Diffie-Hellman Key (DHK)</a></h2><p id="rfc.section.8.1.p.1">This key is the shared secret resulting from the ECDH exchange. Its length corresponds to the selected EC curve. It is never used without derivation and thus may be used with implementations that do not expose the DH value directly.</p><h2 id="rfc.section.8.2"><a href="#rfc.section.8.2">8.2</a>&nbsp;<a id="d1e1496" href="#d1e1496">Context Master Key (CMK)</a></h2><p id="rfc.section.8.2.p.1">This is the Diffie-Hellman Key (DHK) for all initially authenticated contexts and the Authenticator Session Key (ASK) for re-authenticated contexts.</p><h2 id="rfc.section.8.3"><a href="#rfc.section.8.3">8.3</a>&nbsp;<a id="d1e1506" href="#d1e1506">RP Response Key (RRK)</a></h2><p id="rfc.section.8.3.p.1">The response from the acceptor is signed using this key for fresh assertions:</p><p id="rfc.section.8.3.p.2">RRK = browserid-derive-key(CMK, "RRK")</p><h2 id="rfc.section.8.4"><a href="#rfc.section.8.4">8.4</a>&nbsp;<a id="d1e1518" href="#d1e1518">Context Root Key (CRK)</a></h2><p id="rfc.section.8.4.p.1">The context root key is used for <a href="#RFC4121"><cite title="The Kerberos Version 5 Generic Security Service Application Program Interface (GSS-API) Mechanism: Version 2">[RFC4121]</cite></a> message protection services, e.g. GSS_Wrap() and GSS_Get_MIC().</p><p id="rfc.section.8.4.p.2">CRK = random-to-key(browserid-derive-key(CMK, "CRK"))</p><h2 id="rfc.section.8.5"><a href="#rfc.section.8.5">8.5</a>&nbsp;<a id="d1e1536" href="#d1e1536">Authenticator Root Key (ARK)</a></h2><p id="rfc.section.8.5.p.1">The authenticator root key (ARK) is used to sign authenticators used for fast re-authentication. It is derived as follows:</p><p id="rfc.section.8.5.p.2">ARK = browserid-derive-key(DHK, "ARK")</p><h2 id="rfc.section.8.6"><a href="#rfc.section.8.6">8.6</a>&nbsp;<a id="d1e1548" href="#d1e1548">Authenticator Session Key (ASK)</a></h2><p id="rfc.section.8.6.p.1">The authenticator session key (ASK) is used instead of the DHK for re-authenticated contexts. It is derived as follows:</p><p id="rfc.section.8.6.p.2">ASK = browserid-derive-key(ARK, authenticator-as-jwt)</p><hr class="noprint"><h1 id="rfc.section.9" class="np"><a href="#rfc.section.9">9.</a>&nbsp;<a id="d1e1561" href="#d1e1561">GSS-API Extensions</a></h1><h2 id="rfc.section.9.1"><a href="#rfc.section.9.1">9.1</a>&nbsp;<a id="d1e1567" href="#d1e1567">PRF</a></h2><p id="rfc.section.9.1.p.1">See <a href="#RFC4402"><cite title="A Pseudo-Random Function (PRF) for the Kerberos V Generic Security Service Application Program Interface (GSS-API) Mechanism">[RFC4402]</cite></a>.</p><h2 id="rfc.section.9.2"><a href="#rfc.section.9.2">9.2</a>&nbsp;<a id="d1e1582" href="#d1e1582">Naming extensions</a></h2><p id="rfc.section.9.2.p.1">The acceptor MAY surface attributes from the assertion and any certificates using GSS_Get_name_attribute(). The URN prefix is "urn:ietf:params:gss:jwt". The acceptor MUST filter any sensitive attributes before returning them to the application.</p><p id="rfc.section.9.2.p.2">If a SAML assertion is present in the "saml" parameter of the leaf certificate, it may be surfaced using the URN prefix "urn:ietf:params:gss:federated-saml-attribute".</p><p id="rfc.section.9.2.p.3">Attributes from the assertion MUST be marked as unauthenticated unless otherwise validated by the acceptor (e.g. the audience).</p><p id="rfc.section.9.2.p.4">Attributes from certificates SHOULD be marked as authenticated.</p><h2 id="rfc.section.9.3"><a href="#rfc.section.9.3">9.3</a>&nbsp;<a id="sub_NegoEx" href="#sub_NegoEx">NegoEx</a></h2><p id="rfc.section.9.3.p.1">GSS BrowserID supports <a href="#I-D.zhu-negoex"><cite title="SPNEGO Extended Negotiation (NEGOEX) Security Mechanism">[I-D.zhu-negoex]</cite></a> for advertising RP certificates used in mutual authentication.</p><p id="rfc.section.9.3.p.2">If the acceptor supports mutual authentication, it MAY include its certificate and any additional certificates inside a backed assertion with an empty payload as output for GSS_Query_meta_data(). The "assertion" is prepended with the two byte token identifier TOK_TYPE_ACCEPTOR_META_DATA.</p><p id="rfc.section.9.3.p.3">Upon receiving this, the initiator SHOULD display the certificate information or fingerprint to the user and allow them to confirm it before committing to authenticate.</p><p id="rfc.section.9.3.p.4">The NegoEx signing key is the output of GSS_Pseudo_random() with an input of GSS_C_PRF_KEY_FULL and "gss-browserid-negoex-initiator" or "gss-browserid-negoex-acceptor", depending on the party generating the signature.</p><p id="rfc.section.9.3.p.5">The NegoEx authentication scheme is the binary encoding of the following hexadecimal string:</p><p id="rfc.section.9.3.p.6">535538008647F5BC624BD8076949F0</p><p id="rfc.section.9.3.p.7">where the third byte (zero above) is set to the <a href="#RFC3961"><cite title="Encryption and Checksum Specifications for Kerberos 5">[RFC3961]</cite></a> encryption type for the selected mechanism.</p><p id="rfc.section.9.3.p.8">There is currently no initiator-sent metadata defined and acceptors should ignore any sent. The metadata is advisory and the initiator is free to ignore it.</p><hr class="noprint"><h1 id="rfc.section.10" class="np"><a href="#rfc.section.10">10.</a>&nbsp;<a id="d1e1645" href="#d1e1645">IANA Considerations</a></h1><p id="rfc.section.10.p.1">This specification creates a number of IANA registries.</p><h2 id="rfc.section.10.1"><a href="#rfc.section.10.1">10.1</a>&nbsp;<a id="sub_OID_Registry" href="#sub_OID_Registry">OID Registry</a></h2><p id="rfc.section.10.1.p.1">Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID (1.3.6.1.4.1.5322.24)</p><div id="rfc.table.u.2"><table class="tt full center" cellpadding="3" cellspacing="0"><thead><tr><th class="center">Decimal</th><th class="center">Name</th><th class="center">Description</th></tr></thead><tbody><tr><td class="center">0</td><td class="center">Reserved</td><td class="center">Reserved</td></tr><tr><td class="center">1</td><td class="center">mechanisms</td><td class="center">A sub-arc containing BrowserID mechanisms</td></tr><tr><td class="center">2</td><td class="center">nametypes</td><td class="center">A sub-arc containing BrowserID name types</td></tr></tbody></table></div><p id="rfc.section.10.1.p.3">Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID.mechanisms (1.3.6.1.4.1.5322.24.1)</p><div id="rfc.table.u.3"><table class="tt full center" cellpadding="3" cellspacing="0"><thead><tr><th class="center">Decimal</th><th class="center">Name</th><th class="center">Description</th></tr></thead><tbody><tr><td class="center">0</td><td class="center">gss-browserid-null</td><td class="center">The NULL security mechanism</td></tr><tr><td class="center">17</td><td class="center">gss-browserid-aes128</td><td class="center">The aes128-cts-hmac-sha1-96 mechanism</td></tr><tr><td class="center">18</td><td class="center">gss-browserid-aes256</td><td class="center">The aes256-cts-hmac-sha1-96 mechanism</td></tr></tbody></table></div><p id="rfc.section.10.1.p.5">Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID.nametypes (1.3.6.1.4.1.5322.24.2)</p><div id="rfc.table.u.4"><table class="tt full center" cellpadding="3" cellspacing="0"><thead><tr><th class="center">Decimal</th><th class="center">Name</th><th class="center">Description</th></tr></thead><tbody><tr><td class="center">0</td><td class="center">Reserved</td><td class="center">Reserved</td></tr><tr><td class="center">1</td><td class="center">GSS_BROWSERID_NT_EMAIL_OR_SPN</td><td class="center"></td></tr></tbody></table></div><h2 id="rfc.section.10.2"><a href="#rfc.section.10.2">10.2</a>&nbsp;<a id="d1e1874" href="#d1e1874">SASL Registry</a></h2><p id="rfc.section.10.2.p.1">Subject: Registration of SASL mechanisms BROWSERID-AES128 and BROWSERID-AES128-PLUS</p><p id="rfc.section.10.2.p.3">SASL mechanism names: BROWSERID-AES128 and BROWSERID-AES128-PLUS</p><p id="rfc.section.10.2.p.5">Security considerations: See RFC 5801 and draft-howard-gss-browserid</p><p id="rfc.section.10.2.p.7">Published specification (recommended): draft-howard-gss-browserid</p><p id="rfc.section.10.2.p.9">Person &amp; email address to contact for further information:</p><p id="rfc.section.10.2.p.10">Luke Howard lukeh@padl.com</p><p id="rfc.section.10.2.p.12">Intended usage: common</p><p id="rfc.section.10.2.p.14">Owner/Change controller: iesg@ietf.org</p><p id="rfc.section.10.2.p.16">Note: This mechanism describes the GSS BrowserID mechanism used with the aes128-cts-hmac-sha1-96 enctype. The GSS-API OID for this mechanism is 1.3.6.1.4.1.5322.24.1.17. As described in RFC 5801 a PLUS variant of this mechanism is also required.</p><h1 class="np" id="rfc.references"><a href="#rfc.section.11" id="rfc.section.11">11.</a> Normative References</h1><table><tr><td class="reference"><b id="RFC2743">[RFC2743]</b></td><td class="top"><a href="mailto:jlinn@rsasecurity.com" title="RSA Laboratories">Linn, J.</a>, &#8220;<a href="http://tools.ietf.org/html/rfc2743">Generic Security Service Application Program Interface Version 2, Update 1</a>&#8221;, RFC&nbsp;2743, January&nbsp;2000.</td></tr><tr><td class="reference"><b id="RFC3961">[RFC3961]</b></td><td class="top">Raeburn, K., &#8220;<a href="http://tools.ietf.org/html/rfc3961">Encryption and Checksum Specifications for Kerberos 5</a>&#8221;, RFC&nbsp;3961, February&nbsp;2005.</td></tr><tr><td class="reference"><b id="RFC4402">[RFC4402]</b></td><td class="top">Williams, N., &#8220;<a href="http://tools.ietf.org/html/rfc4402">A Pseudo-Random Function (PRF) for the Kerberos V Generic Security Service Application Program Interface (GSS-API) Mechanism</a>&#8221;, RFC&nbsp;4402, February&nbsp;2006.</td></tr><tr><td class="reference"><b id="RFC4121">[RFC4121]</b></td><td class="top">Zhu, L., Jaganathan, K., and S. Hartman, &#8220;<a href="http://tools.ietf.org/html/rfc4121">The Kerberos Version 5 Generic Security Service Application Program Interface (GSS-API) Mechanism: Version 2</a>&#8221;, RFC&nbsp;4121, July&nbsp;2005.</td></tr><tr><td class="reference"><b id="RFC4178">[RFC4178]</b></td><td class="top">Zhu, L., Leach, P., Jaganathan, K., and W. Ingersoll, &#8220;<a href="http://tools.ietf.org/html/rfc4178">The Simple and Protected Generic Security Service Application Program Interface (GSS-API) Negotiation Mechanism</a>&#8221;, RFC&nbsp;4178, October&nbsp;2005.</td></tr><tr><td class="reference"><b id="RFC4422">[RFC4422]</b></td><td class="top">Melnikov, A. and K. Zeilenga, &#8220;<a href="http://tools.ietf.org/html/rfc4422">Simple Authentication and Security Layer (SASL)</a>&#8221;, RFC&nbsp;4422, June&nbsp;2006.</td></tr><tr><td class="reference"><b id="RFC5801">[RFC5801]</b></td><td class="top">Josefsson, S. and N. Williams, &#8220;<a href="http://tools.ietf.org/html/rfc5801">Using Generic Security Service Application Program Interface (GSS-API) Mechanisms in Simple Authentication and Security Layer (SASL): The GS2 Mechanism Family</a>&#8221;, RFC&nbsp;5801, July&nbsp;2010.</td></tr><tr><td class="reference"><b id="RFC5929">[RFC5929]</b></td><td class="top">Altman, J., Williams, N., and L. Zhu, &#8220;<a href="http://tools.ietf.org/html/rfc5929">Channel Bindings for TLS</a>&#8221;, RFC&nbsp;5929, July&nbsp;2010.</td></tr><tr><td class="reference"><b id="I-D.ietf-jose-json-web-algorithms">[I-D.ietf-jose-json-web-algorithms]</b></td><td class="top">Jones, M., &#8220;<a href="http://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-08">JSON Web Algorithms (JWA)</a>&#8221;, Internet-Draft&nbsp;draft-ietf-jose-json-web-algorithms-08 (work in progress), December&nbsp;2012.</td></tr><tr><td class="reference"><b id="I-D.ietf-jose-json-web-signature">[I-D.ietf-jose-json-web-signature]</b></td><td class="top">Jones, M., Bradley, J., and N. Sakimura, &#8220;<a href="http://tools.ietf.org/html/draft-ietf-jose-json-web-signature-08">JSON Web Signature (JWS)</a>&#8221;, Internet-Draft&nbsp;draft-ietf-jose-json-web-signature-08 (work in progress), December&nbsp;2012.</td></tr><tr><td class="reference"><b id="I-D.ietf-oauth-json-web-token">[I-D.ietf-oauth-json-web-token]</b></td><td class="top">Jones, M., Bradley, J., and N. Sakimura, &#8220;<a href="http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-06">JSON Web Token (JWT)</a>&#8221;, Internet-Draft&nbsp;draft-ietf-oauth-json-web-token-06 (work in progress), December&nbsp;2012.</td></tr><tr><td class="reference"><b id="I-D.zhu-negoex">[I-D.zhu-negoex]</b></td><td class="top">Short, M., Zhu, L., Damour, K., and D. McPherson, &#8220;<a href="http://tools.ietf.org/html/draft-zhu-negoex-04">SPNEGO Extended Negotiation (NEGOEX) Security Mechanism</a>&#8221;, Internet-Draft&nbsp;draft-zhu-negoex-04 (work in progress), January&nbsp;2011.</td></tr><tr><td class="reference"><b id="RFC2119">[RFC2119]</b></td><td class="top"><a href="mailto:sob@harvard.edu" title="Harvard University">Bradner, S.</a>, &#8220;<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>&#8221;, BCP&nbsp;14, RFC&nbsp;2119, March&nbsp;1997.</td></tr><tr><td class="reference"><b id="RFC1113">[RFC1113]</b></td><td class="top"><a href="mailto:Linn@ultra.enet.dec.com" title="Digital Equipment Corporation (DEC), Secure Systems">Linn, J.</a>, &#8220;<a href="http://tools.ietf.org/html/rfc1113">Privacy enhancement for Internet electronic mail: Part I - message encipherment and authentication procedures</a>&#8221;, RFC&nbsp;1113, August&nbsp;1989.</td></tr></table><hr class="noprint"><div class="avoidbreak"><h1 id="rfc.authors" class="np"><a href="#rfc.authors">Authors' Addresses</a></h1><address class="vcard"><span class="vcardline"><span class="fn">Luke Howard</span><span class="n hidden"><span class="family-name">Howard</span><span class="given-name">Luke</span></span></span><span class="org vcardline">PADL Software</span><span class="adr"><span class="street-address vcardline">PO Box 59</span><span class="vcardline"><span class="locality">Central Park</span>, <span class="region">VIC</span>&nbsp;<span class="postal-code">3145</span></span><span class="country-name vcardline">Australia</span></span><span class="vcardline">EMail: <a href="mailto:lukeh@padl.com"><span class="email">lukeh@padl.com</span></a></span></address><address class="vcard"><span class="vcardline"><span class="fn">Nicolas Williams</span><span class="n hidden"><span class="family-name">Williams</span><span class="given-name">Nicolas</span></span></span><span class="org vcardline">Cryptonector, LLC</span></address><address class="vcard"><span class="vcardline"><span class="fn"></span><span class="n hidden"><span class="family-name"></span><span class="given-name"></span><span class="given-name"></span></span></span><span class="vcardline">EMail: <a href="mailto:nico@cryptonector.com"><span class="email">nico@cryptonector.com</span></a></span></address></div></body></html>
