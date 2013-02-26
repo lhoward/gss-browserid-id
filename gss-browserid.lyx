@@ -426,7 +426,7 @@ PADL
 
  
 \begin_inset Flex AuthorInitials
-status collapsed
+status open
 
 \begin_layout Plain Layout
 L.
@@ -436,7 +436,7 @@ L.
 
  
 \begin_inset Flex AuthorSurname
-status collapsed
+status open
 
 \begin_layout Plain Layout
 Howard
@@ -510,7 +510,7 @@ lukeh@padl.com
 \begin_layout Author
 Nicolas Williams 
 \begin_inset Flex AuthorOrg
-status collapsed
+status open
 
 \begin_layout Plain Layout
 Cryptonector, LLC
@@ -520,7 +520,7 @@ Cryptonector, LLC
 
  
 \begin_inset Flex AuthorOrgAbbrev
-status collapsed
+status open
 
 \begin_layout Plain Layout
 Cryptonector
@@ -540,7 +540,7 @@ N.
 
 
 \begin_inset Flex AuthorSurname
-status collapsed
+status open
 
 \begin_layout Plain Layout
 Williams
@@ -553,7 +553,7 @@ Williams
 
 \begin_layout Author
 \begin_inset Flex AuthorEmailAddr
-status collapsed
+status open
 
 \begin_layout Plain Layout
 nico@cryptonector.com
@@ -597,7 +597,7 @@ BrowserID is a web-based three-party security protocol by which user agents
 \begin_layout Standard
 The Simple Authentication and Security Layer (SASL) 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC4422
@@ -613,7 +613,7 @@ RFC4422
 \begin_layout Standard
 The Generic Security Service Application Program Interface (GSS-API) 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC2743
@@ -625,7 +625,7 @@ RFC2743
  through a common programming interface.
  This document conforms to the SASL and GSS-API bridge specified in 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC5801
@@ -864,7 +864,7 @@ The means of discovering GSS-API peers and their supported mechanisms is
  out of this specification's scope.
  They may use SASL 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC4422
@@ -874,7 +874,7 @@ RFC4422
 
  or the Simple and Protected Negotiation mechanism (SPNEGO) 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC4178
@@ -1448,7 +1448,7 @@ Initial context token
 \begin_layout Standard
 The initial context token is framed per section 1 of 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC2743
@@ -1533,10 +1533,10 @@ status open
 Note that unlike many other GSS-API mechanisms such as Kerberos, this token
  framing is not used by subsequent context or 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
-NegoEx
+I-D.zhu-negoex
 \end_layout
 
 \end_inset
@@ -1550,7 +1550,7 @@ NegoEx
 GSS BrowserID is a family of mechanisms, where the last element in the OID
  arc indicates the 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC4121
@@ -1616,7 +1616,7 @@ The acceptor then verifies the channel binding token, if present, and any
 \begin_layout Standard
 If the 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC3961
@@ -2093,7 +2093,7 @@ This contains a channel binding token for binding the GSS context to an
  outer channel (e.g.
  see 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC5929
@@ -2120,7 +2120,7 @@ These contain ECDH key parameters for deriving a shared session key with
 \begin_layout Standard
 The curve should have an equivalent strength to the negotiated 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC4121
@@ -2379,7 +2379,7 @@ Context Root Key (CRK)
 \begin_layout Standard
 The context root key is used for 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC4121
@@ -2434,7 +2434,7 @@ PRF
 \begin_layout Standard
 See 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC4402
@@ -2487,10 +2487,10 @@ NegoEx
 \begin_layout Standard
 GSS BrowserID supports 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
-NegoEx
+I-D.zhu-negoex
 \end_layout
 
 \end_inset
@@ -2530,7 +2530,7 @@ The NegoEx authentication scheme is the binary encoding of the following
 \begin_layout Standard
 where the third byte (zero above) is set to the 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC3961
@@ -3059,7 +3059,7 @@ Normative References
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -3079,7 +3079,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2743.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -3099,7 +3099,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3961.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -3119,7 +3119,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4402.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -3139,7 +3139,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -3159,7 +3159,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4178.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -3179,7 +3179,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -3199,7 +3199,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5801.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -3219,7 +3219,7 @@ target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml"
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -3239,7 +3239,7 @@ target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -3259,7 +3259,7 @@ target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
@@ -3279,7 +3279,7 @@ target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-json
 
 \begin_layout Standard
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset CommandInset href
