@@ -549,9 +549,6 @@ Williams
 \end_inset
 
 
-\end_layout
-
-\begin_layout Author
 \begin_inset Flex AuthorEmailAddr
 status open
 
@@ -670,7 +667,7 @@ status open
 
 \begin_layout Plain Layout
 
-                    +------------+
+                    +------------------+
 \end_layout
 
 \begin_layout Plain Layout
@@ -690,7 +687,7 @@ status open
 
 \begin_layout Plain Layout
 
-                    +------------+
+                    +------------------+
 \end_layout
 
 \begin_layout Plain Layout
@@ -801,7 +798,7 @@ status open
 
 \begin_layout Plain Layout
 
-    +-------------+                     +-------------+
+    +-------------------+                     +-------------------+
 \end_layout
 
 \begin_layout Plain Layout
@@ -811,7 +808,7 @@ status open
 
 \begin_layout Plain Layout
 
-    | client/UA   |<------------------->| server/RP   |
+    | client/UA   |<---------------------------->| server/RP   |
 \end_layout
 
 \begin_layout Plain Layout
@@ -821,7 +818,7 @@ status open
 
 \begin_layout Plain Layout
 
-    +-------------+                     +-------------+
+    +-------------------+                     +-------------------+
 \end_layout
 
 \begin_layout Plain Layout
@@ -913,18 +910,20 @@ The GSS-API protocol involves a client, known as the initiator, sending
 \end_layout
 
 \begin_layout Standard
-The BrowserID protocol, as defined outside this document, pertains to web
- authentication only.
+The original BrowserID protocol, as defined outside this document, specifies
+ a bearer token authentication protocol for web applications.
  The user agent generates a short-term key pair, the public key of which
  is signed by the user's IdP.
- (The user must have previously authenticated to the IdP by some out-of-band
- means.) The IdP returns a certificate for the user which is cached by the
- user's browser.
+ (The user must have already authenticated to the IdP; how this is done
+ is not specified by BrowserID, but forms-based authentication is common.)
+ The IdP returns a certificate for the user which may be cached by the user's
+ browser.
  When authenticating to a Relying Party (RP), the browser generates an identity
  assertion containing the RP domain and an expiration time.
  The user agent signs this and presents both the assertion and certificate
  to the RP.
- (The combination of an assertion and a certificate is termed a 
+ (The combination of an assertion and zero or more certificates is termed
+ a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -939,9 +938,9 @@ backed assertion
 
 \begin_layout Standard
 The GSS BrowserID protocol extends this by having the RP always send back
- a response assertion to the user agent, which at a minimum provides key
- confirmation (for mechanisms that support key exchange) and indicates the
- lifetime of the established security context.
+ a response to the user agent, which at a minimum provides key confirmation
+ (for mechanisms that support key exchange) and indicates the lifetime of
+ the established security context.
  In an extension of the base protocol, it can also allow the user agent
  to mutually authenticate the RP.
 \end_layout
@@ -1001,15 +1000,20 @@ Naming
 \end_layout
 
 \begin_layout Subsection
+GSS name types
+\end_layout
+
+\begin_layout Subsubsection
 GSS_C_NT_BROWSERID_PRINCIPAL
 \end_layout
 
 \begin_layout Standard
-This name may contain an e-mail address or a service principal name.
+This name may contain an e-mail address, or a service principal name identifying
+ an acceptor.
  The encoding of service principal names is intended to be somewhat compatible
  with the Kerberos 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC4120
@@ -1101,90 +1105,16 @@ status open
 
 \end_layout
 
-\begin_layout Subsection
-GSS_C_NT_EMAIL
-\end_layout
-
-\begin_layout Standard
-This name may contain an e-mail address.
-\end_layout
-
-\begin_layout Subsection
-GSS_C_NT_SPN
-\end_layout
-
-\begin_layout Standard
-This name may contain a service principal name.
- The encoding of service principal names is intended to be somewhat compatible
- with the Kerberos security protocol (without realm names).
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
- char-normal = %x00-2E/%x30-3F/%x41-5B/%x5D-FF
-\end_layout
-
-\begin_layout Plain Layout
-
- char-escaped = "
-\backslash
-" %x2F / "
-\backslash
-" %x40 / "
-\backslash
-" %x5C
-\end_layout
-
-\begin_layout Plain Layout
-
- name-char = char-normal / char-escaped name-string = 1*name-char
-\end_layout
-
-\begin_layout Plain Layout
-
- service-name = name-string
-\end_layout
-
-\begin_layout Plain Layout
-
- service-host = name-string
-\end_layout
-
-\begin_layout Plain Layout
-
- service-specific = name-string
-\end_layout
-
-\begin_layout Plain Layout
-
- service-specifics = service-specific 0*("/" service-specifics)
-\end_layout
-
-\begin_layout Plain Layout
-
- spn = service-name ["/" service-host [ "/" service-specifics]]
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
+\begin_layout Subsubsection
 GSS_C_NT_USER_NAME
 \end_layout
 
 \begin_layout Standard
-This name is implicitly converted to a GSS_C_NT_EMAIL_OR_SPN.
+This name is implicitly converted to a GSS_C_NT_BROWSERID_PRINCIPAL.
  A default domain may be appended when importing names of this type.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 GSS_C_NT_HOSTBASED_SERVICE
 \end_layout
 
@@ -1205,7 +1135,38 @@ This name is transformed by replacing the
 \begin_inset Quotes erd
 \end_inset
 
-, and then used as GSS_BROWSERID_NT_EMAIL_OR_SPN.
+, and then implicitly converted to a GSS_C_NT_BROWSERID_PRINCIPAL.
+\end_layout
+
+\begin_layout Subsubsection
+GSS_C_NT_DOMAINBASED_SERVICE
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC5178
+\end_layout
+
+\end_inset
+
+ domain-based service names are transformed into a GSS_C_NT_BROWSERID_PRINCIPAL
+ as follows:
+\end_layout
+
+\begin_layout Itemize
+the <service> name becomes the first component of the BrowserID principal
+ name (service-name in ABNF)
+\end_layout
+
+\begin_layout Itemize
+the <hostname> becomes the second component (service-host)
+\end_layout
+
+\begin_layout Itemize
+the <domain> name becomes the third component (service-specific)
 \end_layout
 
 \begin_layout Subsection
@@ -1214,7 +1175,7 @@ Audience encoding
 
 \begin_layout Standard
 A GSS-API service name is encoded into a BrowserID audience URL with the
- following syntax:
+ following syntax, where spn is defined above:
 \end_layout
 
 \begin_layout Standard
@@ -1224,22 +1185,16 @@ status open
 
 \begin_layout Plain Layout
 
- spn = service-name ["/" service-host [ "/" service-specifics]]
-\end_layout
-
-\begin_layout Plain Layout
-
- gss-encoded-claims = base64-encode(gss-claims) 
-\end_layout
-
-\begin_layout Plain Layout
-
- audience = "urn:x-gss:" spn "#" gss-encoded-claims
+ audience = "urn:x-gss:" spn
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+[XXX can we request assignment of a URN outside the experimental namespace?]
 \end_layout
 
 \begin_layout Subsection
@@ -1261,7 +1216,7 @@ The exported name token format for the BrowserID GSS-API mechanism is the
  same as the query form, plus the standard exported name token format header
  mandated by the GSS-API 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC2743
@@ -1550,8 +1505,8 @@ Acceptor metadata token
 \end_layout
 
 \begin_layout Standard
-Note that the token ID has a human-readable ASCII encoding to ease the implement
-ation of pure SASL implementations of this mechanism.
+The token ID has a human-readable ASCII encoding for the benefit of pure
+ SASL implementations of this mechanism.
 \end_layout
 
 \begin_layout Subsection
@@ -1590,7 +1545,7 @@ status open
 
 \begin_layout Plain Layout
 
- 		BEGIN
+     BEGIN
 \end_layout
 
 \begin_layout Plain Layout
@@ -1600,47 +1555,47 @@ status open
 
 \begin_layout Plain Layout
 
- 		MechType ::= OBJECT IDENTIFIER
+     MechType ::= OBJECT IDENTIFIER
 \end_layout
 
 \begin_layout Plain Layout
 
- 		-- representing BrowserID mechanism
+     -- representing BrowserID mechanism
 \end_layout
 
 \begin_layout Plain Layout
 
- 		GSSAPI-Token ::=
+     GSSAPI-Token ::=
 \end_layout
 
 \begin_layout Plain Layout
 
- 		[APPLICATION 0] IMPLICIT SEQUENCE {
+     [APPLICATION 0] IMPLICIT SEQUENCE {
 \end_layout
 
 \begin_layout Plain Layout
 
- 			thisMech MechType,
+         thisMech MechType,
 \end_layout
 
 \begin_layout Plain Layout
 
- 			innerToken ANY DEFINED BY thisMech
+         innerToken ANY DEFINED BY thisMech
 \end_layout
 
 \begin_layout Plain Layout
 
- 				-- contents mechanism-specific
+             -- token ID || backed assertion
 \end_layout
 
 \begin_layout Plain Layout
 
- 			}
+     }
 \end_layout
 
 \begin_layout Plain Layout
 
- 		END
+     END
 \end_layout
 
 \end_inset
@@ -1649,8 +1604,8 @@ status open
 \end_layout
 
 \begin_layout Standard
-Note that unlike many other GSS-API mechanisms such as Kerberos, this token
- framing is not used by subsequent context or 
+Unlike many other GSS-API mechanisms such as Kerberos, this token framing
+ is not used by subsequent context or 
 \begin_inset Flex EntityXRef
 status open
 
@@ -1679,12 +1634,14 @@ RFC4121
 
  encryption type supported for message protection services.
  The OID prefix is 1.3.6.1.4.1.5322.24.1.
+ The NULL encryption type is valid, in which case key confirmation and message
+ protection services are not provided.
 \end_layout
 
 \begin_layout Standard
-The innerToken consists of initiator context token token ID concatenated
- with a backed assertion for the audience corresponding to the target name
- passed into GSS_Init_sec_context().
+The innerToken consists of the initiator context token ID concatenated with
+ a backed assertion for the audience corresponding to the target name passed
+ into GSS_Init_sec_context().
  In addition, the assertion may contain the following additional claims,
  which are described later in this document:
 \end_layout
@@ -1751,7 +1708,10 @@ RFC3961
  The response assertion is signed using the RP Response Key (RRK) unless
  mutual authentication is desired, in which case it may be signed in the
  acceptor's private key (see below).
- The response token is encoded as a backed assertion with zero certificates.
+ The response token is encoded as a backed assertion, even though it will
+ typically have a certificate count of zero (because the signing key is
+ the shared RRK, or because an X.509 certificate is included directly in
+ the assertion's JWT header).
 \end_layout
 
 \begin_layout Standard
@@ -1794,7 +1754,11 @@ Extensions for mutual authentication
 \begin_layout Standard
 Mutual authentication allows the acceptor to be authenticated to the initiator.
  The initiator may return GSS_C_MUTUAL_FLAG flag to the caller.
- The protocol is extended as follows to support this:
+ Support for mutual authentication is OPTIONAL.
+\end_layout
+
+\begin_layout Standard
+The base protocol is extended as follows to support this:
 \end_layout
 
 \begin_layout Subsubsection
@@ -1818,10 +1782,21 @@ If the acceptor has a private key available and received a nonce in the
 \end_layout
 
 \begin_layout Standard
-Note: while the response is a backed assertion, in order to take advantage
- of existing keying infrastructures it is suggested that the X.509-encoded
- certificate chain be included as a value for the "x5c" attribute in the
- assertion (see JSON Web Signature section 4.1.6).
+While the response is a backed assertion, in order to take advantage of
+ existing keying infrastructures BrowserID certificates SHOULD NOT be included
+ in the backed assertion.
+ Instead, an X.509 certificate SHOULD be included as a value for the "x5c"
+ header attribute in the assertion (see 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+I-D.ietf-jose-json-web-signature
+\end_layout
+
+\end_inset
+
+ 4.1.6).
 \end_layout
 
 \begin_layout Subsubsection
@@ -1830,7 +1805,7 @@ Initiator mutual authentication context completion
 
 \begin_layout Standard
 The initiator verifies the nonce and the assertion signature, and validates
- the certificate chain (which may be an X.509 certificate chain, in which
+ the certificate chain (which SHOULD be an X.509 certificate chain, in which
  case trust anchors SHOULD be configurable both system-wide and specifically
  for the BrowserID mechanism).
 \end_layout
@@ -1842,9 +1817,14 @@ If X.509 certificates are used, then either the audience URI must be present
 \end_layout
 
 \begin_layout Standard
-If JSON certificates are used, then either the audience URI must match the
- "uri" key of the "principal" object in the certificate, or the host component
- must match the "hostname" key.
+If BrowserID certificates are used, then either the audience URI must match
+ the "uri" key of the "principal" object in the certificate, or the host
+ component must match the "hostname" key.
+\end_layout
+
+\begin_layout Standard
+[XXX when using X.509 certificates, do we need to say anything about key
+ usage?]
 \end_layout
 
 \begin_layout Subsubsection
@@ -1855,6 +1835,7 @@ Acceptor certificate advertisement
 The acceptor may include its certificate (and optionally any additional
  certs), formatted as a backed assertion with an empty payload, in its NegoEx
  metadata.
+ There is no initiator metadata defined.
 \end_layout
 
 \begin_layout Subsection
@@ -1866,8 +1847,10 @@ Fast re-authentication allows a context to be established without acquiring
  a new BrowserID assertion.
  Instead an assertion signed with a secret key derived from the initial
  ECDH key exchange is used.
- Re-authentication SHOULD not succeed beyond the user's certificate expiry
- time, although for practical reasons it MAY.
+ Re-authentication lifetime SHOULD be site configurable, but by default
+ SHOULD match the user's certificate expiry time.
+ Support for fast re-authentication is OPTIONAL and is indicated by the
+ acceptor returning a ticket in the response assertion.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1882,8 +1865,8 @@ If the acceptor supports re-authentication, the following steps are added
 \begin_layout Enumerate
 A unique ticket identifier is generated.
  The acceptor must be able to use this to retrieve the authenticator root
- key, ticket expiry time, and any other attributes re-authenticated acceptor
- contexts will need.
+ key, ticket expiry time, mutual authentication state, and any other attributes
+ re-authenticated acceptor contexts will need.
 \end_layout
 
 \begin_layout Enumerate
@@ -1903,8 +1886,8 @@ Initiator re-authentication context token
 
 \begin_layout Standard
 The initiator looks in its ticket cache for an unexpired ticket for the
- target (acceptor).
- If none is found, the normal authentication flow is performed.
+ desired acceptor.
+ If none is found, the normal authentication flow is performed, otherwise:
 \end_layout
 
 \begin_layout Enumerate
@@ -1920,7 +1903,7 @@ The initiator signs the authenticator using its copy of the ARK, using the
 \end_layout
 
 \begin_layout Enumerate
-The authenticator is packed into a "backed" assertion with no certificates.
+The authenticator is packed into a backed assertion with no certificates.
 \end_layout
 
 \begin_layout Enumerate
@@ -1937,8 +1920,10 @@ Acceptor re-authentication context token
 \end_layout
 
 \begin_layout Enumerate
-The acceptor unpacks the authenticator assertion and looks for a ticket
- in its cache matching the requested ticket ID.
+The acceptor unpacks the authenticator assertion and retrieves the authenticator
+ root key, ticket expiry time, mutual authentication state and any other
+ attributes (such as the initiator principal) associated with the ticket
+ identifier.
 \end_layout
 
 \begin_layout Enumerate
@@ -2021,9 +2006,10 @@ Audience
 \end_layout
 
 \begin_layout Standard
-If the credential passed to GSS_Accept_sec_context() is not for the identity
- GSS_C_NO_NAME, then it MUST match the unpacked audience (that is, the audience
- without the URN prefix and encoded claims dictionary).
+If the credential passed to GSS_Accept_sec_context() is not for GSS_C_NO_NAME,
+ then its string representation as a BrowserID principal MUST match the
+ unpacked audience (that is, the audience without the URN prefix and encoded
+ claims dictionary).
 \end_layout
 
 \begin_layout Subsection
@@ -2042,8 +2028,8 @@ Signatures
 
 \begin_layout Standard
 Signature validation on assertions is the same as for the web usage of BrowserID
-, with the addition that re-authentication assertions may be signed with
- a symmetric key.
+, with the addition that response and re-authentication assertions may be
+ signed with a symmetric key.
 \end_layout
 
 \begin_layout Subsection
@@ -2062,8 +2048,8 @@ Fast re-authentication
 \end_layout
 
 \begin_layout Standard
-When using fast re-authentication, the initiator sends an assertion containing
- the following payload:
+When using fast re-authentication, the payload of the initiator assertion
+ contains the following claims:
 \end_layout
 
 \begin_layout Standard
@@ -2093,7 +2079,8 @@ status open
 
 \begin_layout Plain Layout
 
- cbt = base64 URL encoding of channel binding application-specific data
+ cbt = OPTIONAL; base64 URL encoding of channel binding application-specific
+ data
 \end_layout
 
 \end_inset
@@ -2102,7 +2089,8 @@ status open
 \end_layout
 
 \begin_layout Standard
-The re-authentication assertion has an implicit expiry after the issue time.
+The re-authentication assertion has an implicit expiry of a short interval
+ after the issue time.
 \end_layout
 
 \begin_layout Standard
@@ -2110,15 +2098,16 @@ The ticket expiry time must be securely available to the acceptor, along
  with the subject, issuer, audience, expiry time and ARK of the original
  assertion.
  One implementation choice may be to use the opaque ticket identifier as
- a key into a dictionary containing this information (our implementation
- does this, overloading the replay cache).
+ a key into a dictionary containing this information (possibly sharing the
+ replay cache).
  Another would be to encrypt this information in a long-term secret only
- known to the acceptor and encode that in the opaque ticket identifier.
+ known to the acceptor and encode the resulting ciphertext in the opaque
+ ticket identifier.
 \end_layout
 
 \begin_layout Standard
-The fast re-authentication assertion is signed using the authenticator root
- key.
+The fast re-authentication assertion is signed with a HMAC using the authenticat
+or root key (ARK).
 \end_layout
 
 \begin_layout Section
@@ -2261,6 +2250,64 @@ This is a random quantity of at least 64 bits, base 64 URL encoded, which
  mutual authentication is desired.
 \end_layout
 
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+aud
+\begin_inset Quotes erd
+\end_inset
+
+ (Audience)
+\end_layout
+
+\begin_layout Standard
+The audience, formatted as a URN containing the acceptor's principal name.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+tkt
+\begin_inset Quotes erd
+\end_inset
+
+ (Ticket identifier)
+\end_layout
+
+\begin_layout Standard
+The opaque ticket identifier, when the assertion is being used for fast
+ re-authentication.
+ This matches the 
+\begin_inset Quotes eld
+\end_inset
+
+jti
+\begin_inset Quotes erd
+\end_inset
+
+ value sent back in the response assertion ticket.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+iat
+\begin_inset Quotes erd
+\end_inset
+
+ (Issued at time)
+\end_layout
+
+\begin_layout Standard
+This contains the time the assertion was issued, when the assertion is being
+ used for fast re-authentication.
+ The acceptor MUST validate that the ticket was recently issued (a recommended
+ interval is five minutes).
+\end_layout
+
 \begin_layout Subsection
 Response assertion
 \end_layout
@@ -2271,7 +2318,7 @@ The response assertion is sent from the acceptor to the initiator.
  it consists of a single assertion with zero certificates; that is, it is
  "unbacked".
  It is encoded as a backed assertion in order to provide future support
- for mutual authentication using native JSON certificates.
+ for mutual authentication using native BrowserID certificates.
  Such support is not defined by this specification; implementations SHOULD
  reject backed response assertions.
 \end_layout
@@ -2439,6 +2486,10 @@ This contains a GSS minor status code represented as a number.
 \begin_layout Standard
 If GSSBID_REAUTH_FAILED is received, the initiator SHOULD attempt to send
  another initial context token containing a fresh assertion.
+\end_layout
+
+\begin_layout Standard
+[XXX define error codes]
 \end_layout
 
 \begin_layout Section
@@ -2664,6 +2715,32 @@ RFC3961
 There is currently no initiator-sent metadata defined and acceptors should
  ignore any sent.
  The metadata is advisory and the initiator is free to ignore it.
+\end_layout
+
+\begin_layout Section
+Security Considerations
+\end_layout
+
+\begin_layout Standard
+This section only addresses security considerations associated with BrowserID
+ and SASL and GSS-API.
+\end_layout
+
+\begin_layout Subsection
+JavaScript
+\end_layout
+
+\begin_layout Standard
+There are security issues associated with the use of JavaScript for cryptography.
+\end_layout
+
+\begin_layout Subsection
+Host certificates for mutual authentication
+\end_layout
+
+\begin_layout Standard
+Allowing a match on only the DNS subjectAltName in an acceptor's X.509 certificat
+e permits different services on the same host to impersonate each other.
 \end_layout
 
 \begin_layout Section
@@ -3051,7 +3128,7 @@ Reserved
 \begin_inset Text
 
 \begin_layout Plain Layout
-GSS_BROWSERID_NT_EMAIL_OR_SPN
+GSS_C_NT_BROWSERID_PRINCIPAL
 \end_layout
 
 \end_inset
@@ -3285,6 +3362,26 @@ status open
 LatexCommand href
 name "RFC4422"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC5178"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5178.xml"
 
 \end_inset
 
