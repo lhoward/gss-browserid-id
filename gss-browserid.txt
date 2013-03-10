@@ -70,9 +70,9 @@ Table of Contents
    2.      Requirements notation . . . . . . . . . . . . . . . . . d1e83
    3.      Naming  . . . . . . . . . . . . . . . . . . . . . . . . d1e85
    3.1.    GSS name types  . . . . . . . . . . . . . . . . . . . . d1e86
-   3.1.1.  GSS_C_NT_BROWSERID_PRINCIPAL  . . . . . . . . . . . . . d1e86
-   3.1.2.  GSS_C_NT_USER_NAME  . . . . . . . . . . . . . . . . . . d1e88
-   3.1.3.  GSS_C_NT_HOSTBASED_SERVICE  . . . . . . . . . . . . . . d1e89
+   3.1.1.  GSS_C_NT_BROWSERID_PRINCIPAL  . . . . . . . . . . . . . sub_G
+   3.1.2.  GSS_C_NT_USER_NAME  . . . . . . . . . . . . . . . . . . d1e89
+   3.1.3.  GSS_C_NT_HOSTBASED_SERVICE  . . . . . . . . . . . . . . d1e90
    3.1.4.  GSS_C_NT_DOMAINBASED_SERVICE  . . . . . . . . . . . . . d1e90
    3.2.    Audience encoding . . . . . . . . . . . . . . . . . . . d1e93
    3.3.    Name Canonicalization . . . . . . . . . . . . . . . . . d1e95
@@ -116,7 +116,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    7.1.6.  "iat" (Issued at time)  . . . . . . . . . . . . . . . . d1e15
    7.2.    Response assertion  . . . . . . . . . . . . . . . . . . d1e15
    7.2.1.  "iat" (Issued at time)  . . . . . . . . . . . . . . . . d1e15
-   7.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange) . . d1e15
+   7.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange) . . d1e16
    7.2.3.  "exp" (Expiry time) . . . . . . . . . . . . . . . . . . d1e16
    7.2.4.  "nonce" (Mutual authentication nonce) . . . . . . . . . d1e16
    7.2.5.  "tkt" (Ticket)  . . . . . . . . . . . . . . . . . . . . d1e16
@@ -869,7 +869,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    If the credential passed to GSS_Accept_sec_context() is not for
    GSS_C_NO_NAME, then its string representation as a BrowserID
    principal MUST match the unpacked audience (that is, the audience
-   without the URN prefix and encoded claims dictionary).
+   without the URN prefix).
 
 5.3.  Channel bindings
 
@@ -985,7 +985,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    These contain ECDH key parameters for deriving a shared session key
    with the relying party: "crv" contains the curve, "x" the X
-   coordinate and "y" the Y coordinate (see JWA section 5.2).
+   coordinate and "y" the Y coordinate (see .I-D.ietf-oauth-json-web-
+   token section 5.2).
 
    The curve should have an equivalent strength to the negotiated
    [RFC4121] encryption type: at least P-256 MUST be used for browserid-
@@ -997,10 +998,9 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    which is used to bind the initiator and acceptor assertions, in the
    case where mutual authentication is desired.
 
-7.1.4.  "aud" (Audience)
 
-   The audience, formatted as a URN containing the acceptor's principal
-   name.
+
+
 
 
 
@@ -1008,6 +1008,11 @@ Howard & Williams      Expires September 11, 2013              [Page 18]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
+
+7.1.4.  "aud" (Audience)
+
+   The audience, formatted as a URN containing the acceptor's principal
+   name.
 
 7.1.5.  "tkt" (Ticket identifier)
 
@@ -1048,12 +1053,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    mechanism OID is ENCTYPE_NULL.
 
    The response assertion payload may contain the following parameters.
-
-7.2.1.  "iat" (Issued at time)
-
-   The current acceptor time, in milliseconds since January 1, 1970.
-   This allows the initiator to compensate for clock differences when
-   generating assertions.
+   Note that there is no audience claim.
 
 
 
@@ -1064,6 +1064,12 @@ Howard & Williams      Expires September 11, 2013              [Page 19]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
+
+7.2.1.  "iat" (Issued at time)
+
+   The current acceptor time, in milliseconds since January 1, 1970.
+   This allows the initiator to compensate for clock differences when
+   generating assertions.
 
 7.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange)
 
@@ -1104,12 +1110,6 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    send another initial context token containing a fresh assertion.
 
    [XXX define error codes]
-
-
-
-
-
-
 
 
 
@@ -1445,7 +1445,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
          +---------+------------------------------+-------------+
          |    0    |           Reserved           |   Reserved  |
          |         |                              |             |
-         |    1    | GSS_C_NT_BROWSERID_PRINCIPAL |             |
+         |    1    | GSS_C_NT_BROWSERID_PRINCIPAL |    3.1.1    |
          +---------+------------------------------+-------------+
 
 
