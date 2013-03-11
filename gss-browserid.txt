@@ -63,21 +63,21 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 Table of Contents
 
-   1.      Introduction  . . . . . . . . . . . . . . . . . . . . . d1e71
-   1.1.    Discovery and Negotiation . . . . . . . . . . . . . . . d1e77
+   1.      Introduction  . . . . . . . . . . . . . . . . . . . . . d1e72
+   1.1.    Discovery and Negotiation . . . . . . . . . . . . . . . d1e78
    1.2.    Authentication  . . . . . . . . . . . . . . . . . . . . d1e80
-   1.3.    Message protection services . . . . . . . . . . . . . . d1e81
-   2.      Requirements notation . . . . . . . . . . . . . . . . . d1e84
+   1.3.    Message protection services . . . . . . . . . . . . . . d1e82
+   2.      Requirements notation . . . . . . . . . . . . . . . . . d1e85
    3.      Naming  . . . . . . . . . . . . . . . . . . . . . . . . d1e86
-   3.1.    GSS name types  . . . . . . . . . . . . . . . . . . . . d1e86
+   3.1.    GSS name types  . . . . . . . . . . . . . . . . . . . . d1e87
    3.1.1.  GSS_C_NT_BROWSERID_PRINCIPAL  . . . . . . . . . . . . . sub_G
-   3.1.2.  GSS_C_NT_USER_NAME  . . . . . . . . . . . . . . . . . . d1e89
-   3.1.3.  GSS_C_NT_HOSTBASED_SERVICE  . . . . . . . . . . . . . . d1e90
-   3.1.4.  GSS_C_NT_DOMAINBASED_SERVICE  . . . . . . . . . . . . . d1e91
+   3.1.2.  GSS_C_NT_USER_NAME  . . . . . . . . . . . . . . . . . . d1e90
+   3.1.3.  GSS_C_NT_HOSTBASED_SERVICE  . . . . . . . . . . . . . . d1e91
+   3.1.4.  GSS_C_NT_DOMAINBASED_SERVICE  . . . . . . . . . . . . . d1e92
    3.2.    Audience encoding . . . . . . . . . . . . . . . . . . . d1e94
    3.3.    Name Canonicalization . . . . . . . . . . . . . . . . . d1e96
-   3.4.    Exported Name Token Format  . . . . . . . . . . . . . . d1e96
-   4.      Context tokens  . . . . . . . . . . . . . . . . . . . . d1e98
+   3.4.    Exported Name Token Format  . . . . . . . . . . . . . . d1e97
+   4.      Context tokens  . . . . . . . . . . . . . . . . . . . . d1e99
    4.1.    Initial context token . . . . . . . . . . . . . . . . . sub_I
    4.2.    Acceptor context token  . . . . . . . . . . . . . . . . sub_A
    4.3.    Initiator context completion  . . . . . . . . . . . . . d1e12
@@ -85,13 +85,13 @@ Table of Contents
    4.4.1.  Initiator mutual authentication context token . . . . . d1e12
    4.4.2.  Acceptor mutual authentication context token  . . . . . d1e12
    4.4.3.  Initiator mutual authentication context completion  . . d1e12
-   4.4.4.  Acceptor certificate advertisement  . . . . . . . . . . d1e12
+   4.4.4.  Acceptor certificate advertisement  . . . . . . . . . . d1e13
    4.5.    Extensions for fast re-authentication . . . . . . . . . d1e13
    4.5.1.  Ticket generation . . . . . . . . . . . . . . . . . . . d1e13
    4.5.2.  Initiator re-authentication context token . . . . . . . d1e13
    4.5.3.  Acceptor re-authentication context token  . . . . . . . d1e13
    4.5.4.  Interaction with mutual authentication  . . . . . . . . d1e13
-   5.      Validation  . . . . . . . . . . . . . . . . . . . . . . d1e13
+   5.      Validation  . . . . . . . . . . . . . . . . . . . . . . d1e14
    5.1.    Expiry times  . . . . . . . . . . . . . . . . . . . . . d1e14
    5.2.    Audience  . . . . . . . . . . . . . . . . . . . . . . . d1e14
    5.3.    Channel bindings  . . . . . . . . . . . . . . . . . . . d1e14
@@ -114,6 +114,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
    7.1.6.  "iat" (Issued at time)  . . . . . . . . . . . . . . . . d1e15
+   7.1.7.  "exp" (Expiry time) . . . . . . . . . . . . . . . . . . d1e15
    7.2.    Response assertion  . . . . . . . . . . . . . . . . . . d1e15
    7.2.1.  "iat" (Issued at time)  . . . . . . . . . . . . . . . . d1e16
    7.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange) . . d1e16
@@ -122,8 +123,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    7.2.5.  "tkt" (Ticket)  . . . . . . . . . . . . . . . . . . . . d1e16
    7.2.6.  "gss-maj" (GSS major status code) . . . . . . . . . . . d1e16
    7.2.7.  "gss-min" (GSS minor status code) . . . . . . . . . . . d1e16
-   8.      Key derivation  . . . . . . . . . . . . . . . . . . . . d1e16
-   8.1.    Diffie-Hellman Key (DHK)  . . . . . . . . . . . . . . . d1e16
+   8.      Key derivation  . . . . . . . . . . . . . . . . . . . . d1e17
+   8.1.    Diffie-Hellman Key (DHK)  . . . . . . . . . . . . . . . d1e17
    8.2.    Context Master Key (CMK)  . . . . . . . . . . . . . . . d1e17
    8.3.    RP Response Key (RRK) . . . . . . . . . . . . . . . . . d1e17
    8.4.    Context Root Key (CRK)  . . . . . . . . . . . . . . . . d1e17
@@ -131,7 +132,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    8.6.    Authenticator Session Key (ASK) . . . . . . . . . . . . d1e17
    9.      GSS-API Extensions  . . . . . . . . . . . . . . . . . . d1e17
    9.1.    PRF . . . . . . . . . . . . . . . . . . . . . . . . . . d1e17
-   9.2.    Naming extensions . . . . . . . . . . . . . . . . . . . d1e17
+   9.2.    Naming extensions . . . . . . . . . . . . . . . . . . . d1e18
    9.3.    NegoEx  . . . . . . . . . . . . . . . . . . . . . . . . sub_N
    10.     Example . . . . . . . . . . . . . . . . . . . . . . . . d1e18
    11.     Security Considerations . . . . . . . . . . . . . . . . d1e19
@@ -139,12 +140,11 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    11.2.   Host certificates for mutual authentication . . . . . . d1e19
    12.     IANA Considerations . . . . . . . . . . . . . . . . . . d1e19
    12.1.   OID Registry  . . . . . . . . . . . . . . . . . . . . . sub_O
-   12.2.   SASL Registry . . . . . . . . . . . . . . . . . . . . . d1e21
+   12.2.   SASL Registry . . . . . . . . . . . . . . . . . . . . . d1e22
    13.     References  . . . . . . . . . . . . . . . . . . . . . . ancho
    13.1.   Normative References  . . . . . . . . . . . . . . . . . ancho
    13.2.   Informative References  . . . . . . . . . . . . . . . . ancho
            Authors' Addresses  . . . . . . . . . . . . . . . . . .     0
-
 
 
 
@@ -973,13 +973,15 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
            "aud": "urn:x-gss:imap/mail.ietf.org"
     }
 
+   The request assertion may contain the following claims:
+
 7.1.1.  "cbt" (Channel Binding Token)
 
    This contains a channel binding token for binding the GSS context to
    an outer channel (e.g. see [RFC5929]).  Its value is the base64 URL
    encoding of the application-specific data component of the channel
    bindings passed to GSS_Init_sec_context() or
-   GSS_Accept_sec_context().
+   GSS_Accept_sec_context().  This claim is OPTIONAL.
 
 7.1.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange)
 
@@ -990,16 +992,14 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    The curve should have an equivalent strength to the negotiated
    [RFC4121] encryption type: at least P-256 MUST be used for browserid-
-   aes128, and P-521 for browserid-aes256.
+   aes128, and P-521 for browserid-aes256.  This claim is REQUIRED
+   unless the associated encryption type is ENCTYPE_NULL.
 
 7.1.3.  "nonce" (Mutual authentication nonce)
 
    This is a random quantity of at least 64 bits, base 64 URL encoded,
    which is used to bind the initiator and acceptor assertions, in the
-   case where mutual authentication is desired.
-
-
-
+   case where mutual authentication is desired.  This claim is OPTIONAL.
 
 
 
@@ -1012,20 +1012,28 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 7.1.4.  "aud" (Audience)
 
    The audience, formatted as a URN containing the acceptor's principal
-   name.
+   name.  This claim is REQUIRED.
 
 7.1.5.  "tkt" (Ticket identifier)
 
    The opaque ticket identifier, when the assertion is being used for
    fast re-authentication.  This matches the "jti" value sent back in
-   the response assertion ticket.
+   the response assertion ticket.  This claim is OPTIONAL.
 
 7.1.6.  "iat" (Issued at time)
 
    This contains the time the assertion was issued, when the assertion
    is being used for fast re-authentication.  The acceptor MUST validate
    that the ticket was recently issued (a recommended interval is five
-   minutes).
+   minutes).  This claim is REQUIRED when the assertion is a re-
+   authentication assertion.
+
+7.1.7.  "exp" (Expiry time)
+
+   This contains the time when the assertion expires.  This claim is
+   REQUIRED when the assertion is signed with a user's BrowserID
+   certificate; it MUST be ignored if present in a re-authentication
+   assertion.
 
 7.2.  Response assertion
 
@@ -1049,14 +1057,6 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    If a key is unavailable, then the signature is absent and the value
    of the "alg" header claim is "none".  No signature verification is
    required in this case, however the initiator MUST NOT return
-   GSS_C_COMPLETE unless the associated RFC3961 encryption type for the
-   mechanism OID is ENCTYPE_NULL.
-
-   The response assertion payload may contain the following parameters.
-   Note that there is no audience claim.  Here is an example response
-   assertion:
-
-
 
 
 
@@ -1064,6 +1064,14 @@ Howard & Williams      Expires September 12, 2013              [Page 19]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
+
+   GSS_C_COMPLETE unless the associated RFC3961 encryption type for the
+   mechanism OID is ENCTYPE_NULL.
+
+   Response assertions with an audience claim ("aud") MUST be rejected
+   to prevent reflection attacks.
+
+   Here is an example response assertion:
 
    {
        "exp": 1362960258000,
@@ -1078,39 +1086,31 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
        }
    }
 
+   The response assertion payload may contain the following claims:
+
 7.2.1.  "iat" (Issued at time)
 
    The current acceptor time, in milliseconds since January 1, 1970.
    This allows the initiator to compensate for clock differences when
-   generating assertions.
+   generating assertions.  This claim is OPTIONAL.
 
 7.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange)
 
    This contains a JSON object containing the coordinates of the
-   acceptor's ECDH public key.
+   acceptor's ECDH public key.  This claim is REQUIRED unless the
+   associated encryption type is ENCTYPE_NULL.
 
 7.2.3.  "exp" (Expiry time)
 
-   This contains the time when the context expires.
+   This contains the time when the context expires.  This claim is
+   OPTIONAL; the initiator should use the certificate expiry time if
+   absent.
 
 7.2.4.  "nonce" (Mutual authentication nonce)
 
    The nonce as received from the initiator.  This SHOULD NOT be present
    unless a nonce was received from the initiator.
 
-7.2.5.  "tkt" (Ticket)
-
-   This contains a JSON object that may be used for re-authenticating to
-   the acceptor without acquiring an assertion.  Its usage is optional.
-   It has two properties: "jti", an opaque identifier to be presented in
-   a re-authentication assertion; and "exp", the expiry time of the
-   ticket.
-
-7.2.6.  "gss-maj" (GSS major status code)
-
-   This contains a GSS major status code represented as a number.  It
-   MUST not be present if the acceptor did not return an error.  Its
-   usage is optional.
 
 
 
@@ -1121,31 +1121,31 @@ Howard & Williams      Expires September 12, 2013              [Page 20]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
+7.2.5.  "tkt" (Ticket)
+
+   This contains a JSON object that may be used for re-authenticating to
+   the acceptor without acquiring an assertion.  Its usage is optional.
+   It has two properties: "jti", an opaque identifier to be presented in
+   a re-authentication assertion; and "exp", the expiry time of the
+   ticket.  This claim is OPTIONAL.
+
+7.2.6.  "gss-maj" (GSS major status code)
+
+   This contains a GSS major status code represented as a number.  It
+   MUST not be present if the acceptor did not return an error.  This
+   claim is OPTIONAL.
+
 7.2.7.  "gss-min" (GSS minor status code)
 
    This contains a GSS minor status code represented as a number.  It
    MUST not be present if the acceptor did not return an error and
    SHOULD not be present if there is no minor status code for the given
-   major error.  Its usage is optional.
+   major error.  This claim is OPTIONAL.
 
    If GSSBID_REAUTH_FAILED is received, the initiator SHOULD attempt to
    send another initial context token containing a fresh assertion.
 
    [XXX define error codes]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1186,7 +1186,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    0x01)
 
    The HMAC hash algorithm for all currently specified key lengths is
-   SHA256.  Note that the inclusion of K in the HMAC input is for
+   SHA-256.  Note that the inclusion of K in the HMAC input is for
    interoperability with some crypto implementations.
 
 8.1.  Diffie-Hellman Key (DHK)
@@ -1403,9 +1403,11 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 10.  Example
 
-   Suppose a user lukeh@lukktone.com wishes to authenticate to an IMAP
-   server rand.mit.de.padl.com.  The mail user agent would display a
-   dialog box in which the BrowserID authentication would take place.
+   Suppose a mail user agent for the user lukeh@lukktone.com wishes to
+   authenticate to an IMAP server rand.mit.de.padl.com.  They do not
+   have a re-authentication ticket.  The mail user agent would display a
+   dialog box in which the user would sign in to their IdP and request a
+   fresh assertion be generated.
 
 C: <connects to IMAP port>
 S: * OK
@@ -1417,16 +1419,17 @@ biwsYyxleUpoYkdjaU9pSlNVekkxTmlKOS5leUp3ZFdKc2FXTXRhMlY1SWpwN0ltRnNaMjl5YVhSb2JT
 S: + Qyx
 S: +ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbmcxWXlJNld5Sk5TVWxFZW1wRFEwRnlZV2RCZDBsQ1FXZEpRa0o2UVU1Q1oydHhhR3RwUnpsM01FSkJVVlZHUVVSQ1pFMVJjM2REVVZsRVZsRlJSMFYzU2tKV1ZFVmxUVUozUjBFeFZVVkRaM2RXVlVWR1JWUkRRbFJpTWxvd1pESkdlVnBUUWxGa1NHdG5WRWhTYTAxVE5IZE1RVmxFVmxGUlJFUkRWbEZSVlZKTlNVWk9kbHB1VWpOWldFcHNTVVZPYkdOdVVuQmFiV3hxV1ZoU2NHSXlOR2RSV0ZZd1lVYzVlV0ZZVWpWTlFqUllSRlJGZWsxRVJYaE5WRUV4VFhwUmVVMUdiMWhFVkVVeVRVUkZlRTFVUVRGTmVsRjVUVVp2ZDFSRVJVeE5RV3RIUVRGVlJVSm9UVU5SVmxWNFNHcEJZMEpuVGxaQ1FXOU5SbFpDUWxKRmQyZFZNamx0WkVoa2FHTnRWV2RWU0ZJMVNVVjRNRnBFUldSTlFuTkhRVEZWUlVGM2QxVmpiVVoxV2tNMWRHRllVWFZhUjFWMVkwZEdhMkpETldwaU1qQjNaMmRGYVUxQk1FZERVM0ZIVTBsaU0wUlJSVUpCVVZWQlFUUkpRa1IzUVhkblowVkxRVzlKUWtGUlJFSm9la1p3Wmt3MmRraDRjM2d5UkhaR1dsQXJSMUl3Vlc5dFJIQXZRMFZsSzA5SVRqQmFNR00yT1RGWlp6bG5WMWh0VlROdVVIRldWR0pCU1hGWVNEaEJWWFIyWmpkTmVtSlpNamh2Vm14d1dsUXdOWHB0TW1NdmRFVXpaMnRvVkhodFdFOVNaMUZ5WTNWMVozVnFUMWhOUm1oSk5ITjJSVm9yUTJKSVVHeGFhVm92VkhwcldFeElVREk1UlhvM2QwNWFiakZJTlRkQlRIRnRVMEZ2TlZRMGNYaE5SbWRDV1hWa2R5OWFlRkJTZWtSMFZXOUpWakJ6TWpOWlp6UjRWRGxoZDBwdWNqRkhaMDFWVW1saVZVSnFSamQ1WW1OdE1FczRjMHBVSzFWSFpVSTNjbTFNYkZCM0syWkJhMDltTjFwcVdqbDBjRlJyUlUxcE9IVk1SVTF4WTNoaFIxTkJTeThyYTFjM05YRlBlR1JCUmtrNGVsbGFXRFV6WjNCbk5HMXBLMUZYWmtkWk1WcE9VVXBOZFVoSFVWaG5MM1ZtZUUxNllYaE9UalJvTVdGUGJHMWFXbGxyUWtod05USkJPWGxKVFZWaVFXZE5Ra0ZCUjJwbllXdDNaMkZaZDBOUldVUldVakJVUWtGSmQwRkVRWE5DWjJ4bmFHdG5RbWgyYUVOQlVUQkZTSGhaWkZRelFteGliRTVVVkVOQ1NGcFhOV3hqYlVZd1dsZFJaMUV5Vm5sa1IyeHRZVmRPYUdSSFZYZElVVmxFVmxJd1QwSkNXVVZHUzFOemRXSkZSSFZpVWtsSFNFTkNkSFJCYkZSMk1rWlhSMllyVFVJNFIwRXhWV1JKZDFGWlRVSmhRVVpNYVhwYWJFMVhia3RMTVZCWllXZGtTbXByVm5WU2FFVlJTbXBOUVd0SFFURlZaRVZSVVVOTlFVRjNRM2RaUkZaU01GQkNRVkZFUVdkWVowMUNUVWRCTVZWa1NsRlJUVTFCYjBkRFEzTkhRVkZWUmtKM1RVUk5RVEJIUTFOeFIxTkpZak5FVVVWQ1FsRlZRVUUwU1VKQlVVSkVNVUo2VVZBcmNrNHhWVlY2TjBFMmVpdExSRkJoY1Roek1tbENSekJHZWxwNGMxZ3lVVlZQZFhCQ1JVbGlkVnB3TUV0S1lYVnFWazFuTURGbVpHcHpkVWRITUhWWVlrMW1aVkpIZVU1c1ZYTk5UaXRhUkhrNEwwMUpUMmd4WVZWSGRqQlRWWGRMZEVOMFRIUlhja3AyTmpWMWQwaEhSM1ExZFVaTGVFMUZOakZXVkRRcmNYQkpNa0ZIY1hoNE5XUnljM2hGVEVKUFpIbFFibVYxUVdsTVVIaEdkV0pTUm0xNmRXaFdVMGszUVZCTmJEYzVUMnN6TUc5WGRXUkJORGxzVlZnNWQzb3paemx4T1haa2JEbDVhR2RsWlZWVFZYQk5hR3hhTWpSVll6bFFkVXg2Y2pFMWFqWjJOak5ZZW5KVFpGZDBUbnAyTUVZeE1HVkViRFI1VkZWT1YxTkthRGR4UW1obmNURkpiMWc1UVZCUFQzVk1ZazFPY25BMlltVkZaVzkzYURNMGNGWlhabFJoVTNoSk4yNUxOVGRyU3pKNGFGSlZORE5sZDFscU1ta3ZVM0o2T0VkelRWTTVNWFZ5TWpWSmRDSmRmUS5leUowYTNRaU9uc2lhblJwSWpvaVlXVmhlVEJIU21sNlJIZzNPVUZuTFMxWFRDMTJkelpaT1VKWWVGSjFRekZZYzFwNGNuazFNVk5WU1NJc0ltVjRjQ0k2TVRNMk1qazVOekE1T0RBd01IMHNJbVZqWkdnaU9uc2llQ0k2SWtveFNWZGlTREpCTlVNelkyaFBWVWx4YldaWWNGQmZVbEZGUlU5dFpESkZlRmh2UzNKeFVWRllURTBpTENKNUlqb2lYekpGZEhoaWVsOTJTbVZsVlZWaWVUSnlabVJsYTFSVVVGVlNjR0pIU2tnM2EzbEpWM0Z0YTBsRlp5SjlMQ0p1YjI1alpTSTZJbWcxVURSTGNrYzRlVzVuSWl3aVpYaHdJam94TXpZeU9UWTBOamsyTURBd2ZRLnFaaFVxdXBWUHgzRTdNSTBHdnNIZjZER3pzc3ByMkJsdUVUMFNwMERxdkpFS1F4S3BiOG9faVZsWHZQa2p2SXp0Qm5JajNNb084UlZMUWJwdE9QZDFrN3FoTUVwRkhOVGI1WFpKYWVJTlBpQUNSSzA5dUZpVE5ud1cxanMxQ3pPY2FMakxsSTN4bFdkLUl1em8zODhyTUxsSXVkbmkxak5uRS0yOXZfc1NUTnRxLUMwQmNoNUMwT3drbDcxQk54eHgzaFVxeEcxT0w0UHQyZ0JKWUFQX3NOVk12aDFwWDlhRzd0Vms0S2sxS2NjaXRqUFdGN0dXc3JGeld4ekRSMHU2REZ0RmFjaENPYmVmcmZnZkUxOXFlWnJLcnpJMFVkQ3JEUHpZazlYb1dKR2twRlNPd1dhY192Q0N1dXY1VjNHZF9MTlNJM3JCaS1GYWVoWUhBRjFJUQ==
 
-   Unpacking the client AUTHENTICATE message reveals the following:
+   Unpacking the mail user agent's AUTHENTICATE message reveals the
+   following:
 
 n,,c,eyJhbGciOiJSUzI1NiJ9.eyJwdWJsaWMta2V5Ijp7ImFsZ29yaXRobSI6IkRTIiwieSI6IjM5MTNlODgyZDhjMzVkMjJmNmQ0MDY5Y2U2MDBkYmNjYjM5NGFjYWFhYzY0OWZkN2Y5ZmNkNmM0MTI0NmY1NjI5MGVmMGNjMzc0NzZhMDRhNDE4YzFlODMxOWI1NGIxZWNiNmY2Y2VhNzU0NGY2ZTE1NjNlZGNlZGM5MDZkNjg0M2QwMWJjZTRmN2E1ZjcwN2NmYTYwYWM5MTM2ZmFmNjJmZGFmNDhkOGE5ODlhYWFlNDQwN2VkNjcyNzdhMTc4MmVjYWExNTZiZGNhZWExNjdmMjYzNzI1ZGU2M2VkOGYyOGE2MDNiNmZmNTEwZjQ4MDJkNzRkN2VhZTdhYmMyZWIiLCJwIjoiZmY2MDA0ODNkYjZhYmZjNWI0NWVhYjc4NTk0YjM1MzNkNTUwZDlmMWJmMmE5OTJhN2E4ZGFhNmRjMzRmODA0NWFkNGU2ZTBjNDI5ZDMzNGVlZWFhZWZkN2UyM2Q0ODEwYmUwMGU0Y2MxNDkyY2JhMzI1YmE4MWZmMmQ1YTViMzA1YThkMTdlYjNiZjRhMDZhMzQ5ZDM5MmUwMGQzMjk3NDRhNTE3OTM4MDM0NGU4MmExOGM0NzkzMzQzOGY4OTFlMjJhZWVmODEyZDY5YzhmNzVlMzI2Y2I3MGVhMDAwYzNmNzc2ZGZkYmQ2MDQ2MzhjMmVmNzE3ZmMyNmQwMmUxNyIsInEiOiJlMjFlMDRmOTExZDFlZDc5OTEwMDhlY2FhYjNiZjc3NTk4NDMwOWMzIiwiZyI6ImM1MmE0YTBmZjNiN2U2MWZkZjE4NjdjZTg0MTM4MzY5YTYxNTRmNGFmYTkyOTY2ZTNjODI3ZTI1Y2ZhNmNmNTA4YjkwZTVkZTQxOWUxMzM3ZTA3YTJlOWUyYTNjZDVkZWE3MDRkMTc1ZjhlYmY2YWYzOTdkNjllMTEwYjk2YWZiMTdjN2EwMzI1OTMyOWU0ODI5YjBkMDNiYmM3ODk2YjE1YjRhZGU1M2UxMzA4NThjYzM0ZDk2MjY5YWE4OTA0MWY0MDkxMzZjNzI0MmEzODg5NWM5ZDViY2NhZDRmMzg5YWYxZDdhNGJkMTM5OGJkMDcyZGZmYTg5NjIzMzM5N2EifSwicHJpbmNpcGFsIjp7ImVtYWlsIjoibHVrZWhAbHVra3RvbmUuY29tIn0sImlhdCI6MTM2Mjk2MTA5NjEyMiwiZXhwIjoxMzYyOTY0Njk2MTIyLCJpc3MiOiJsb2dpbi5wZXJzb25hLm9yZyJ9.fOuyfVd5aYgo9rBgrgGT2Gb93QJ1VzKHOk67EQpDyOiPCOuqpyL9kkUT7qpcYifloCSZ9Oz5-UdkrWeq6WRDKqGNyx48WrTgnVJ2FS71MLn_CyhF0j5cVlCA9YhwaYVLxlmoXSMnY7rG1VkERv4mikB3qCpPv5rmHK0nCbFZb7WWGrdTGdrcGNDddyCBD9kWiQGUnI-zswYwberTNd76g5gcusS-mlcVNco3LLn32Salltx0BPp-U021zoGM0XHbnmRkeQtemnUWdihc4UmZMDBIgNgHQBJgW0hAq9GYQfc5NlSsenQ_Jy0dxjq5lwDZYwHLlQyfbuXlamE3CgvdeA~eyJhbGciOiJEUzEyOCJ9.eyJub25jZSI6Img1UDRLckc4eW5nIiwiZWNkaCI6eyJ4IjoiZmpaTnBzQmpHbl9YQUNtZ2JOd0FzdnI4OGc0Rld6dG9icXA1VE1iX1lGMCIsImNydiI6IlAtMjU2IiwieSI6IlJLRXZKejU5Y3NhdjhLY3dlVXY1WHFGZ3Q4QVdDQWtySkJ6M1BQcUxKdHMifSwiY2J0IjoiYml3cyIsImV4cCI6MTM2Mjk2MTIxNjE0OSwiYXVkIjoidXJuOngtZ3NzOmltYXAvcmFuZC5taXQuZGUucGFkbC5jb20ifQ.udtoI3U5C-3pp4xIJZ1mk-Cz4bhlBLeK026Uamda28pLY8sMwNNtcA
 
    The initial "n,," is the GS2 header (indicating that there are no
    channel bindings).  The "c," denotes the token as being a BrowserID
    initial context token.  The remaining base64 URL encoded data is a
-   backed assertion, containing the following certificate (for clarity,
-   the payload has been reformatted and JWT header and signature
-   omitted):
+   BrowserID backed assertion, containing the following certificate (for
+   clarity, the payload has been reformatted and JWT header and
+   signature omitted):
 
 {
     "public-key": {
@@ -1445,9 +1448,6 @@ n,,c,eyJhbGciOiJSUzI1NiJ9.eyJwdWJsaWMta2V5Ijp7ImFsZ29yaXRobSI6IkRTIiwieSI6IjM5MT
 }
 
    and assertion:
-
-
-
 
 
 

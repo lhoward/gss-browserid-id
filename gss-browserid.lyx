@@ -2190,6 +2190,10 @@ status open
 
 \end_layout
 
+\begin_layout Standard
+The request assertion may contain the following claims:
+\end_layout
+
 \begin_layout Subsubsection
 \begin_inset Quotes eld
 \end_inset
@@ -2218,6 +2222,7 @@ RFC5929
  Its value is the base64 URL encoding of the application-specific data component
  of the channel bindings passed to GSS_Init_sec_context() or GSS_Accept_sec_cont
 ext().
+ This claim is OPTIONAL.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2253,6 +2258,7 @@ RFC4121
 
  encryption type: at least P-256 MUST be used for browserid-aes128, and
  P-521 for browserid-aes256.
+ This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2263,6 +2269,7 @@ RFC4121
 This is a random quantity of at least 64 bits, base 64 URL encoded, which
  is used to bind the initiator and acceptor assertions, in the case where
  mutual authentication is desired.
+ This claim is OPTIONAL.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2278,6 +2285,7 @@ aud
 
 \begin_layout Standard
 The audience, formatted as a URN containing the acceptor's principal name.
+ This claim is REQUIRED.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2303,6 +2311,7 @@ jti
 \end_inset
 
  value sent back in the response assertion ticket.
+ This claim is OPTIONAL.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2321,6 +2330,24 @@ This contains the time the assertion was issued, when the assertion is being
  used for fast re-authentication.
  The acceptor MUST validate that the ticket was recently issued (a recommended
  interval is five minutes).
+ This claim is REQUIRED when the assertion is a re-authentication assertion.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset Quotes eld
+\end_inset
+
+exp
+\begin_inset Quotes erd
+\end_inset
+
+ (Expiry time)
+\end_layout
+
+\begin_layout Standard
+This contains the time when the assertion expires.
+ This claim is REQUIRED when the assertion is signed with a user's BrowserID
+ certificate; it MUST be ignored if present in a re-authentication assertion.
 \end_layout
 
 \begin_layout Subsection
@@ -2361,9 +2388,19 @@ If a key is unavailable, then the signature is absent and the value of the
 \end_layout
 
 \begin_layout Standard
-The response assertion payload may contain the following parameters.
- Note that there is no audience claim.
- Here is an example response assertion:
+Response assertions with an audience claim (
+\begin_inset Quotes eld
+\end_inset
+
+aud
+\begin_inset Quotes erd
+\end_inset
+
+) MUST be rejected to prevent reflection attacks.
+\end_layout
+
+\begin_layout Standard
+Here is an example response assertion:
 \end_layout
 
 \begin_layout Standard
@@ -2436,6 +2473,10 @@ status open
 
 \end_layout
 
+\begin_layout Standard
+The response assertion payload may contain the following claims:
+\end_layout
+
 \begin_layout Subsubsection
 \begin_inset Quotes eld
 \end_inset
@@ -2451,6 +2492,7 @@ iat
 The current acceptor time, in milliseconds since January 1, 1970.
  This allows the initiator to compensate for clock differences when generating
  assertions.
+ This claim is OPTIONAL.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2467,6 +2509,7 @@ ecdh
 \begin_layout Standard
 This contains a JSON object containing the coordinates of the acceptor's
  ECDH public key.
+ This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2482,6 +2525,8 @@ exp
 
 \begin_layout Standard
 This contains the time when the context expires.
+ This claim is OPTIONAL; the initiator should use the certificate expiry
+ time if absent.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2533,6 +2578,7 @@ exp
 \end_inset
 
 , the expiry time of the ticket.
+ This claim is OPTIONAL.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2549,7 +2595,7 @@ gss-maj
 \begin_layout Standard
 This contains a GSS major status code represented as a number.
  It MUST not be present if the acceptor did not return an error.
- Its usage is optional.
+ This claim is OPTIONAL.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2567,7 +2613,7 @@ gss-min
 This contains a GSS minor status code represented as a number.
  It MUST not be present if the acceptor did not return an error and SHOULD
  not be present if there is no minor status code for the given major error.
- Its usage is optional.
+ This claim is OPTIONAL.
 \end_layout
 
 \begin_layout Standard
@@ -2592,7 +2638,7 @@ browserid-derive-key(K, salt) = HMAC(K, "BrowserID" || K || salt || 0x01)
 \end_layout
 
 \begin_layout Standard
-The HMAC hash algorithm for all currently specified key lengths is SHA256.
+The HMAC hash algorithm for all currently specified key lengths is SHA-256.
  Note that the inclusion of K in the HMAC input is for interoperability
  with some crypto implementations.
 \end_layout
@@ -2809,10 +2855,11 @@ Example
 \end_layout
 
 \begin_layout Standard
-Suppose a user lukeh@lukktone.com wishes to authenticate to an IMAP server
- rand.mit.de.padl.com.
- The mail user agent would display a dialog box in which the BrowserID authentic
-ation would take place.
+Suppose a mail user agent for the user lukeh@lukktone.com wishes to authenticate
+ to an IMAP server rand.mit.de.padl.com.
+ They do not have a re-authentication ticket.
+ The mail user agent would display a dialog box in which the user would
+ sign in to their IdP and request a fresh assertion be generated.
 \end_layout
 
 \begin_layout Standard
@@ -2945,7 +2992,7 @@ Q0N1dXY1VjNHZF9MTlNJM3JCaS1GYWVoWUhBRjFJUQ==
 \end_layout
 
 \begin_layout Standard
-Unpacking the client AUTHENTICATE message reveals the following:
+Unpacking the mail user agent's AUTHENTICATE message reveals the following:
 \end_layout
 
 \begin_layout Standard
@@ -3007,9 +3054,9 @@ c,
 \end_inset
 
  denotes the token as being a BrowserID initial context token.
- The remaining base64 URL encoded data is a backed assertion, containing
- the following certificate (for clarity, the payload has been reformatted
- and JWT header and signature omitted):
+ The remaining base64 URL encoded data is a BrowserID backed assertion,
+ containing the following certificate (for clarity, the payload has been
+ reformatted and JWT header and signature omitted):
 \end_layout
 
 \begin_layout Standard
