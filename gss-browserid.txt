@@ -63,48 +63,48 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 Table of Contents
 
-   1.      Introduction  . . . . . . . . . . . . . . . . . . . . . d1e72
-   1.1.    Discovery and Negotiation . . . . . . . . . . . . . . . d1e78
+   1.      Introduction  . . . . . . . . . . . . . . . . . . . . . d1e71
+   1.1.    Discovery and Negotiation . . . . . . . . . . . . . . . d1e77
    1.2.    Authentication  . . . . . . . . . . . . . . . . . . . . d1e80
-   1.3.    Message protection services . . . . . . . . . . . . . . d1e82
-   2.      Requirements notation . . . . . . . . . . . . . . . . . d1e85
+   1.3.    Message protection services . . . . . . . . . . . . . . d1e81
+   2.      Requirements notation . . . . . . . . . . . . . . . . . d1e84
    3.      Naming  . . . . . . . . . . . . . . . . . . . . . . . . d1e86
-   3.1.    GSS name types  . . . . . . . . . . . . . . . . . . . . d1e87
+   3.1.    GSS name types  . . . . . . . . . . . . . . . . . . . . d1e86
    3.1.1.  GSS_C_NT_BROWSERID_PRINCIPAL  . . . . . . . . . . . . . sub_G
    3.1.2.  GSS_C_NT_USER_NAME  . . . . . . . . . . . . . . . . . . d1e90
    3.1.3.  GSS_C_NT_HOSTBASED_SERVICE  . . . . . . . . . . . . . . d1e91
-   3.1.4.  GSS_C_NT_DOMAINBASED_SERVICE  . . . . . . . . . . . . . d1e92
+   3.1.4.  GSS_C_NT_DOMAINBASED_SERVICE  . . . . . . . . . . . . . d1e91
    3.2.    Audience encoding . . . . . . . . . . . . . . . . . . . d1e94
    3.3.    Name Canonicalization . . . . . . . . . . . . . . . . . d1e96
    3.4.    Exported Name Token Format  . . . . . . . . . . . . . . d1e97
-   4.      Context tokens  . . . . . . . . . . . . . . . . . . . . d1e99
+   4.      Context tokens  . . . . . . . . . . . . . . . . . . . . d1e98
    4.1.    Initial context token . . . . . . . . . . . . . . . . . sub_I
    4.2.    Acceptor context token  . . . . . . . . . . . . . . . . sub_A
-   4.3.    Initiator context completion  . . . . . . . . . . . . . d1e12
-   4.4.    Extensions for mutual authentication  . . . . . . . . . d1e12
+   4.3.    Initiator context completion  . . . . . . . . . . . . . sub_I
+   4.4.    Extensions for mutual authentication  . . . . . . . . . sub_E
    4.4.1.  Initiator mutual authentication context token . . . . . d1e12
    4.4.2.  Acceptor mutual authentication context token  . . . . . d1e12
-   4.4.3.  Initiator mutual authentication context completion  . . d1e12
+   4.4.3.  Initiator mutual authentication context completion  . . d1e13
    4.4.4.  Acceptor certificate advertisement  . . . . . . . . . . d1e13
    4.5.    Extensions for fast re-authentication . . . . . . . . . d1e13
    4.5.1.  Ticket generation . . . . . . . . . . . . . . . . . . . d1e13
    4.5.2.  Initiator re-authentication context token . . . . . . . d1e13
-   4.5.3.  Acceptor re-authentication context token  . . . . . . . d1e13
-   4.5.4.  Interaction with mutual authentication  . . . . . . . . d1e13
+   4.5.3.  Acceptor re-authentication context token  . . . . . . . d1e14
+   4.5.4.  Interaction with mutual authentication  . . . . . . . . d1e14
    5.      Validation  . . . . . . . . . . . . . . . . . . . . . . d1e14
    5.1.    Expiry times  . . . . . . . . . . . . . . . . . . . . . d1e14
-   5.2.    Audience  . . . . . . . . . . . . . . . . . . . . . . . d1e14
-   5.3.    Channel bindings  . . . . . . . . . . . . . . . . . . . d1e14
-   5.4.    Signatures  . . . . . . . . . . . . . . . . . . . . . . d1e14
-   5.5.    Replay detection  . . . . . . . . . . . . . . . . . . . d1e14
-   6.      Fast re-authentication  . . . . . . . . . . . . . . . . d1e14
-   7.      Assertion claims  . . . . . . . . . . . . . . . . . . . d1e14
-   7.1.    Request assertion . . . . . . . . . . . . . . . . . . . d1e14
-   7.1.1.  "cbt" (Channel Binding Token) . . . . . . . . . . . . . d1e15
-   7.1.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange) . . d1e15
-   7.1.3.  "nonce" (Mutual authentication nonce) . . . . . . . . . d1e15
-   7.1.4.  "aud" (Audience)  . . . . . . . . . . . . . . . . . . . d1e15
-   7.1.5.  "tkt" (Ticket identifier) . . . . . . . . . . . . . . . d1e15
+   5.2.    Audience  . . . . . . . . . . . . . . . . . . . . . . . d1e15
+   5.3.    Channel bindings  . . . . . . . . . . . . . . . . . . . d1e15
+   5.4.    Signatures  . . . . . . . . . . . . . . . . . . . . . . d1e15
+   5.5.    Replay detection  . . . . . . . . . . . . . . . . . . . d1e15
+   6.      Assertion claims  . . . . . . . . . . . . . . . . . . . d1e15
+   6.1.    Request (initiator/UA) assertion  . . . . . . . . . . . d1e15
+   6.1.1.  "aud" (Audience)  . . . . . . . . . . . . . . . . . . . sub_r
+   6.1.2.  "exp" (Expiry time) . . . . . . . . . . . . . . . . . . sub_r
+   6.1.3.  "iat" (Issued at time)  . . . . . . . . . . . . . . . . sub_r
+   6.1.4.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange) . . sub_r
+   6.1.5.  "cbt" (Channel Binding Token) . . . . . . . . . . . . . sub_r
+   6.1.6.  "nonce" (Mutual authentication nonce) . . . . . . . . . sub_r
 
 
 
@@ -113,38 +113,38 @@ Howard & Williams      Expires September 12, 2013               [Page 2]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-   7.1.6.  "iat" (Issued at time)  . . . . . . . . . . . . . . . . d1e15
-   7.1.7.  "exp" (Expiry time) . . . . . . . . . . . . . . . . . . d1e15
-   7.2.    Response assertion  . . . . . . . . . . . . . . . . . . d1e15
-   7.2.1.  "iat" (Issued at time)  . . . . . . . . . . . . . . . . d1e16
-   7.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange) . . d1e16
-   7.2.3.  "exp" (Expiry time) . . . . . . . . . . . . . . . . . . d1e16
-   7.2.4.  "nonce" (Mutual authentication nonce) . . . . . . . . . d1e16
-   7.2.5.  "tkt" (Ticket)  . . . . . . . . . . . . . . . . . . . . d1e16
-   7.2.6.  "gss-maj" (GSS major status code) . . . . . . . . . . . d1e16
-   7.2.7.  "gss-min" (GSS minor status code) . . . . . . . . . . . d1e16
-   8.      Key derivation  . . . . . . . . . . . . . . . . . . . . d1e17
-   8.1.    Diffie-Hellman Key (DHK)  . . . . . . . . . . . . . . . d1e17
-   8.2.    Context Master Key (CMK)  . . . . . . . . . . . . . . . d1e17
-   8.3.    RP Response Key (RRK) . . . . . . . . . . . . . . . . . d1e17
-   8.4.    Context Root Key (CRK)  . . . . . . . . . . . . . . . . d1e17
-   8.5.    Authenticator Root Key (ARK)  . . . . . . . . . . . . . d1e17
-   8.6.    Authenticator Session Key (ASK) . . . . . . . . . . . . d1e17
-   9.      GSS-API Extensions  . . . . . . . . . . . . . . . . . . d1e17
-   9.1.    PRF . . . . . . . . . . . . . . . . . . . . . . . . . . d1e17
-   9.2.    Naming extensions . . . . . . . . . . . . . . . . . . . d1e18
-   9.3.    NegoEx  . . . . . . . . . . . . . . . . . . . . . . . . sub_N
-   10.     Example . . . . . . . . . . . . . . . . . . . . . . . . d1e18
-   11.     Security Considerations . . . . . . . . . . . . . . . . d1e19
-   11.1.   JavaScript  . . . . . . . . . . . . . . . . . . . . . . d1e19
-   11.2.   Host certificates for mutual authentication . . . . . . d1e19
-   12.     IANA Considerations . . . . . . . . . . . . . . . . . . d1e19
-   12.1.   OID Registry  . . . . . . . . . . . . . . . . . . . . . sub_O
-   12.2.   SASL Registry . . . . . . . . . . . . . . . . . . . . . d1e22
-   13.     References  . . . . . . . . . . . . . . . . . . . . . . ancho
-   13.1.   Normative References  . . . . . . . . . . . . . . . . . ancho
-   13.2.   Informative References  . . . . . . . . . . . . . . . . ancho
+   6.1.7.  "tkt" (Ticket identifier) . . . . . . . . . . . . . . . sub_r
+   6.2.    Response (acceptor/RP) assertion  . . . . . . . . . . . d1e16
+   6.2.1.  "iat" (Issued at time)  . . . . . . . . . . . . . . . . sub_r
+   6.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange) . . sub_r
+   6.2.3.  "exp" (Expiry time) . . . . . . . . . . . . . . . . . . sub_r
+   6.2.4.  "nonce" (Mutual authentication nonce) . . . . . . . . . sub_r
+   6.2.5.  "tkt" (Ticket)  . . . . . . . . . . . . . . . . . . . . sub_r
+   6.2.6.  "gss-maj" (GSS major status code) . . . . . . . . . . . d1e17
+   6.2.7.  "gss-min" (GSS minor status code) . . . . . . . . . . . d1e17
+   7.      Key derivation  . . . . . . . . . . . . . . . . . . . . d1e17
+   7.1.    Diffie-Hellman Key (DHK)  . . . . . . . . . . . . . . . sub_k
+   7.2.    Context Master Key (CMK)  . . . . . . . . . . . . . . . sub_k
+   7.3.    RP Response Key (RRK) . . . . . . . . . . . . . . . . . sub_k
+   7.4.    Context Root Key (CRK)  . . . . . . . . . . . . . . . . sub_k
+   7.5.    Authenticator Root Key (ARK)  . . . . . . . . . . . . . sub_k
+   7.6.    Authenticator Session Key (ASK) . . . . . . . . . . . . sub_k
+   8.      GSS-API Extensions  . . . . . . . . . . . . . . . . . . d1e18
+   8.1.    PRF . . . . . . . . . . . . . . . . . . . . . . . . . . d1e18
+   8.2.    Naming extensions . . . . . . . . . . . . . . . . . . . d1e19
+   8.3.    NegoEx  . . . . . . . . . . . . . . . . . . . . . . . . sub_N
+   9.      Example . . . . . . . . . . . . . . . . . . . . . . . . d1e19
+   10.     Security Considerations . . . . . . . . . . . . . . . . d1e20
+   10.1.   JavaScript  . . . . . . . . . . . . . . . . . . . . . . d1e20
+   10.2.   Host certificates for mutual authentication . . . . . . d1e20
+   11.     IANA Considerations . . . . . . . . . . . . . . . . . . d1e20
+   11.1.   OID Registry  . . . . . . . . . . . . . . . . . . . . . sub_O
+   11.2.   SASL Registry . . . . . . . . . . . . . . . . . . . . . d1e23
+   12.     References  . . . . . . . . . . . . . . . . . . . . . . ancho
+   12.1.   Normative References  . . . . . . . . . . . . . . . . . ancho
+   12.2.   Informative References  . . . . . . . . . . . . . . . . ancho
            Authors' Addresses  . . . . . . . . . . . . . . . . . .     0
+
 
 
 
@@ -402,10 +402,11 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    This name may contain an e-mail address, or a service principal name
    identifying an acceptor.  The encoding of service principal names is
    intended to be somewhat compatible with the Kerberos [RFC4120]
-   security protocol (without the realm name).  The following ABNF
-   defines the 'name' rule that names of this type must match.  [XXX
-   Should we reference RFC2822 here?  The Mozilla BrowserID docs sure
-   don't... -Nico]
+   security protocol (without the realm name).
+
+   The following ABNF defines the 'name' rule that names of this type
+   must match.  [XXX Should we reference RFC2822 here?  The Mozilla
+   BrowserID docs sure don't... -Nico]
 
     char-normal = %x00-2E/%x30-3F/%x41-5B/%x5D-FF
     char-escaped = "\" %x2F / "\" %x40 / "\" %x5C
@@ -443,7 +444,6 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-
 Howard & Williams      Expires September 12, 2013               [Page 8]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
@@ -458,8 +458,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
     audience = "urn:x-gss:" spn
 
-   [XXX can we request assignment of a URN outside the experimental
-   namespace?]
+   [XXX can we request assignment of a URN?]
 
 3.3.  Name Canonicalization
 
@@ -472,6 +471,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    The exported name token format for the BrowserID GSS-API mechanism is
    the same as the query form, plus the standard exported name token
    format header mandated by the GSS-API [RFC2743].
+
 
 
 
@@ -520,9 +520,9 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
          |         |          |       |                          |
          |   TBD   |  0x442C  |   D,  |  Context deletion token  |
          |         |          |       |                          |
-         |   9.3   |  0x6D2C  |   m,  | Initiator metadata token |
+         |   8.3   |  0x6D2C  |   m,  | Initiator metadata token |
          |         |          |       |                          |
-         |   9.3   |  0x4D2C  |   M,  |  Acceptor metadata token |
+         |   8.3   |  0x4D2C  |   M,  |  Acceptor metadata token |
          +---------+----------+-------+--------------------------+
 
    The token ID has a human-readable ASCII encoding for the benefit of
@@ -541,7 +541,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
         [APPLICATION 0] IMPLICIT SEQUENCE {
             thisMech MechType,
             innerToken ANY DEFINED BY thisMech
-                -- token ID || backed assertion
+                -- token ID and backed assertion
         }
         END
 
@@ -569,12 +569,19 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    The innerToken consists of the initiator context token ID
    concatenated with a backed assertion for the audience corresponding
    to the target name passed into GSS_Init_sec_context().  In addition,
-   the assertion may contain the following additional claims, which are
-   described later in this document:
+   the assertion may contain the additional claims, which are described
+   later in this document:
 
-   o  Channel binding information
+   o  Channel binding information (see Section 6.1.5)
 
-   o  ECDH parameters for session key establishment
+   o  ECDH parameters for session key establishment (see Section 6.1.4)
+
+   o  A nonce for binding the request to a response signed with a
+      different key (for mutual authentication) (see Section 6.1.6)
+
+   o  A ticket identifier for fast re-authentication using an
+      established session key rather than a BrowserID certificate (see
+      Section 6.1.7)
 
    The call to GSS_Init_sec_context() returns GSS_C_CONTINUE_NEEDED to
    indicate that a subsequent token from the acceptor is expected.
@@ -582,8 +589,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 4.2.  Acceptor context token
 
    Upon receiving a context token from the initiator, the acceptor
-   validates that the token is well formed and contains the correct
-   mechanism OID and token type.
+   validates that the token is well formed and contains a valid
+   BrowserID mechanism OID and the initiator context token ID.
 
    The acceptor then verifies the backed identity assertion per the
    BrowserID specification.  This includes validating the expiry times,
@@ -596,19 +603,12 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    If the [RFC3961] encryption type for the selected mechanism is not
    ENCTYPE_NULL, the acceptor generates a ECDH public key using the
-   parameters received from the client, and from it derives the RP
-   Response Key (RRK).  The acceptor then generates a response assertion
-   containing the ECDH public key and context expiry time.  The response
-   assertion is signed using the RP Response Key (RRK) unless mutual
-   authentication is desired, in which case it may be signed in the
-   acceptor's private key (see below).  The response token is encoded as
-   a backed assertion, even though it will typically have a certificate
-   count of zero (because the signing key is the shared RRK, or because
-   an X.509 certificate is included directly in the assertion's JWT
-   header).
-
-   Finally, the context root key (CRK) is derived from the ECDH shared
-   secret and GSS_S_COMPLETE is returned, along with the initiator name
+   parameters received from the client (see Section 6.2.2), and from it
+   derives the RP Response Key (RRK) (see Section 7.3).  The acceptor
+   then generates a response assertion containing the generated ECDH
+   public key and context expiry time.  The response assertion is signed
+   using the RP Response Key (RRK) unless mutual authentication is
+   desired, in which case it may be signed in the acceptor's private key
 
 
 
@@ -617,6 +617,13 @@ Howard & Williams      Expires September 12, 2013              [Page 11]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
+   (see Section 4.4).  The response token is encoded as a backed
+   assertion, even though it will typically have a certificate count of
+   zero (because the signing key is the shared RRK, or because an X.509
+   certificate is included directly in the assertion's JWT header).
+
+   Finally, the context root key (CRK) is derived from the ECDH shared
+   secret and GSS_S_COMPLETE is returned, along with the initiator name
    from the verified assertion.  Other assertion/certificate attributes
    MAY be made available via GSS_Get_name_attribute().
 
@@ -639,15 +646,18 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 4.4.  Extensions for mutual authentication
 
    Mutual authentication allows the acceptor to be authenticated to the
-   initiator.  The initiator may return GSS_C_MUTUAL_FLAG flag to the
-   caller.  Support for mutual authentication is OPTIONAL.
+   initiator.  The mechanism may return GSS_C_MUTUAL_FLAG flag to the
+   caller if mutual authentication succeeded.  Support for mutual
+   authentication is OPTIONAL.
 
    The base protocol is extended as follows to support this:
 
 4.4.1.  Initiator mutual authentication context token
 
-   If the initiator requested GSS_C_MUTUAL_FLAG, a nonce is included in
-   the assertion to bind the initiator and acceptor tokens.
+   If the initiator requested GSS_C_MUTUAL_FLAG, a nonce (see
+   Section 6.1.6) is included in the assertion to bind the initiator and
+   acceptor tokens.  The presence of this nonce indicates that mutual
+   authentication is desired.
 
 4.4.2.  Acceptor mutual authentication context token
 
@@ -656,16 +666,6 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    rather than the RP Response Key (RRK).  The response includes the
    nonce from the initiator's assertion.
 
-   While the response is a backed assertion, in order to take advantage
-   of existing keying infrastructures BrowserID certificates SHOULD NOT
-   be included in the backed assertion.  Instead, an X.509 certificate
-   SHOULD be included as a value for the "x5c" header attribute in the
-   assertion (see [I-D.ietf-jose-json-web-signature] 4.1.6).
-
-
-
-
-
 
 
 Howard & Williams      Expires September 12, 2013              [Page 12]
@@ -673,12 +673,19 @@ Howard & Williams      Expires September 12, 2013              [Page 12]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
+   While the response is a backed assertion, in order to take advantage
+   of existing keying infrastructures BrowserID certificates SHOULD NOT
+   be included in the backed assertion.  Instead, an X.509 certificate
+   SHOULD be included as a value for the "x5c" header attribute in the
+   assertion (see [I-D.ietf-jose-json-web-signature] 4.1.6).  This may
+   be changed in a future revision of this specification.
+
 4.4.3.  Initiator mutual authentication context completion
 
-   The initiator verifies the nonce and the assertion signature, and
-   validates the certificate chain (which SHOULD be an X.509 certificate
-   chain, in which case trust anchors SHOULD be configurable both
-   system-wide and specifically for the BrowserID mechanism).
+   The initiator verifies the assertion signature and that the nonce
+   matches, and validates the certificate chain (for X.509 certificate
+   chains, trust anchors SHOULD be configurable both system-wide and
+   specifically for the BrowserID mechanism).
 
    If X.509 certificates are used, then either the audience URI must be
    present in the URI subjectAltName, or the host component must be
@@ -690,7 +697,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    the host component must match the "hostname" key.
 
    [XXX when using X.509 certificates, do we need to say anything about
-   key usage?]
+   certificate usage?]
 
 4.4.4.  Acceptor certificate advertisement
 
@@ -701,26 +708,19 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 4.5.  Extensions for fast re-authentication
 
-   Fast re-authentication allows a context to be established without
-   acquiring a new BrowserID assertion.  Instead an assertion signed
-   with a secret key derived from the initial ECDH key exchange is used.
-   Re-authentication lifetime SHOULD be site configurable, but by
-   default SHOULD match the user's certificate expiry time.  Support for
-   fast re-authentication is OPTIONAL and is indicated by the acceptor
-   returning a ticket in the response assertion.
+   Fast re-authentication allows a security context to be established
+   without acquiring a new BrowserID assertion.  Instead an assertion
+   signed with a secret key derived from the initial ECDH key exchange
+   is used.  Re-authentication assertions implicitly expire a short
+   interval after the issue time; five minutes is suggested.  This
+   lifetime is distinct from the ticket lifetime, which default SHOULD
+   match the user's certificate expiry time (but also SHOULD be
+   configurable).
 
-4.5.1.  Ticket generation
-
-   If the acceptor supports re-authentication, the following steps are
-   added to the "acceptor to initiator" flow described above.
-
-   1.  A unique ticket identifier is generated.  The acceptor must be
-       able to use this to retrieve the authenticator root key, ticket
-       expiry time, mutual authentication state, and any other
-       attributes re-authenticated acceptor contexts will need.
-
-   2.  The acceptor creates a JSON object containing the ticket
-       identifier and expiry time and returns it in the response to the
+   The ticket expiry time must be securely available to the acceptor,
+   along with the subject, issuer, audience, expiry time and
+   authenticator root key (ARK) of the original assertion.  One
+   implementation choice may be to use the opaque ticket identifier as a
 
 
 
@@ -729,7 +729,29 @@ Howard & Williams      Expires September 12, 2013              [Page 13]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-       initiator.
+   key into a dictionary containing this information (possibly sharing
+   the replay cache).  Another would be to encrypt this information in a
+   long-term secret only known to the acceptor and encode the resulting
+   ciphertext in the opaque ticket identifier.
+
+   The re-authentication assertion is signed with a HMAC using the ARK
+   (see Section 7.5), rather than a user's BrowserID certificate.
+
+   Support for fast re-authentication is OPTIONAL and is indicated by
+   the acceptor returning a ticket in the response assertion.
+
+4.5.1.  Ticket generation
+
+   If the acceptor supports re-authentication, the following steps are
+   added to Section 4.2:
+
+   1.  A unique ticket identifier is generated.  The acceptor must be
+       able to use this to retrieve any attributes re-authenticated
+       acceptor contexts will need.
+
+   2.  The acceptor creates a JSON object containing the ticket
+       identifier and expiry time and returns it in the response to the
+       initiator (see Section 6.2.5).
 
    The initiator MAY cache such tickets, along with the ARK and expiry
    time, received from the acceptor in order to re-authenticate to it at
@@ -742,15 +764,26 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    flow is performed, otherwise:
 
    1.  The initiator generates an authenticator containing: the current
-       time, a random nonce, the ticket identifier, and the target name
-       (audience) and channel bindings requested by the application.
+       time ( Section 6.1.3), a random nonce ( Section 6.1.6), the
+       ticket identifier ( Section 6.1.7, and the target name (
+       Section 6.1.1) and any channel bindings ( Section 6.1.5)
+       requested by the application.
 
-   2.  The initiator signs the authenticator using its copy of the ARK,
+   2.  The initiator signs the authenticator using its copy of the ARK ,
        using the appropriate hash algorithm associated with the original
        context (only HS256 is presently specified).
 
    3.  The authenticator is packed into a backed assertion with no
        certificates.
+
+
+
+
+
+Howard & Williams      Expires September 12, 2013              [Page 14]
+
+Internet-Draft          BrowserID SASL & GSS-API              March 2013
+
 
    4.  The initiator generates an authenticator session key to be used
        in verifying the response and in deriving the context root key.
@@ -770,24 +803,18 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    3.  The acceptor verifies the authenticator using its copy of the
        ARK.
 
-   4.  The acceptor generates the ASK and derived the RRK and CRK from
-       this.
+   4.  The acceptor generates the ASK (see Section 7.6) and derives the
+       RRK and CRK from this (see Section 7.3 and Section 7.4,
+       respectively).
 
    5.  The acceptor generates a response and signs and returns it.
 
    If the ticket cannot be found, or the authentication fails, the
    acceptor MAY return an error code in its response, permitting the
-
-
-
-Howard & Williams      Expires September 12, 2013              [Page 14]
-
-Internet-Draft          BrowserID SASL & GSS-API              March 2013
-
-
    initiator to recover and fallback to generating a BrowserID
-   assertion.  It MAY also include its local timestamp so that the
-   initiator can perform clock skew compensation.
+   assertion.  It MAY also include its local timestamp (see
+   Section 6.2.1) so that the initiator can perform clock skew
+   compensation.
 
 4.5.4.  Interaction with mutual authentication
 
@@ -798,33 +825,6 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    As such, the initiator's ticket cache must store the mutual
    authentication state of the original context.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -897,65 +897,9 @@ Howard & Williams      Expires September 12, 2013              [Page 16]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-6.  Fast re-authentication
+6.  Assertion claims
 
-   When using fast re-authentication, the payload of the initiator
-   assertion contains the following claims:
-
- iat = issue time
- nonce = 64-bit base64 URL encoded random nonce
- tkt = opaque ticket identifier
- aud = audience containing service principal name
- cbt = OPTIONAL; base64 URL encoding of channel binding application-specific data
-
-   The re-authentication assertion has an implicit expiry of a short
-   interval after the issue time.
-
-   The ticket expiry time must be securely available to the acceptor,
-   along with the subject, issuer, audience, expiry time and ARK of the
-   original assertion.  One implementation choice may be to use the
-   opaque ticket identifier as a key into a dictionary containing this
-   information (possibly sharing the replay cache).  Another would be to
-   encrypt this information in a long-term secret only known to the
-   acceptor and encode the resulting ciphertext in the opaque ticket
-   identifier.
-
-   The fast re-authentication assertion is signed with a HMAC using the
-   authenticator root key (ARK).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Howard & Williams      Expires September 12, 2013              [Page 17]
-
-Internet-Draft          BrowserID SASL & GSS-API              March 2013
-
-
-7.  Assertion claims
-
-7.1.  Request assertion
+6.1.  Request (initiator/UA) assertion
 
    These claims are included in the assertion sent to the acceptor and
    are authenticated by the initiator's private key and certificate
@@ -975,7 +919,50 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    The request assertion may contain the following claims:
 
-7.1.1.  "cbt" (Channel Binding Token)
+6.1.1.  "aud" (Audience)
+
+   The audience, formatted as a URN containing the acceptor's principal
+   name.  This claim is REQUIRED.
+
+6.1.2.  "exp" (Expiry time)
+
+   This contains the time when the assertion expires, in milliseconds
+   since January 1, 1970.  This claim is REQUIRED when the assertion is
+   signed with a user's BrowserID certificate; it MUST be ignored if
+   present in a re-authentication assertion.
+
+6.1.3.  "iat" (Issued at time)
+
+   This contains the time the assertion was issued (in milliseconds
+   since January 1, 1970), when the assertion is being used for fast re-
+   authentication.  The acceptor MUST validate that the ticket was
+   recently issued (a recommended interval is five minutes).  This claim
+   is REQUIRED when the assertion is a re-authentication assertion and
+   SHOULD be ignored otherwise.
+
+6.1.4.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange)
+
+   These contain ECDH key parameters for deriving a shared session key
+   with the relying party: "crv" contains the curve, "x" the X
+   coordinate and "y" the Y coordinate (see .I-D.ietf-oauth-json-web-
+
+
+
+Howard & Williams      Expires September 12, 2013              [Page 17]
+
+Internet-Draft          BrowserID SASL & GSS-API              March 2013
+
+
+   token section 5.2).
+
+   The curve should have an equivalent strength to the negotiated
+   [RFC4121] encryption type: at least P-256 MUST be used for browserid-
+   aes128, and P-521 for browserid-aes256.  This claim is REQUIRED
+   unless the associated encryption type is ENCTYPE_NULL, or there is
+   already a prior session key (as is the case for re-authentication
+   assertions).
+
+6.1.5.  "cbt" (Channel Binding Token)
 
    This contains a channel binding token for binding the GSS context to
    an outer channel (e.g. see [RFC5929]).  Its value is the base64 URL
@@ -983,23 +970,36 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    bindings passed to GSS_Init_sec_context() or
    GSS_Accept_sec_context().  This claim is OPTIONAL.
 
-7.1.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange)
-
-   These contain ECDH key parameters for deriving a shared session key
-   with the relying party: "crv" contains the curve, "x" the X
-   coordinate and "y" the Y coordinate (see .I-D.ietf-oauth-json-web-
-   token section 5.2).
-
-   The curve should have an equivalent strength to the negotiated
-   [RFC4121] encryption type: at least P-256 MUST be used for browserid-
-   aes128, and P-521 for browserid-aes256.  This claim is REQUIRED
-   unless the associated encryption type is ENCTYPE_NULL.
-
-7.1.3.  "nonce" (Mutual authentication nonce)
+6.1.6.  "nonce" (Mutual authentication nonce)
 
    This is a random quantity of at least 64 bits, base 64 URL encoded,
-   which is used to bind the initiator and acceptor assertions, in the
-   case where mutual authentication is desired.  This claim is OPTIONAL.
+   which is used to bind the request and response assertions in the case
+   a non-ephemeral key is used to sign the response assertion (i.e. for
+   re-authentication assertions and mutual authentication).  This claim
+   is REQUIRED for re-authentication assertions or if mutual
+   authentication was desired.  Otherwise, i.e. for certificate signed
+   assertions where mutual authentication is unavailable, it MUST be
+   ignored.
+
+6.1.7.  "tkt" (Ticket identifier)
+
+   This is an opaque ticket identifier, when the assertion is being used
+   for fast re-authentication.  This matches the "jti" value sent back
+   in the response assertion ticket.  This claim is REQUIRED for re-
+   authentication assertions, otherwise it the assertion MUST be
+   rejected.
+
+6.2.  Response (acceptor/RP) assertion
+
+   The response assertion is sent from the acceptor to the initiator to
+   provide key exchange, and either key confirmation or mutual
+   authentication.  It is formatted as a backed assertion, however in
+   the current specification it consists of a single assertion with zero
+   certificates; that is, it is "unbacked".  It is encoded as a backed
+   assertion in order to provide future support for mutual
+   authentication using native BrowserID certificates.  Such support is
+   not defined by this specification; implementations of this version of
+   the specification SHOULD reject backed response assertions.
 
 
 
@@ -1009,47 +1009,11 @@ Howard & Williams      Expires September 12, 2013              [Page 18]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-7.1.4.  "aud" (Audience)
-
-   The audience, formatted as a URN containing the acceptor's principal
-   name.  This claim is REQUIRED.
-
-7.1.5.  "tkt" (Ticket identifier)
-
-   The opaque ticket identifier, when the assertion is being used for
-   fast re-authentication.  This matches the "jti" value sent back in
-   the response assertion ticket.  This claim is OPTIONAL.
-
-7.1.6.  "iat" (Issued at time)
-
-   This contains the time the assertion was issued (in milliseconds
-   since January 1, 1970), when the assertion is being used for fast re-
-   authentication.  The acceptor MUST validate that the ticket was
-   recently issued (a recommended interval is five minutes).  This claim
-   is REQUIRED when the assertion is a re-authentication assertion.
-
-7.1.7.  "exp" (Expiry time)
-
-   This contains the time when the assertion expires, in milliseconds
-   since January 1, 1970.  This claim is REQUIRED when the assertion is
-   signed with a user's BrowserID certificate; it MUST be ignored if
-   present in a re-authentication assertion.
-
-7.2.  Response assertion
-
-   The response assertion is sent from the acceptor to the initiator.
-   It is formatted as a backed assertion, however in the current
-   specification it consists of a single assertion with zero
-   certificates; that is, it is "unbacked".  It is encoded as a backed
-   assertion in order to provide future support for mutual
-   authentication using native BrowserID certificates.  Such support is
-   not defined by this specification; implementations SHOULD reject
-   backed response assertions.
-
-   In the case of a key successfully being negotiated, it is signed with
-   the RP Response Key (RRK).  Alternatively, it may be signed with the
-   acceptor's private RSA or DSA key.  In this case, an X.509
-   certificate of is included in the "x5c" attribute of the JWT header.
+   In the case of a key successfully being negotiated, the response
+   assertion is signed with the RP Response Key (RRK) (see Section 7.3).
+   Alternatively, it may be signed with the acceptor's private RSA or
+   DSA key.  In this case, the acceptor's X.509 certificate is included
+   in the "x5c" attribute of the JWT header.
 
    The HMAC-SHA256 (HS256) algorithm MUST be supported by implementors
    of this specification.
@@ -1057,14 +1021,6 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    If a key is unavailable, then the signature is absent and the value
    of the "alg" header claim is "none".  No signature verification is
    required in this case, however the initiator MUST NOT return
-
-
-
-Howard & Williams      Expires September 12, 2013              [Page 19]
-
-Internet-Draft          BrowserID SASL & GSS-API              March 2013
-
-
    GSS_C_COMPLETE unless the associated RFC3961 encryption type for the
    mechanism OID is ENCTYPE_NULL.
 
@@ -1088,40 +1044,41 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    The response assertion payload may contain the following claims:
 
-7.2.1.  "iat" (Issued at time)
+6.2.1.  "iat" (Issued at time)
 
    The current acceptor time, in milliseconds since January 1, 1970.
    This allows the initiator to compensate for clock differences when
    generating assertions.  This claim is OPTIONAL.
 
-7.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange)
+6.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key exchange)
 
    This contains a JSON object containing the coordinates of the
-   acceptor's ECDH public key.  This claim is REQUIRED unless the
-   associated encryption type is ENCTYPE_NULL.
+   acceptor's ECDH public key: "x" contains the X coordinate and "y" the
+   Y coordinate (see .I-D.ietf-oauth-json-web-token section 5.2).  This
+   claim is REQUIRED unless the associated encryption type is
+   ENCTYPE_NULL, or there is already an established session key, as is
 
-7.2.3.  "exp" (Expiry time)
+
+
+Howard & Williams      Expires September 12, 2013              [Page 19]
+
+Internet-Draft          BrowserID SASL & GSS-API              March 2013
+
+
+   the case for re-authentication assertions.
+
+6.2.3.  "exp" (Expiry time)
 
    This contains the time when the context expires, in milliseconds
    since January 1, 1970.  This claim is OPTIONAL; the initiator should
    use the certificate expiry time if absent.
 
-7.2.4.  "nonce" (Mutual authentication nonce)
+6.2.4.  "nonce" (Mutual authentication nonce)
 
-   The nonce as received from the initiator.  This SHOULD NOT be present
+   The nonce as received from the initiator.  This MUST NOT be present
    unless a nonce was received from the initiator.
 
-
-
-
-
-
-Howard & Williams      Expires September 12, 2013              [Page 20]
-
-Internet-Draft          BrowserID SASL & GSS-API              March 2013
-
-
-7.2.5.  "tkt" (Ticket)
+6.2.5.  "tkt" (Ticket)
 
    This contains a JSON object that may be used for re-authenticating to
    the acceptor without acquiring an assertion.  Its usage is optional.
@@ -1129,13 +1086,13 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    a re-authentication assertion; and "exp", the expiry time of the
    ticket.  This claim is OPTIONAL.
 
-7.2.6.  "gss-maj" (GSS major status code)
+6.2.6.  "gss-maj" (GSS major status code)
 
    This contains a GSS major status code represented as a number.  It
    MUST not be present if the acceptor did not return an error.  This
    claim is OPTIONAL.
 
-7.2.7.  "gss-min" (GSS minor status code)
+6.2.7.  "gss-min" (GSS minor status code)
 
    This contains a GSS minor status code represented as a number.  It
    MUST not be present if the acceptor did not return an error and
@@ -1159,25 +1116,12 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-Howard & Williams      Expires September 12, 2013              [Page 21]
+Howard & Williams      Expires September 12, 2013              [Page 20]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-8.  Key derivation
+7.  Key derivation
 
    The following algorithm is used as the base algorithm for deriving
    keys:
@@ -1189,39 +1133,95 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    SHA-256.  Note that the inclusion of K in the HMAC input is for
    interoperability with some crypto implementations.
 
-8.1.  Diffie-Hellman Key (DHK)
+7.1.  Diffie-Hellman Key (DHK)
 
    This key is the shared secret resulting from the ECDH exchange.  Its
    length corresponds to the selected EC curve.  It is never used
    without derivation and thus may be used with implementations that do
    not expose the DH value directly.
 
-8.2.  Context Master Key (CMK)
+7.2.  Context Master Key (CMK)
 
    This is the Diffie-Hellman Key (DHK) for all initially authenticated
    contexts and the Authenticator Session Key (ASK) for re-authenticated
    contexts.
 
-8.3.  RP Response Key (RRK)
+7.3.  RP Response Key (RRK)
 
    The response from the acceptor is signed using this key for fresh
-   assertions:
+   assertions, unless mutual authentication is being performed (in which
+   case a private key signature is used):
 
    RRK = browserid-derive-key(CMK, "RRK")
 
-8.4.  Context Root Key (CRK)
+7.4.  Context Root Key (CRK)
 
    The context root key is used for [RFC4121] message protection
    services, e.g.  GSS_Wrap() and GSS_Get_MIC().
 
    CRK = random-to-key(browserid-derive-key(CMK, "CRK"))
 
-8.5.  Authenticator Root Key (ARK)
+7.5.  Authenticator Root Key (ARK)
 
-   The authenticator root key (ARK) is used to sign authenticators used
-   for fast re-authentication.  It is derived as follows:
+   The authenticator root key (ARK) is used to sign assertions used for
+   fast re-authentication.  It is derived as follows:
 
    ARK = browserid-derive-key(DHK, "ARK")
+
+
+
+
+
+Howard & Williams      Expires September 12, 2013              [Page 21]
+
+Internet-Draft          BrowserID SASL & GSS-API              March 2013
+
+
+7.6.  Authenticator Session Key (ASK)
+
+   The authenticator session key (ASK) is used instead of the DHK for
+   re-authenticated contexts.  It is derived as follows:
+
+   ASK = browserid-derive-key(ARK, reauth-assertion-as-jwt)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1233,69 +1233,13 @@ Howard & Williams      Expires September 12, 2013              [Page 22]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-8.6.  Authenticator Session Key (ASK)
+8.  GSS-API Extensions
 
-   The authenticator session key (ASK) is used instead of the DHK for
-   re-authenticated contexts.  It is derived as follows:
-
-   ASK = browserid-derive-key(ARK, authenticator-as-jwt)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Howard & Williams      Expires September 12, 2013              [Page 23]
-
-Internet-Draft          BrowserID SASL & GSS-API              March 2013
-
-
-9.  GSS-API Extensions
-
-9.1.  PRF
+8.1.  PRF
 
    See [RFC4402].
 
-9.2.  Naming extensions
+8.2.  Naming extensions
 
    The acceptor MAY surface attributes from the assertion and any
    certificates using GSS_Get_name_attribute().  The URN prefix is
@@ -1311,7 +1255,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    Attributes from certificates SHOULD be marked as authenticated.
 
-9.3.  NegoEx
+8.3.  NegoEx
 
    GSS BrowserID supports [I-D.zhu-negoex] for advertising RP
    certificates used in mutual authentication.
@@ -1340,7 +1284,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 24]
+Howard & Williams      Expires September 12, 2013              [Page 23]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1396,12 +1340,12 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 25]
+Howard & Williams      Expires September 12, 2013              [Page 24]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-10.  Example
+9.  Example
 
    Suppose a mail user agent for the user lukeh@lukktone.com wishes to
    authenticate to an IMAP server rand.mit.de.padl.com.  They do not
@@ -1452,7 +1396,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 26]
+Howard & Williams      Expires September 12, 2013              [Page 25]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1508,7 +1452,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 27]
+Howard & Williams      Expires September 12, 2013              [Page 26]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1564,7 +1508,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 28]
+Howard & Williams      Expires September 12, 2013              [Page 27]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1620,7 +1564,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 29]
+Howard & Williams      Expires September 12, 2013              [Page 28]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1676,7 +1620,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 30]
+Howard & Williams      Expires September 12, 2013              [Page 29]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1732,7 +1676,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 31]
+Howard & Williams      Expires September 12, 2013              [Page 30]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1788,7 +1732,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 32]
+Howard & Williams      Expires September 12, 2013              [Page 31]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1844,22 +1788,22 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 33]
+Howard & Williams      Expires September 12, 2013              [Page 32]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-11.  Security Considerations
+10.  Security Considerations
 
    This section only addresses security considerations associated with
    BrowserID and SASL and GSS-API.
 
-11.1.  JavaScript
+10.1.  JavaScript
 
    There are security issues associated with the use of JavaScript for
    cryptography.
 
-11.2.  Host certificates for mutual authentication
+10.2.  Host certificates for mutual authentication
 
    Allowing a match on only the DNS subjectAltName in an acceptor's
    X.509 certificate permits different services on the same host to
@@ -1900,16 +1844,16 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 34]
+Howard & Williams      Expires September 12, 2013              [Page 33]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-12.  IANA Considerations
+11.  IANA Considerations
 
    This specification creates a number of IANA registries.
 
-12.1.  OID Registry
+11.1.  OID Registry
 
    Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID
    (1.3.6.1.4.1.5322.24)
@@ -1928,21 +1872,38 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    iso.org.dod.internet.private.enterprise.padl.gssBrowserID.mechanisms
    (1.3.6.1.4.1.5322.24.1)
 
-   +---------+----------------------+----------------------------------+
-   | Decimal |         Name         |            Description           |
-   +---------+----------------------+----------------------------------+
-   |    0    |  gss-browserid-null  |    The NULL security mechanism   |
-   |         |                      |                                  |
-   |    17   | gss-browserid-aes128 |    The aes128-cts-hmac-sha1-96   |
-   |         |                      |             mechanism            |
-   |         |                      |                                  |
-   |    18   | gss-browserid-aes256 |    The aes256-cts-hmac-sha1-96   |
-   |         |                      |             mechanism            |
-   +---------+----------------------+----------------------------------+
+   +-------+------------------+---------------------+-------+----------+
+   | Decim |       Name       |     Description     |  ECDH | Symmetri |
+   |   al  |                  |                     | curve |  c hash  |
+   +-------+------------------+---------------------+-------+----------+
+   |   0   | gss-browserid-nu |  The NULL security  |  N/A  |    N/A   |
+   |       |        ll        |      mechanism      |       |          |
+   |       |                  |                     |       |          |
+   |   17  | gss-browserid-ae |         The         | P-256 |   HS256  |
+   |       |       s128       | aes128-cts-hmac-sha |       |          |
+   |       |                  |    1-96 mechanism   |       |          |
+   |       |                  |                     |       |          |
+   |   18  | gss-browserid-ae |         The         | P-521 |   HS256  |
+   |       |       s256       | aes256-cts-hmac-sha |       |          |
+   |       |                  |    1-96 mechanism   |       |          |
+   +-------+------------------+---------------------+-------+----------+
 
    Prefix:
    iso.org.dod.internet.private.enterprise.padl.gssBrowserID.nametypes
    (1.3.6.1.4.1.5322.24.2)
+
+
+
+
+
+
+
+
+
+Howard & Williams      Expires September 12, 2013              [Page 34]
+
+Internet-Draft          BrowserID SASL & GSS-API              March 2013
+
 
          +---------+------------------------------+-------------+
          | Decimal |             Name             | Description |
@@ -1952,16 +1913,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
          |    1    | GSS_C_NT_BROWSERID_PRINCIPAL |    3.1.1    |
          +---------+------------------------------+-------------+
 
-
-
-
-
-Howard & Williams      Expires September 12, 2013              [Page 35]
-
-Internet-Draft          BrowserID SASL & GSS-API              March 2013
-
-
-12.2.  SASL Registry
+11.2.  SASL Registry
 
    Subject: Registration of SASL mechanisms BROWSERID-AES128 and
    BROWSERID-AES128-PLUS
@@ -2004,22 +1956,14 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-
-
-
-
-
-
-
-
-Howard & Williams      Expires September 12, 2013              [Page 36]
+Howard & Williams      Expires September 12, 2013              [Page 35]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-13.  References
+12.  References
 
-13.1.  Normative References
+12.1.  Normative References
 
    [RFC2743]  Linn, J., "Generic Security Service Application Program
               Interface Version 2, Update 1", RFC 2743, January 2000.
@@ -2068,7 +2012,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 37]
+Howard & Williams      Expires September 12, 2013              [Page 36]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -2092,7 +2036,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
               mail: Part I - message encipherment and authentication
               procedures", RFC 1113, August 1989.
 
-13.2.  Informative References
+12.2.  Informative References
 
    [RFC4120]  Neuman, C., Yu, T., Hartman, S., and K. Raeburn, "The
               Kerberos Network Authentication Service (V5)", RFC 4120,
@@ -2124,7 +2068,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 38]
+Howard & Williams      Expires September 12, 2013              [Page 37]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -2180,5 +2124,5 @@ Authors' Addresses
 
 
 
-Howard & Williams      Expires September 12, 2013              [Page 39]
+Howard & Williams      Expires September 12, 2013              [Page 38]
 

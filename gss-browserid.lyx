@@ -1028,7 +1028,10 @@ RFC4120
 \end_inset
 
  security protocol (without the realm name).
- The following ABNF defines the 'name' rule that names of this type must
+\end_layout
+
+\begin_layout Standard
+The following ABNF defines the 'name' rule that names of this type must
  match.
  [XXX Should we reference RFC2822 here? The Mozilla BrowserID docs sure
  don't...
@@ -1200,7 +1203,7 @@ status open
 \end_layout
 
 \begin_layout Standard
-[XXX can we request assignment of a URN outside the experimental namespace?]
+[XXX can we request assignment of a URN?]
 \end_layout
 
 \begin_layout Subsection
@@ -1591,7 +1594,7 @@ status open
 
 \begin_layout Plain Layout
 
-             -- token ID || backed assertion
+             -- token ID and backed assertion
 \end_layout
 
 \begin_layout Plain Layout
@@ -1648,16 +1651,54 @@ RFC4121
 The innerToken consists of the initiator context token ID concatenated with
  a backed assertion for the audience corresponding to the target name passed
  into GSS_Init_sec_context().
- In addition, the assertion may contain the following additional claims,
- which are described later in this document:
+ In addition, the assertion may contain the additional claims, which are
+ described later in this document:
 \end_layout
 
 \begin_layout Itemize
-Channel binding information
+Channel binding information (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-cbt"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Itemize
-ECDH parameters for session key establishment
+ECDH parameters for session key establishment (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-ecdh"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+A nonce for binding the request to a response signed with a different key
+ (for mutual authentication) (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-nonce"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+A ticket identifier for fast re-authentication using an established session
+ key rather than a BrowserID certificate (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-tkt"
+
+\end_inset
+
+)
 \end_layout
 
 \begin_layout Standard
@@ -1677,8 +1718,8 @@ Acceptor context token
 
 \begin_layout Standard
 Upon receiving a context token from the initiator, the acceptor validates
- that the token is well formed and contains the correct mechanism OID and
- token type.
+ that the token is well formed and contains a valid BrowserID mechanism
+ OID and the initiator context token ID.
 \end_layout
 
 \begin_layout Standard
@@ -1707,13 +1748,34 @@ RFC3961
 \end_inset
 
  encryption type for the selected mechanism is not ENCTYPE_NULL, the acceptor
- generates a ECDH public key using the parameters received from the client,
- and from it derives the RP Response Key (RRK).
- The acceptor then generates a response assertion containing the ECDH public
- key and context expiry time.
+ generates a ECDH public key using the parameters received from the client
+ (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:response-ecdh"
+
+\end_inset
+
+), and from it derives the RP Response Key (RRK) (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-RRK"
+
+\end_inset
+
+).
+ The acceptor then generates a response assertion containing the generated
+ ECDH public key and context expiry time.
  The response assertion is signed using the RP Response Key (RRK) unless
  mutual authentication is desired, in which case it may be signed in the
- acceptor's private key (see below).
+ acceptor's private key (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Extensions-for-mutual"
+
+\end_inset
+
+).
  The response token is encoded as a backed assertion, even though it will
  typically have a certificate count of zero (because the signing key is
  the shared RRK, or because an X.509 certificate is included directly in
@@ -1729,6 +1791,12 @@ ttribute().
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Initiator-context-completion"
+
+\end_inset
+
 Initiator context completion
 \end_layout
 
@@ -1754,12 +1822,19 @@ LETE is returned to indicate the user is authenticated and the context is
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Extensions-for-mutual"
+
+\end_inset
+
 Extensions for mutual authentication
 \end_layout
 
 \begin_layout Standard
 Mutual authentication allows the acceptor to be authenticated to the initiator.
- The initiator may return GSS_C_MUTUAL_FLAG flag to the caller.
+ The mechanism may return GSS_C_MUTUAL_FLAG flag to the caller if mutual
+ authentication succeeded.
  Support for mutual authentication is OPTIONAL.
 \end_layout
 
@@ -1772,8 +1847,15 @@ Initiator mutual authentication context token
 \end_layout
 
 \begin_layout Standard
-If the initiator requested GSS_C_MUTUAL_FLAG, a nonce is included in the
- assertion to bind the initiator and acceptor tokens.
+If the initiator requested GSS_C_MUTUAL_FLAG, a nonce (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-nonce"
+
+\end_inset
+
+) is included in the assertion to bind the initiator and acceptor tokens.
+ The presence of this nonce indicates that mutual authentication is desired.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1803,6 +1885,7 @@ I-D.ietf-jose-json-web-signature
 \end_inset
 
  4.1.6).
+ This may be changed in a future revision of this specification.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1810,10 +1893,10 @@ Initiator mutual authentication context completion
 \end_layout
 
 \begin_layout Standard
-The initiator verifies the nonce and the assertion signature, and validates
- the certificate chain (which SHOULD be an X.509 certificate chain, in which
- case trust anchors SHOULD be configurable both system-wide and specifically
- for the BrowserID mechanism).
+The initiator verifies the assertion signature and that the nonce matches,
+ and validates the certificate chain (for X.509 certificate chains, trust
+ anchors SHOULD be configurable both system-wide and specifically for the
+ BrowserID mechanism).
 \end_layout
 
 \begin_layout Standard
@@ -1829,7 +1912,7 @@ If BrowserID certificates are used, then either the audience URI must match
 \end_layout
 
 \begin_layout Standard
-[XXX when using X.509 certificates, do we need to say anything about key
+[XXX when using X.509 certificates, do we need to say anything about certificate
  usage?]
 \end_layout
 
@@ -1849,14 +1932,43 @@ Extensions for fast re-authentication
 \end_layout
 
 \begin_layout Standard
-Fast re-authentication allows a context to be established without acquiring
- a new BrowserID assertion.
+Fast re-authentication allows a security context to be established without
+ acquiring a new BrowserID assertion.
  Instead an assertion signed with a secret key derived from the initial
  ECDH key exchange is used.
- Re-authentication lifetime SHOULD be site configurable, but by default
- SHOULD match the user's certificate expiry time.
- Support for fast re-authentication is OPTIONAL and is indicated by the
- acceptor returning a ticket in the response assertion.
+ Re-authentication assertions implicitly expire a short interval after the
+ issue time; five minutes is suggested.
+ This lifetime is distinct from the ticket lifetime, which default SHOULD
+ match the user's certificate expiry time (but also SHOULD be configurable).
+\end_layout
+
+\begin_layout Standard
+The ticket expiry time must be securely available to the acceptor, along
+ with the subject, issuer, audience, expiry time and authenticator root
+ key (ARK) of the original assertion.
+ One implementation choice may be to use the opaque ticket identifier as
+ a key into a dictionary containing this information (possibly sharing the
+ replay cache).
+ Another would be to encrypt this information in a long-term secret only
+ known to the acceptor and encode the resulting ciphertext in the opaque
+ ticket identifier.
+\end_layout
+
+\begin_layout Standard
+The re-authentication assertion is signed with a HMAC using the ARK (see
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-ARK"
+
+\end_inset
+
+), rather than a user's BrowserID certificate.
+\end_layout
+
+\begin_layout Standard
+Support for fast re-authentication is OPTIONAL and is indicated by the acceptor
+ returning a ticket in the response assertion.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1865,19 +1977,32 @@ Ticket generation
 
 \begin_layout Standard
 If the acceptor supports re-authentication, the following steps are added
- to the "acceptor to initiator" flow described above.
+ to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Acceptor-context-token"
+
+\end_inset
+
+:
 \end_layout
 
 \begin_layout Enumerate
 A unique ticket identifier is generated.
- The acceptor must be able to use this to retrieve the authenticator root
- key, ticket expiry time, mutual authentication state, and any other attributes
- re-authenticated acceptor contexts will need.
+ The acceptor must be able to use this to retrieve any attributes re-authenticat
+ed acceptor contexts will need.
 \end_layout
 
 \begin_layout Enumerate
 The acceptor creates a JSON object containing the ticket identifier and
- expiry time and returns it in the response to the initiator.
+ expiry time and returns it in the response to the initiator (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:response-tkt"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
@@ -1897,15 +2022,48 @@ The initiator looks in its ticket cache for an unexpired ticket for the
 \end_layout
 
 \begin_layout Enumerate
-The initiator generates an authenticator containing: the current time, a
- random nonce, the ticket identifier, and the target name (audience) and
- channel bindings requested by the application.
+The initiator generates an authenticator containing: the current time (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-iat"
+
+\end_inset
+
+), a random nonce (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-nonce"
+
+\end_inset
+
+), the ticket identifier (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-tkt"
+
+\end_inset
+
+, and the target name (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-aud"
+
+\end_inset
+
+) and any channel bindings (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-cbt"
+
+\end_inset
+
+) requested by the application.
 \end_layout
 
 \begin_layout Enumerate
-The initiator signs the authenticator using its copy of the ARK, using the
- appropriate hash algorithm associated with the original context (only HS256
- is presently specified).
+The initiator signs the authenticator using its copy of the ARK , using
+ the appropriate hash algorithm associated with the original context (only
+ HS256 is presently specified).
 \end_layout
 
 \begin_layout Enumerate
@@ -1941,7 +2099,28 @@ The acceptor verifies the authenticator using its copy of the ARK.
 \end_layout
 
 \begin_layout Enumerate
-The acceptor generates the ASK and derived the RRK and CRK from this.
+The acceptor generates the ASK (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-ASK"
+
+\end_inset
+
+) and derives the RRK and CRK from this (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-RRK"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-CRK"
+
+\end_inset
+
+, respectively).
 \end_layout
 
 \begin_layout Enumerate
@@ -1953,8 +2132,14 @@ The acceptor generates a response and signs and returns it.
 If the ticket cannot be found, or the authentication fails, the acceptor
  MAY return an error code in its response, permitting the initiator to recover
  and fallback to generating a BrowserID assertion.
- It MAY also include its local timestamp so that the initiator can perform
- clock skew compensation.
+ It MAY also include its local timestamp (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:response-iat"
+
+\end_inset
+
+) so that the initiator can perform clock skew compensation.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2049,78 +2234,11 @@ The acceptor SHOULD maintain a cache of received assertions in order to
 \end_layout
 
 \begin_layout Section
-Fast re-authentication
-\end_layout
-
-\begin_layout Standard
-When using fast re-authentication, the payload of the initiator assertion
- contains the following claims:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
- iat = issue time
-\end_layout
-
-\begin_layout Plain Layout
-
- nonce = 64-bit base64 URL encoded random nonce
-\end_layout
-
-\begin_layout Plain Layout
-
- tkt = opaque ticket identifier
-\end_layout
-
-\begin_layout Plain Layout
-
- aud = audience containing service principal name
-\end_layout
-
-\begin_layout Plain Layout
-
- cbt = OPTIONAL; base64 URL encoding of channel binding application-specific
- data
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The re-authentication assertion has an implicit expiry of a short interval
- after the issue time.
-\end_layout
-
-\begin_layout Standard
-The ticket expiry time must be securely available to the acceptor, along
- with the subject, issuer, audience, expiry time and ARK of the original
- assertion.
- One implementation choice may be to use the opaque ticket identifier as
- a key into a dictionary containing this information (possibly sharing the
- replay cache).
- Another would be to encrypt this information in a long-term secret only
- known to the acceptor and encode the resulting ciphertext in the opaque
- ticket identifier.
-\end_layout
-
-\begin_layout Standard
-The fast re-authentication assertion is signed with a HMAC using the authenticat
-or root key (ARK).
-\end_layout
-
-\begin_layout Section
 Assertion claims
 \end_layout
 
 \begin_layout Subsection
-Request assertion
+Request (initiator/UA) assertion
 \end_layout
 
 \begin_layout Standard
@@ -2195,37 +2313,87 @@ The request assertion may contain the following claims:
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:request-aud"
+
+\end_inset
+
+
 \begin_inset Quotes eld
 \end_inset
 
-cbt
+aud
 \begin_inset Quotes erd
 \end_inset
 
- (Channel Binding Token)
+ (Audience)
 \end_layout
 
 \begin_layout Standard
-This contains a channel binding token for binding the GSS context to an
- outer channel (e.g.
- see 
-\begin_inset Flex EntityXRef
-status open
-
-\begin_layout Plain Layout
-RFC5929
-\end_layout
-
-\end_inset
-
-).
- Its value is the base64 URL encoding of the application-specific data component
- of the channel bindings passed to GSS_Init_sec_context() or GSS_Accept_sec_cont
-ext().
- This claim is OPTIONAL.
+The audience, formatted as a URN containing the acceptor's principal name.
+ This claim is REQUIRED.
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:request-exp"
+
+\end_inset
+
+
+\begin_inset Quotes eld
+\end_inset
+
+exp
+\begin_inset Quotes erd
+\end_inset
+
+ (Expiry time)
+\end_layout
+
+\begin_layout Standard
+This contains the time when the assertion expires, in milliseconds since
+ January 1, 1970.
+ This claim is REQUIRED when the assertion is signed with a user's BrowserID
+ certificate; it MUST be ignored if present in a re-authentication assertion.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:request-iat"
+
+\end_inset
+
+
+\begin_inset Quotes eld
+\end_inset
+
+iat
+\begin_inset Quotes erd
+\end_inset
+
+ (Issued at time)
+\end_layout
+
+\begin_layout Standard
+This contains the time the assertion was issued (in milliseconds since January
+ 1, 1970), when the assertion is being used for fast re-authentication.
+ The acceptor MUST validate that the ticket was recently issued (a recommended
+ interval is five minutes).
+ This claim is REQUIRED when the assertion is a re-authentication assertion
+ and SHOULD be ignored otherwise.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:request-ecdh"
+
+\end_inset
+
 "ecdh" (Elliptic Curve Diffie-Hellman key exchange)
 \end_layout
 
@@ -2258,37 +2426,79 @@ RFC4121
 
  encryption type: at least P-256 MUST be used for browserid-aes128, and
  P-521 for browserid-aes256.
- This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL.
+ This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL,
+ or there is already a prior session key (as is the case for re-authentication
+ assertions).
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:request-cbt"
+
+\end_inset
+
+
+\begin_inset Quotes eld
+\end_inset
+
+cbt
+\begin_inset Quotes erd
+\end_inset
+
+ (Channel Binding Token)
+\end_layout
+
+\begin_layout Standard
+This contains a channel binding token for binding the GSS context to an
+ outer channel (e.g.
+ see 
+\begin_inset Flex EntityXRef
+status open
+
+\begin_layout Plain Layout
+RFC5929
+\end_layout
+
+\end_inset
+
+).
+ Its value is the base64 URL encoding of the application-specific data component
+ of the channel bindings passed to GSS_Init_sec_context() or GSS_Accept_sec_cont
+ext().
+ This claim is OPTIONAL.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:request-nonce"
+
+\end_inset
+
 "nonce" (Mutual authentication nonce)
 \end_layout
 
 \begin_layout Standard
 This is a random quantity of at least 64 bits, base 64 URL encoded, which
- is used to bind the initiator and acceptor assertions, in the case where
- mutual authentication is desired.
- This claim is OPTIONAL.
+ is used to bind the request and response assertions in the case a non-ephemeral
+ key is used to sign the response assertion (i.e.
+ for re-authentication assertions and mutual authentication).
+ This claim is REQUIRED for re-authentication assertions or if mutual authentica
+tion was desired.
+ Otherwise, i.e.
+ for certificate signed assertions where mutual authentication is unavailable,
+ it MUST be ignored.
 \end_layout
 
 \begin_layout Subsubsection
-\begin_inset Quotes eld
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:request-tkt"
+
 \end_inset
 
-aud
-\begin_inset Quotes erd
-\end_inset
 
- (Audience)
-\end_layout
-
-\begin_layout Standard
-The audience, formatted as a URN containing the acceptor's principal name.
- This claim is REQUIRED.
-\end_layout
-
-\begin_layout Subsubsection
 \begin_inset Quotes eld
 \end_inset
 
@@ -2300,8 +2510,8 @@ tkt
 \end_layout
 
 \begin_layout Standard
-The opaque ticket identifier, when the assertion is being used for fast
- re-authentication.
+This is an opaque ticket identifier, when the assertion is being used for
+ fast re-authentication.
  This matches the 
 \begin_inset Quotes eld
 \end_inset
@@ -2311,68 +2521,40 @@ jti
 \end_inset
 
  value sent back in the response assertion ticket.
- This claim is OPTIONAL.
-\end_layout
-
-\begin_layout Subsubsection
-\begin_inset Quotes eld
-\end_inset
-
-iat
-\begin_inset Quotes erd
-\end_inset
-
- (Issued at time)
-\end_layout
-
-\begin_layout Standard
-This contains the time the assertion was issued (in milliseconds since January
- 1, 1970), when the assertion is being used for fast re-authentication.
- The acceptor MUST validate that the ticket was recently issued (a recommended
- interval is five minutes).
- This claim is REQUIRED when the assertion is a re-authentication assertion.
-\end_layout
-
-\begin_layout Subsubsection
-\begin_inset Quotes eld
-\end_inset
-
-exp
-\begin_inset Quotes erd
-\end_inset
-
- (Expiry time)
-\end_layout
-
-\begin_layout Standard
-This contains the time when the assertion expires, in milliseconds since
- January 1, 1970.
- This claim is REQUIRED when the assertion is signed with a user's BrowserID
- certificate; it MUST be ignored if present in a re-authentication assertion.
+ This claim is REQUIRED for re-authentication assertions, otherwise it the
+ assertion MUST be rejected.
 \end_layout
 
 \begin_layout Subsection
-Response assertion
+Response (acceptor/RP) assertion
 \end_layout
 
 \begin_layout Standard
-The response assertion is sent from the acceptor to the initiator.
+The response assertion is sent from the acceptor to the initiator to provide
+ key exchange, and either key confirmation or mutual authentication.
  It is formatted as a backed assertion, however in the current specification
  it consists of a single assertion with zero certificates; that is, it is
  "unbacked".
  It is encoded as a backed assertion in order to provide future support
  for mutual authentication using native BrowserID certificates.
- Such support is not defined by this specification; implementations SHOULD
- reject backed response assertions.
+ Such support is not defined by this specification; implementations of this
+ version of the specification SHOULD reject backed response assertions.
 \end_layout
 
 \begin_layout Standard
-In the case of a key successfully being negotiated, it is signed with the
- RP Response Key (RRK).
+In the case of a key successfully being negotiated, the response assertion
+ is signed with the RP Response Key (RRK) (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-RRK"
+
+\end_inset
+
+).
  Alternatively, it may be signed with the acceptor's private RSA or DSA
  key.
- In this case, an X.509 certificate of is included in the "x5c" attribute
- of the JWT header.
+ In this case, the acceptor's X.509 certificate is included in the "x5c"
+ attribute of the JWT header.
 \end_layout
 
 \begin_layout Standard
@@ -2479,6 +2661,13 @@ The response assertion payload may contain the following claims:
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:response-iat"
+
+\end_inset
+
+
 \begin_inset Quotes eld
 \end_inset
 
@@ -2497,6 +2686,13 @@ The current acceptor time, in milliseconds since January 1, 1970.
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:response-ecdh"
+
+\end_inset
+
+
 \begin_inset Quotes eld
 \end_inset
 
@@ -2509,11 +2705,31 @@ ecdh
 
 \begin_layout Standard
 This contains a JSON object containing the coordinates of the acceptor's
- ECDH public key.
- This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL.
+ ECDH public key: "x" contains the X coordinate and "y" the Y coordinate
+ (see 
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+.I-D.ietf-oauth-json-web-token
+\end_layout
+
+\end_inset
+
+ section 5.2).
+ This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL,
+ or there is already an established session key, as is the case for re-authentic
+ation assertions.
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:response-exp"
+
+\end_inset
+
+
 \begin_inset Quotes eld
 \end_inset
 
@@ -2532,6 +2748,13 @@ This contains the time when the context expires, in milliseconds since January
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:response-nonce"
+
+\end_inset
+
+
 \begin_inset Quotes eld
 \end_inset
 
@@ -2544,10 +2767,17 @@ nonce
 
 \begin_layout Standard
 The nonce as received from the initiator.
- This SHOULD NOT be present unless a nonce was received from the initiator.
+ This MUST NOT be present unless a nonce was received from the initiator.
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:response-tkt"
+
+\end_inset
+
+
 \begin_inset Quotes eld
 \end_inset
 
@@ -2646,6 +2876,12 @@ The HMAC hash algorithm for all currently specified key lengths is SHA-256.
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:kd-DHK"
+
+\end_inset
+
 Diffie-Hellman Key (DHK)
 \end_layout
 
@@ -2657,6 +2893,12 @@ This key is the shared secret resulting from the ECDH exchange.
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:kd-CMK"
+
+\end_inset
+
 Context Master Key (CMK)
 \end_layout
 
@@ -2666,11 +2908,19 @@ This is the Diffie-Hellman Key (DHK) for all initially authenticated contexts
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:kd-RRK"
+
+\end_inset
+
 RP Response Key (RRK)
 \end_layout
 
 \begin_layout Standard
-The response from the acceptor is signed using this key for fresh assertions:
+The response from the acceptor is signed using this key for fresh assertions,
+ unless mutual authentication is being performed (in which case a private
+ key signature is used):
 \end_layout
 
 \begin_layout Standard
@@ -2678,6 +2928,12 @@ RRK = browserid-derive-key(CMK, "RRK")
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:kd-CRK"
+
+\end_inset
+
 Context Root Key (CRK)
 \end_layout
 
@@ -2701,12 +2957,18 @@ CRK = random-to-key(browserid-derive-key(CMK, "CRK"))
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:kd-ARK"
+
+\end_inset
+
 Authenticator Root Key (ARK)
 \end_layout
 
 \begin_layout Standard
-The authenticator root key (ARK) is used to sign authenticators used for
- fast re-authentication.
+The authenticator root key (ARK) is used to sign assertions used for fast
+ re-authentication.
  It is derived as follows:
 \end_layout
 
@@ -2715,6 +2977,12 @@ ARK = browserid-derive-key(DHK, "ARK")
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:kd-ASK"
+
+\end_inset
+
 Authenticator Session Key (ASK)
 \end_layout
 
@@ -2725,7 +2993,7 @@ ted contexts.
 \end_layout
 
 \begin_layout Standard
-ASK = browserid-derive-key(ARK, authenticator-as-jwt)
+ASK = browserid-derive-key(ARK, reauth-assertion-as-jwt)
 \end_layout
 
 \begin_layout Section
@@ -4571,8 +4839,10 @@ Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID.mechanisms (1.
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="4" columns="3">
+<lyxtabular version="3" rows="4" columns="5">
 <features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -4595,11 +4865,29 @@ Name
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 Description
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ECDH curve
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Symmetric hash
 \end_layout
 
 \end_inset
@@ -4624,11 +4912,29 @@ gss-browserid-null
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 The NULL security mechanism
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+N/A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+N/A
 \end_layout
 
 \end_inset
@@ -4653,11 +4959,29 @@ gss-browserid-aes128
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 The aes128-cts-hmac-sha1-96 mechanism
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+P-256
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+HS256
 \end_layout
 
 \end_inset
@@ -4682,11 +5006,29 @@ gss-browserid-aes256
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 The aes256-cts-hmac-sha1-96 mechanism
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+P-521
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+HS256
 \end_layout
 
 \end_inset

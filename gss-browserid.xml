@@ -56,7 +56,7 @@ This document defines protocols, procedures and conventions for a Generic Securi
     </abstract>
   </front>
   <middle>
-    <section title="Introduction" anchor="d1e721">
+    <section title="Introduction" anchor="d1e714">
       <t>
 BrowserID is a web-based three-party security protocol by which user agents can present to a Relying Party (RP) a signed assertion of e-mail address ownership. BrowserID was intended to be used for web authentication. We find BrowserID to be useful in general, therefore we define herein how to use it in many more applications.</t>
       <t>
@@ -98,13 +98,13 @@ The following diagram illustrates the interactions between the three parties in 
  </artwork>
         </figure>
       </t>
-      <section title="Discovery and Negotiation" anchor="d1e783">
+      <section title="Discovery and Negotiation" anchor="d1e776">
         <t>
 The means of discovering GSS-API peers and their supported mechanisms is out of this specification's scope. They may use SASL <xref target="RFC4422"/> or the Simple and Protected Negotiation mechanism (SPNEGO) <xref target="RFC4178"/>.</t>
         <t>
 Discovery of a BrowserID identity provider (IdP) for a user is described in the BrowserID specification. A domain publishes a document containing their public key and URIs for authenticating and provisioning users, or pointer to an authority containing such a document.</t>
       </section>
-      <section title="Authentication" anchor="d1e807">
+      <section title="Authentication" anchor="d1e800">
         <t>
 The GSS-API protocol involves a client, known as the initiator, sending an initial security context token of a chosen GSS-API security mechanism to a peer, known as the acceptor. The two peers subsequently exchange, synchronously, as many security context tokens as necessary to complete the authentication or fail. The specific number of context tokens exchanged varies by security mechanism: in the case of the BrowserID mechanism, it is typically two (i.e. a single round trip), however it can be more in some cases. Once authentication is complete, the initiator and acceptor share a security context which identifies the peers and can optionally be used for integrity or confidentiality protecting subsequent application messages.</t>
         <t>
@@ -112,7 +112,7 @@ The original BrowserID protocol, as defined outside this document, specifies a b
         <t>
 The GSS BrowserID protocol extends this by having the RP always send back a response to the user agent, which at a minimum provides key confirmation (for mechanisms that support key exchange) and indicates the lifetime of the established security context. In an extension of the base protocol, it can also allow the user agent to mutually authenticate the RP.</t>
       </section>
-      <section title="Message protection services" anchor="d1e823">
+      <section title="Message protection services" anchor="d1e816">
         <t>
 GSS-API provides a number of a message protection services:</t>
         <t>
@@ -129,17 +129,19 @@ GSS-API provides a number of a message protection services:</t>
 These services may be used with security contexts that have a shared session key, to protect messages that are exchanged by the application protocol.</t>
       </section>
     </section>
-    <section title="Requirements notation" anchor="d1e851">
+    <section title="Requirements notation" anchor="d1e844">
       <t>
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119"/>.</t>
       <t>
 The reader is assumed to be familiar with the terms used in the BrowserID specification.</t>
     </section>
-    <section title="Naming" anchor="d1e869">
-      <section title="GSS name types" anchor="d1e875">
+    <section title="Naming" anchor="d1e862">
+      <section title="GSS name types" anchor="d1e868">
         <section title="GSS_C_NT_BROWSERID_PRINCIPAL" anchor="sub_GSS_C_NT_BROWSERID_PRINCIPAL">
           <t>
-This name may contain an e-mail address, or a service principal name identifying an acceptor. The encoding of service principal names is intended to be somewhat compatible with the Kerberos <xref target="RFC4120"/> security protocol (without the realm name). The following ABNF defines the 'name' rule that names of this type must match. [XXX Should we reference RFC2822 here? The Mozilla BrowserID docs sure don't... -Nico]</t>
+This name may contain an e-mail address, or a service principal name identifying an acceptor. The encoding of service principal names is intended to be somewhat compatible with the Kerberos <xref target="RFC4120"/> security protocol (without the realm name).</t>
+          <t>
+The following ABNF defines the 'name' rule that names of this type must match. [XXX Should we reference RFC2822 here? The Mozilla BrowserID docs sure don't... -Nico]</t>
           <t>
 </t>
           <t>
@@ -159,15 +161,15 @@ This name may contain an e-mail address, or a service principal name identifying
             </figure>
           </t>
         </section>
-        <section title="GSS_C_NT_USER_NAME" anchor="d1e905">
+        <section title="GSS_C_NT_USER_NAME" anchor="d1e901">
           <t>
 This name is implicitly converted to a GSS_C_NT_BROWSERID_PRINCIPAL. A default domain may be appended when importing names of this type.</t>
         </section>
-        <section title="GSS_C_NT_HOSTBASED_SERVICE" anchor="d1e914">
+        <section title="GSS_C_NT_HOSTBASED_SERVICE" anchor="d1e910">
           <t>
 This name is transformed by replacing the “@” symbol with a “/”, and then implicitly converted to a GSS_C_NT_BROWSERID_PRINCIPAL.</t>
         </section>
-        <section title="GSS_C_NT_DOMAINBASED_SERVICE" anchor="d1e923">
+        <section title="GSS_C_NT_DOMAINBASED_SERVICE" anchor="d1e919">
           <t><xref target="RFC5178"/> domain-based service names are transformed into a GSS_C_NT_BROWSERID_PRINCIPAL as follows:</t>
           <t>
             <list style="symbols">
@@ -181,7 +183,7 @@ the &lt;domain&gt; name becomes the third component (service-specific)</t>
           </t>
         </section>
       </section>
-      <section title="Audience encoding" anchor="d1e948">
+      <section title="Audience encoding" anchor="d1e944">
         <t>
 A GSS-API service name is encoded into a BrowserID audience URL with the following syntax, where spn is defined above:</t>
         <t>
@@ -192,18 +194,18 @@ A GSS-API service name is encoded into a BrowserID audience URL with the followi
           </figure>
         </t>
         <t>
-[XXX can we request assignment of a URN outside the experimental namespace?]</t>
+[XXX can we request assignment of a URN?]</t>
       </section>
-      <section title="Name Canonicalization" anchor="d1e967">
+      <section title="Name Canonicalization" anchor="d1e963">
         <t>
 The BrowserID GSS-API mechanism performs no name canonicalization. The mechanism's GSS_Canonicalize_name() returns an MN whose display form is the same as the query form.</t>
       </section>
-      <section title="Exported Name Token Format" anchor="d1e976">
+      <section title="Exported Name Token Format" anchor="d1e972">
         <t>
 The exported name token format for the BrowserID GSS-API mechanism is the same as the query form, plus the standard exported name token format header mandated by the GSS-API <xref target="RFC2743"/>.</t>
       </section>
     </section>
-    <section title="Context tokens" anchor="d1e991">
+    <section title="Context tokens" anchor="d1e987">
       <t>
 All context tokens include a two-byte token identifier followed by a backed BrowserID assertion. This document defines the following token IDs:</t>
       <texttable>
@@ -240,7 +242,7 @@ D,</c>
         <c>
 Context deletion token</c>
         <c>
-9.3</c>
+8.3</c>
         <c>
 0x6D2C</c>
         <c>
@@ -248,7 +250,7 @@ m,</c>
         <c>
 Initiator metadata token</c>
         <c>
-9.3</c>
+8.3</c>
         <c>
 0x4D2C</c>
         <c>
@@ -274,7 +276,7 @@ The initial context token is framed per section 1 of <xref target="RFC2743"/>:</
      [APPLICATION 0] IMPLICIT SEQUENCE {
          thisMech MechType,
          innerToken ANY DEFINED BY thisMech
-             -- token ID || backed assertion
+             -- token ID and backed assertion
      }
      END</artwork>
           </figure>
@@ -284,13 +286,17 @@ Unlike many other GSS-API mechanisms such as Kerberos, this token framing is not
         <t>
 GSS BrowserID is a family of mechanisms, where the last element in the OID arc indicates the <xref target="RFC4121"/> encryption type supported for message protection services. The OID prefix is 1.3.6.1.4.1.5322.24.1. The NULL encryption type is valid, in which case key confirmation and message protection services are not provided.</t>
         <t>
-The innerToken consists of the initiator context token ID concatenated with a backed assertion for the audience corresponding to the target name passed into GSS_Init_sec_context(). In addition, the assertion may contain the following additional claims, which are described later in this document:</t>
+The innerToken consists of the initiator context token ID concatenated with a backed assertion for the audience corresponding to the target name passed into GSS_Init_sec_context(). In addition, the assertion may contain the additional claims, which are described later in this document:</t>
         <t>
           <list style="symbols">
             <t>
-Channel binding information</t>
+Channel binding information (see  <xref target="sub_request_cbt"/>)</t>
             <t>
-ECDH parameters for session key establishment</t>
+ECDH parameters for session key establishment (see  <xref target="sub_request_ecdh"/>)</t>
+            <t>
+A nonce for binding the request to a response signed with a different key (for mutual authentication) (see  <xref target="sub_request_nonce"/>)</t>
+            <t>
+A ticket identifier for fast re-authentication using an established session key rather than a BrowserID certificate (see  <xref target="sub_request_tkt"/>)</t>
           </list>
         </t>
         <t>
@@ -298,17 +304,17 @@ The call to GSS_Init_sec_context() returns GSS_C_CONTINUE_NEEDED to indicate tha
       </section>
       <section title="Acceptor context token" anchor="sub_Acceptor_context_token">
         <t>
-Upon receiving a context token from the initiator, the acceptor validates that the token is well formed and contains the correct mechanism OID and token type.</t>
+Upon receiving a context token from the initiator, the acceptor validates that the token is well formed and contains a valid BrowserID mechanism OID and the initiator context token ID.</t>
         <t>
 The acceptor then verifies the backed identity assertion per the BrowserID specification. This includes validating the expiry times, audience, certificate chain, and assertion signature. In the case of failure, an error token is generated and immediately returned.</t>
         <t>
 The acceptor then verifies the channel binding token, if present, and any other GSS-specific claims in the assertion. In case of failure, an error token is generated.</t>
         <t>
-If the <xref target="RFC3961"/> encryption type for the selected mechanism is not ENCTYPE_NULL, the acceptor generates a ECDH public key using the parameters received from the client, and from it derives the RP Response Key (RRK). The acceptor then generates a response assertion containing the ECDH public key and context expiry time. The response assertion is signed using the RP Response Key (RRK) unless mutual authentication is desired, in which case it may be signed in the acceptor's private key (see below). The response token is encoded as a backed assertion, even though it will typically have a certificate count of zero (because the signing key is the shared RRK, or because an X.509 certificate is included directly in the assertion's JWT header).</t>
+If the <xref target="RFC3961"/> encryption type for the selected mechanism is not ENCTYPE_NULL, the acceptor generates a ECDH public key using the parameters received from the client (see  <xref target="sub_response_ecdh"/>), and from it derives the RP Response Key (RRK) (see  <xref target="sub_kd_RRK"/>). The acceptor then generates a response assertion containing the generated ECDH public key and context expiry time. The response assertion is signed using the RP Response Key (RRK) unless mutual authentication is desired, in which case it may be signed in the acceptor's private key (see  <xref target="sub_Extensions_for_mutual"/>). The response token is encoded as a backed assertion, even though it will typically have a certificate count of zero (because the signing key is the shared RRK, or because an X.509 certificate is included directly in the assertion's JWT header).</t>
         <t>
 Finally, the context root key (CRK) is derived from the ECDH shared secret and GSS_S_COMPLETE is returned, along with the initiator name from the verified assertion. Other assertion/certificate attributes MAY be made available via GSS_Get_name_attribute().</t>
       </section>
-      <section title="Initiator context completion" anchor="d1e1228">
+      <section title="Initiator context completion" anchor="sub_Initiator_context_completion">
         <t>
 Upon receiving the acceptor context token, the initiator unpacks the response assertion and, if necessary, computes the ECDH shared secret and RRK. The RRK is used to verify the response assertion unless mutual authentication is desired, in which case the acceptor's public key will be used.</t>
         <t>
@@ -316,62 +322,68 @@ The initiator sets the context expiry time with that received in the response as
         <t>
 The context root key (CRK) is derived from the ECDH shared secret and GSS_S_COMPLETE is returned to indicate the user is authenticated and the context is ready for use. No output token is emitted.</t>
       </section>
-      <section title="Extensions for mutual authentication" anchor="d1e1243">
+      <section title="Extensions for mutual authentication" anchor="sub_Extensions_for_mutual">
         <t>
-Mutual authentication allows the acceptor to be authenticated to the initiator. The initiator may return GSS_C_MUTUAL_FLAG flag to the caller. Support for mutual authentication is OPTIONAL.</t>
+Mutual authentication allows the acceptor to be authenticated to the initiator. The mechanism may return GSS_C_MUTUAL_FLAG flag to the caller if mutual authentication succeeded. Support for mutual authentication is OPTIONAL.</t>
         <t>
 The base protocol is extended as follows to support this:</t>
-        <section title="Initiator mutual authentication context token" anchor="d1e1256">
+        <section title="Initiator mutual authentication context token" anchor="d1e1283">
           <t>
-If the initiator requested GSS_C_MUTUAL_FLAG, a nonce is included in the assertion to bind the initiator and acceptor tokens.</t>
+If the initiator requested GSS_C_MUTUAL_FLAG, a nonce (see  <xref target="sub_request_nonce"/>) is included in the assertion to bind the initiator and acceptor tokens. The presence of this nonce indicates that mutual authentication is desired.</t>
         </section>
-        <section title="Acceptor mutual authentication context token" anchor="d1e1265">
+        <section title="Acceptor mutual authentication context token" anchor="d1e1295">
           <t>
 If the acceptor has a private key available and received a nonce in the initiator assertion, it signs the response using a private key rather than the RP Response Key (RRK). The response includes the nonce from the initiator's assertion.</t>
           <t>
-While the response is a backed assertion, in order to take advantage of existing keying infrastructures BrowserID certificates SHOULD NOT be included in the backed assertion. Instead, an X.509 certificate SHOULD be included as a value for the "x5c" header attribute in the assertion (see <xref target="I-D.ietf-jose-json-web-signature"/> 4.1.6).</t>
+While the response is a backed assertion, in order to take advantage of existing keying infrastructures BrowserID certificates SHOULD NOT be included in the backed assertion. Instead, an X.509 certificate SHOULD be included as a value for the "x5c" header attribute in the assertion (see <xref target="I-D.ietf-jose-json-web-signature"/> 4.1.6). This may be changed in a future revision of this specification.</t>
         </section>
-        <section title="Initiator mutual authentication context completion" anchor="d1e1283">
+        <section title="Initiator mutual authentication context completion" anchor="d1e1313">
           <t>
-The initiator verifies the nonce and the assertion signature, and validates the certificate chain (which SHOULD be an X.509 certificate chain, in which case trust anchors SHOULD be configurable both system-wide and specifically for the BrowserID mechanism).</t>
+The initiator verifies the assertion signature and that the nonce matches, and validates the certificate chain (for X.509 certificate chains, trust anchors SHOULD be configurable both system-wide and specifically for the BrowserID mechanism).</t>
           <t>
 If X.509 certificates are used, then either the audience URI must be present in the URI subjectAltName, or the host component must be present as a value for the DNS subjectAltName or as the least significant Common Name RDN.</t>
           <t>
 If BrowserID certificates are used, then either the audience URI must match the "uri" key of the "principal" object in the certificate, or the host component must match the "hostname" key.</t>
           <t>
-[XXX when using X.509 certificates, do we need to say anything about key usage?]</t>
+[XXX when using X.509 certificates, do we need to say anything about certificate usage?]</t>
         </section>
-        <section title="Acceptor certificate advertisement" anchor="d1e1301">
+        <section title="Acceptor certificate advertisement" anchor="d1e1332">
           <t>
 The acceptor may include its certificate (and optionally any additional certs), formatted as a backed assertion with an empty payload, in its NegoEx metadata. There is no initiator metadata defined.</t>
         </section>
       </section>
-      <section title="Extensions for fast re-authentication" anchor="d1e1311">
+      <section title="Extensions for fast re-authentication" anchor="d1e1341">
         <t>
-Fast re-authentication allows a context to be established without acquiring a new BrowserID assertion. Instead an assertion signed with a secret key derived from the initial ECDH key exchange is used. Re-authentication lifetime SHOULD be site configurable, but by default SHOULD match the user's certificate expiry time. Support for fast re-authentication is OPTIONAL and is indicated by the acceptor returning a ticket in the response assertion.</t>
-        <section title="Ticket generation" anchor="d1e1320">
+Fast re-authentication allows a security context to be established without acquiring a new BrowserID assertion. Instead an assertion signed with a secret key derived from the initial ECDH key exchange is used. Re-authentication assertions implicitly expire a short interval after the issue time; five minutes is suggested. This lifetime is distinct from the ticket lifetime, which default SHOULD match the user's certificate expiry time (but also SHOULD be configurable).</t>
+        <t>
+The ticket expiry time must be securely available to the acceptor, along with the subject, issuer, audience, expiry time and authenticator root key (ARK) of the original assertion. One implementation choice may be to use the opaque ticket identifier as a key into a dictionary containing this information (possibly sharing the replay cache). Another would be to encrypt this information in a long-term secret only known to the acceptor and encode the resulting ciphertext in the opaque ticket identifier.</t>
+        <t>
+The re-authentication assertion is signed with a HMAC using the ARK (see  <xref target="sub_kd_ARK"/>), rather than a user's BrowserID certificate.</t>
+        <t>
+Support for fast re-authentication is OPTIONAL and is indicated by the acceptor returning a ticket in the response assertion.</t>
+        <section title="Ticket generation" anchor="d1e1362">
           <t>
-If the acceptor supports re-authentication, the following steps are added to the "acceptor to initiator" flow described above.</t>
+If the acceptor supports re-authentication, the following steps are added to  <xref target="sub_Acceptor_context_token"/>:</t>
           <t>
             <list style="numbers">
               <t>
-A unique ticket identifier is generated. The acceptor must be able to use this to retrieve the authenticator root key, ticket expiry time, mutual authentication state, and any other attributes re-authenticated acceptor contexts will need.</t>
+A unique ticket identifier is generated. The acceptor must be able to use this to retrieve any attributes re-authenticated acceptor contexts will need.</t>
               <t>
-The acceptor creates a JSON object containing the ticket identifier and expiry time and returns it in the response to the initiator.</t>
+The acceptor creates a JSON object containing the ticket identifier and expiry time and returns it in the response to the initiator (see  <xref target="sub_response_tkt"/>).</t>
             </list>
           </t>
           <t>
 The initiator MAY cache such tickets, along with the ARK and expiry time, received from the acceptor in order to re-authenticate to it at a future time.</t>
         </section>
-        <section title="Initiator re-authentication context token" anchor="d1e1339">
+        <section title="Initiator re-authentication context token" anchor="d1e1388">
           <t>
 The initiator looks in its ticket cache for an unexpired ticket for the desired acceptor. If none is found, the normal authentication flow is performed, otherwise:</t>
           <t>
             <list style="numbers">
               <t>
-The initiator generates an authenticator containing: the current time, a random nonce, the ticket identifier, and the target name (audience) and channel bindings requested by the application.</t>
+The initiator generates an authenticator containing: the current time ( <xref target="sub_request_iat"/>), a random nonce ( <xref target="sub_request_nonce"/>), the ticket identifier ( <xref target="sub_request_tkt"/>, and the target name ( <xref target="sub_request_aud"/>) and any channel bindings ( <xref target="sub_request_cbt"/>) requested by the application.</t>
               <t>
-The initiator signs the authenticator using its copy of the ARK, using the appropriate hash algorithm associated with the original context (only HS256 is presently specified).</t>
+The initiator signs the authenticator using its copy of the ARK , using the appropriate hash algorithm associated with the original context (only HS256 is presently specified).</t>
               <t>
 The authenticator is packed into a backed assertion with no certificates.</t>
               <t>
@@ -381,7 +393,7 @@ The assertion is sent to the acceptor.</t>
             </list>
           </t>
         </section>
-        <section title="Acceptor re-authentication context token" anchor="d1e1364">
+        <section title="Acceptor re-authentication context token" anchor="d1e1428">
           <t>
             <list style="numbers">
               <t>
@@ -391,15 +403,15 @@ The acceptor validates that the ticket and authenticator have not expired.</t>
               <t>
 The acceptor verifies the authenticator using its copy of the ARK.</t>
               <t>
-The acceptor generates the ASK and derived the RRK and CRK from this.</t>
+The acceptor generates the ASK (see  <xref target="sub_kd_ASK"/>) and derives the RRK and CRK from this (see  <xref target="sub_kd_RRK"/> and  <xref target="sub_kd_CRK"/>, respectively).</t>
               <t>
 The acceptor generates a response and signs and returns it. </t>
             </list>
           </t>
           <t>
-If the ticket cannot be found, or the authentication fails, the acceptor MAY return an error code in its response, permitting the initiator to recover and fallback to generating a BrowserID assertion. It MAY also include its local timestamp so that the initiator can perform clock skew compensation.</t>
+If the ticket cannot be found, or the authentication fails, the acceptor MAY return an error code in its response, permitting the initiator to recover and fallback to generating a BrowserID assertion. It MAY also include its local timestamp (see  <xref target="sub_response_iat"/>) so that the initiator can perform clock skew compensation.</t>
         </section>
-        <section title="Interaction with mutual authentication" anchor="d1e1390">
+        <section title="Interaction with mutual authentication" anchor="d1e1465">
           <t>
 The mutual authentication state of a re-authenticated context is transitive. The initiator MUST NOT return GSS_C_MUTUAL_FLAG for a re-authenticated context unless the original context was mutually authenticated.</t>
           <t>
@@ -407,8 +419,8 @@ As such, the initiator's ticket cache must store the mutual authentication state
         </section>
       </section>
     </section>
-    <section title="Validation" anchor="d1e1402">
-      <section title="Expiry times" anchor="d1e1408">
+    <section title="Validation" anchor="d1e1477">
+      <section title="Expiry times" anchor="d1e1483">
         <t>
 The expiry and, if present, issued-at and not-before times of all elements in a backed assertion, MUST be validated. This applies equally to re-authentication assertions, public key assertions, and the entire certificate chain. If the expiry time is absent, the issued-at time MUST be present, and the JWT implicitly expires a configurable interval (typically five minutes) after the issued-at time.</t>
         <t>
@@ -418,46 +430,25 @@ The lifetime of a re-authentication ticket SHOULD NOT exceed the lifetime of the
         <t>
 Message protections services such as GSS_Wrap() SHOULD be available beyond the GSS context lifetime for maximum application compatibility.</t>
       </section>
-      <section title="Audience" anchor="d1e1427">
+      <section title="Audience" anchor="d1e1502">
         <t>
 If the credential passed to GSS_Accept_sec_context() is not for GSS_C_NO_NAME, then its string representation as a BrowserID principal MUST match the unpacked audience (that is, the audience without the URN prefix).</t>
       </section>
-      <section title="Channel bindings" anchor="d1e1436">
+      <section title="Channel bindings" anchor="d1e1511">
         <t>
 If the acceptor passed in channel bindings to GSS_Accept_sec_context(), the assertion MUST contain a matching channel binding claim. (Only the application_data component is validated.) </t>
       </section>
-      <section title="Signatures" anchor="d1e1445">
+      <section title="Signatures" anchor="d1e1520">
         <t>
 Signature validation on assertions is the same as for the web usage of BrowserID, with the addition that response and re-authentication assertions may be signed with a symmetric key.</t>
       </section>
-      <section title="Replay detection" anchor="d1e1454">
+      <section title="Replay detection" anchor="d1e1529">
         <t>
 The acceptor SHOULD maintain a cache of received assertions in order to guard against replay attacks. GSS_C_REPLAY_FLAG MUST NOT be returned if the implementation does not support replay detection.</t>
       </section>
     </section>
-    <section title="Fast re-authentication" anchor="d1e1463">
-      <t>
-When using fast re-authentication, the payload of the initiator assertion contains the following claims:</t>
-      <t>
-</t>
-      <t>
-        <figure suppress-title="" align="">
-          <artwork> iat = issue time
- nonce = 64-bit base64 URL encoded random nonce
- tkt = opaque ticket identifier
- aud = audience containing service principal name
- cbt = OPTIONAL; base64 URL encoding of channel binding application-specific data</artwork>
-        </figure>
-      </t>
-      <t>
-The re-authentication assertion has an implicit expiry of a short interval after the issue time.</t>
-      <t>
-The ticket expiry time must be securely available to the acceptor, along with the subject, issuer, audience, expiry time and ARK of the original assertion. One implementation choice may be to use the opaque ticket identifier as a key into a dictionary containing this information (possibly sharing the replay cache). Another would be to encrypt this information in a long-term secret only known to the acceptor and encode the resulting ciphertext in the opaque ticket identifier.</t>
-      <t>
-The fast re-authentication assertion is signed with a HMAC using the authenticator root key (ARK).</t>
-    </section>
-    <section title="Assertion claims" anchor="d1e1488">
-      <section title="Request assertion" anchor="d1e1494">
+    <section title="Assertion claims" anchor="d1e1539">
+      <section title="Request (initiator/UA) assertion" anchor="d1e1545">
         <t>
 These claims are included in the assertion sent to the acceptor and are authenticated by the initiator's private key and certificate chain. Here is an example assertion containing Elliptic Curve Diffie-Hellman parameters:</t>
         <t>
@@ -478,44 +469,44 @@ These claims are included in the assertion sent to the acceptor and are authenti
         </t>
         <t>
 The request assertion may contain the following claims:</t>
-        <section title="“cbt” (Channel Binding Token)" anchor="d1e1512">
+        <section title="“aud” (Audience)" anchor="sub_request_aud">
           <t>
-This contains a channel binding token for binding the GSS context to an outer channel (e.g. see <xref target="RFC5929"/>). Its value is the base64 URL encoding of the application-specific data component of the channel bindings passed to GSS_Init_sec_context() or GSS_Accept_sec_context(). This claim is OPTIONAL.</t>
+The audience, formatted as a URN containing the acceptor's principal name. This claim is REQUIRED.</t>
         </section>
-        <section title="&quot;ecdh&quot; (Elliptic Curve Diffie-Hellman key exchange)" anchor="d1e1528">
+        <section title="“exp” (Expiry time)" anchor="sub_request_exp">
+          <t>
+This contains the time when the assertion expires, in milliseconds since January 1, 1970. This claim is REQUIRED when the assertion is signed with a user's BrowserID certificate; it MUST be ignored if present in a re-authentication assertion.</t>
+        </section>
+        <section title="“iat” (Issued at time)" anchor="sub_request_iat">
+          <t>
+This contains the time the assertion was issued (in milliseconds since January 1, 1970), when the assertion is being used for fast re-authentication. The acceptor MUST validate that the ticket was recently issued (a recommended interval is five minutes). This claim is REQUIRED when the assertion is a re-authentication assertion and SHOULD be ignored otherwise.</t>
+        </section>
+        <section title="&quot;ecdh&quot; (Elliptic Curve Diffie-Hellman key exchange)" anchor="sub_request_ecdh">
           <t>
 These contain ECDH key parameters for deriving a shared session key with the relying party: "crv" contains the curve, "x" the X coordinate and "y" the Y coordinate (see 
 .I-D.ietf-oauth-json-web-token
  section 5.2).</t>
           <t>
-The curve should have an equivalent strength to the negotiated <xref target="RFC4121"/> encryption type: at least P-256 MUST be used for browserid-aes128, and P-521 for browserid-aes256. This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL.</t>
+The curve should have an equivalent strength to the negotiated <xref target="RFC4121"/> encryption type: at least P-256 MUST be used for browserid-aes128, and P-521 for browserid-aes256. This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL, or there is already a prior session key (as is the case for re-authentication assertions).</t>
         </section>
-        <section title="&quot;nonce&quot; (Mutual authentication nonce)" anchor="d1e1552">
+        <section title="“cbt” (Channel Binding Token)" anchor="sub_request_cbt">
           <t>
-This is a random quantity of at least 64 bits, base 64 URL encoded, which is used to bind the initiator and acceptor assertions, in the case where mutual authentication is desired. This claim is OPTIONAL.</t>
+This contains a channel binding token for binding the GSS context to an outer channel (e.g. see <xref target="RFC5929"/>). Its value is the base64 URL encoding of the application-specific data component of the channel bindings passed to GSS_Init_sec_context() or GSS_Accept_sec_context(). This claim is OPTIONAL.</t>
         </section>
-        <section title="“aud” (Audience)" anchor="d1e1561">
+        <section title="&quot;nonce&quot; (Mutual authentication nonce)" anchor="sub_request_nonce">
           <t>
-The audience, formatted as a URN containing the acceptor's principal name. This claim is REQUIRED.</t>
+This is a random quantity of at least 64 bits, base 64 URL encoded, which is used to bind the request and response assertions in the case a non-ephemeral key is used to sign the response assertion (i.e. for re-authentication assertions and mutual authentication). This claim is REQUIRED for re-authentication assertions or if mutual authentication was desired. Otherwise, i.e. for certificate signed assertions where mutual authentication is unavailable, it MUST be ignored.</t>
         </section>
-        <section title="“tkt” (Ticket identifier)" anchor="d1e1570">
+        <section title="“tkt” (Ticket identifier)" anchor="sub_request_tkt">
           <t>
-The opaque ticket identifier, when the assertion is being used for fast re-authentication. This matches the “jti” value sent back in the response assertion ticket. This claim is OPTIONAL.</t>
-        </section>
-        <section title="“iat” (Issued at time)" anchor="d1e1579">
-          <t>
-This contains the time the assertion was issued (in milliseconds since January 1, 1970), when the assertion is being used for fast re-authentication. The acceptor MUST validate that the ticket was recently issued (a recommended interval is five minutes). This claim is REQUIRED when the assertion is a re-authentication assertion.</t>
-        </section>
-        <section title="“exp” (Expiry time)" anchor="d1e1589">
-          <t>
-This contains the time when the assertion expires, in milliseconds since January 1, 1970. This claim is REQUIRED when the assertion is signed with a user's BrowserID certificate; it MUST be ignored if present in a re-authentication assertion.</t>
+This is an opaque ticket identifier, when the assertion is being used for fast re-authentication. This matches the “jti” value sent back in the response assertion ticket. This claim is REQUIRED for re-authentication assertions, otherwise it the assertion MUST be rejected.</t>
         </section>
       </section>
-      <section title="Response assertion" anchor="d1e1598">
+      <section title="Response (acceptor/RP) assertion" anchor="d1e1663">
         <t>
-The response assertion is sent from the acceptor to the initiator. It is formatted as a backed assertion, however in the current specification it consists of a single assertion with zero certificates; that is, it is "unbacked". It is encoded as a backed assertion in order to provide future support for mutual authentication using native BrowserID certificates. Such support is not defined by this specification; implementations SHOULD reject backed response assertions.</t>
+The response assertion is sent from the acceptor to the initiator to provide key exchange, and either key confirmation or mutual authentication. It is formatted as a backed assertion, however in the current specification it consists of a single assertion with zero certificates; that is, it is "unbacked". It is encoded as a backed assertion in order to provide future support for mutual authentication using native BrowserID certificates. Such support is not defined by this specification; implementations of this version of the specification SHOULD reject backed response assertions.</t>
         <t>
-In the case of a key successfully being negotiated, it is signed with the RP Response Key (RRK). Alternatively, it may be signed with the acceptor's private RSA or DSA key. In this case, an X.509 certificate of is included in the "x5c" attribute of the JWT header.</t>
+In the case of a key successfully being negotiated, the response assertion is signed with the RP Response Key (RRK) (see  <xref target="sub_kd_RRK"/>). Alternatively, it may be signed with the acceptor's private RSA or DSA key. In this case, the acceptor's X.509 certificate is included in the "x5c" attribute of the JWT header.</t>
         <t>
 The HMAC-SHA256 (HS256) algorithm MUST be supported by implementors of this specification.</t>
         <t>
@@ -544,31 +535,33 @@ Here is an example response assertion:</t>
         </t>
         <t>
 The response assertion payload may contain the following claims:</t>
-        <section title="“iat” (Issued at time)" anchor="d1e1632">
+        <section title="“iat” (Issued at time)" anchor="sub_response_iat">
           <t>
 The current acceptor time, in milliseconds since January 1, 1970. This allows the initiator to compensate for clock differences when generating assertions. This claim is OPTIONAL.</t>
         </section>
-        <section title="“ecdh” (Elliptic Curve Diffie-Hellman key exchange)" anchor="d1e1641">
+        <section title="“ecdh” (Elliptic Curve Diffie-Hellman key exchange)" anchor="sub_response_ecdh">
           <t>
-This contains a JSON object containing the coordinates of the acceptor's ECDH public key. This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL.</t>
+This contains a JSON object containing the coordinates of the acceptor's ECDH public key: "x" contains the X coordinate and "y" the Y coordinate (see 
+.I-D.ietf-oauth-json-web-token
+ section 5.2). This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL, or there is already an established session key, as is the case for re-authentication assertions.</t>
         </section>
-        <section title="“exp” (Expiry time)" anchor="d1e1650">
+        <section title="“exp” (Expiry time)" anchor="sub_response_exp">
           <t>
 This contains the time when the context expires, in milliseconds since January 1, 1970. This claim is OPTIONAL; the initiator should use the certificate expiry time if absent.</t>
         </section>
-        <section title="“nonce” (Mutual authentication nonce)" anchor="d1e1659">
+        <section title="“nonce” (Mutual authentication nonce)" anchor="sub_response_nonce">
           <t>
-The nonce as received from the initiator. This SHOULD NOT be present unless a nonce was received from the initiator.</t>
+The nonce as received from the initiator. This MUST NOT be present unless a nonce was received from the initiator.</t>
         </section>
-        <section title="“tkt” (Ticket)" anchor="d1e1668">
+        <section title="“tkt” (Ticket)" anchor="sub_response_tkt">
           <t>
 This contains a JSON object that may be used for re-authenticating to the acceptor without acquiring an assertion. Its usage is optional. It has two properties: “jti”, an opaque identifier to be presented in a re-authentication assertion; and “exp”, the expiry time of the ticket. This claim is OPTIONAL.</t>
         </section>
-        <section title="“gss-maj” (GSS major status code)" anchor="d1e1678">
+        <section title="“gss-maj” (GSS major status code)" anchor="d1e1761">
           <t>
 This contains a GSS major status code represented as a number. It MUST not be present if the acceptor did not return an error. This claim is OPTIONAL.</t>
         </section>
-        <section title="“gss-min” (GSS minor status code)" anchor="d1e1687">
+        <section title="“gss-min” (GSS minor status code)" anchor="d1e1771">
           <t>
 This contains a GSS minor status code represented as a number. It MUST not be present if the acceptor did not return an error and SHOULD not be present if there is no minor status code for the given major error. This claim is OPTIONAL.</t>
           <t>
@@ -578,52 +571,52 @@ If GSSBID_REAUTH_FAILED is received, the initiator SHOULD attempt to send anothe
         </section>
       </section>
     </section>
-    <section title="Key derivation" anchor="d1e1702">
+    <section title="Key derivation" anchor="d1e1786">
       <t>
 The following algorithm is used as the base algorithm for deriving keys:</t>
       <t>
 browserid-derive-key(K, salt) = HMAC(K, "BrowserID" || K || salt || 0x01)</t>
       <t>
 The HMAC hash algorithm for all currently specified key lengths is SHA-256. Note that the inclusion of K in the HMAC input is for interoperability with some crypto implementations.</t>
-      <section title="Diffie-Hellman Key (DHK)" anchor="d1e1718">
+      <section title="Diffie-Hellman Key (DHK)" anchor="sub_kd_DHK">
         <t>
 This key is the shared secret resulting from the ECDH exchange. Its length corresponds to the selected EC curve. It is never used without derivation and thus may be used with implementations that do not expose the DH value directly.</t>
       </section>
-      <section title="Context Master Key (CMK)" anchor="d1e1727">
+      <section title="Context Master Key (CMK)" anchor="sub_kd_CMK">
         <t>
 This is the Diffie-Hellman Key (DHK) for all initially authenticated contexts and the Authenticator Session Key (ASK) for re-authenticated contexts.</t>
       </section>
-      <section title="RP Response Key (RRK)" anchor="d1e1736">
+      <section title="RP Response Key (RRK)" anchor="sub_kd_RRK">
         <t>
-The response from the acceptor is signed using this key for fresh assertions:</t>
+The response from the acceptor is signed using this key for fresh assertions, unless mutual authentication is being performed (in which case a private key signature is used):</t>
         <t>
 RRK = browserid-derive-key(CMK, "RRK") </t>
       </section>
-      <section title="Context Root Key (CRK)" anchor="d1e1748">
+      <section title="Context Root Key (CRK)" anchor="sub_kd_CRK">
         <t>
 The context root key is used for <xref target="RFC4121"/> message protection services, e.g. GSS_Wrap() and GSS_Get_MIC().</t>
         <t>
 CRK = random-to-key(browserid-derive-key(CMK, "CRK"))</t>
       </section>
-      <section title="Authenticator Root Key (ARK)" anchor="d1e1766">
+      <section title="Authenticator Root Key (ARK)" anchor="sub_kd_ARK">
         <t>
-The authenticator root key (ARK) is used to sign authenticators used for fast re-authentication. It is derived as follows:</t>
+The authenticator root key (ARK) is used to sign assertions used for fast re-authentication. It is derived as follows:</t>
         <t>
 ARK = browserid-derive-key(DHK, "ARK")</t>
       </section>
-      <section title="Authenticator Session Key (ASK)" anchor="d1e1779">
+      <section title="Authenticator Session Key (ASK)" anchor="sub_kd_ASK">
         <t>
 The authenticator session key (ASK) is used instead of the DHK for re-authenticated contexts. It is derived as follows:</t>
         <t>
-ASK = browserid-derive-key(ARK, authenticator-as-jwt)</t>
+ASK = browserid-derive-key(ARK, reauth-assertion-as-jwt)</t>
       </section>
     </section>
-    <section title="GSS-API Extensions" anchor="d1e1791">
-      <section title="PRF" anchor="d1e1797">
+    <section title="GSS-API Extensions" anchor="d1e1887">
+      <section title="PRF" anchor="d1e1893">
         <t>
 See <xref target="RFC4402"/>. </t>
       </section>
-      <section title="Naming extensions" anchor="d1e1812">
+      <section title="Naming extensions" anchor="d1e1908">
         <t>
 The acceptor MAY surface attributes from the assertion and any certificates using GSS_Get_name_attribute(). The URN prefix is "urn:ietf:params:gss:jwt". The acceptor MUST filter any sensitive attributes before returning them to the application.</t>
         <t>
@@ -652,7 +645,7 @@ where the third byte (zero above) is set to the <xref target="RFC3961"/> encrypt
 There is currently no initiator-sent metadata defined and acceptors should ignore any sent. The metadata is advisory and the initiator is free to ignore it.</t>
       </section>
     </section>
-    <section title="Example" anchor="d1e1876">
+    <section title="Example" anchor="d1e1971">
       <t>
 Suppose a mail user agent for the user lukeh@lukktone.com wishes to authenticate to an IMAP server rand.mit.de.padl.com. They do not have a re-authentication ticket. The mail user agent would display a dialog box in which the user would sign in to their IdP and request a fresh assertion be generated.</t>
       <t>
@@ -991,19 +984,19 @@ The assertion payload is below (again, for clarity the actual JWT signature has 
       <t>
 Note the fast re-authentication ticket and the nonce echoed back from the initiator.</t>
     </section>
-    <section title="Security Considerations" anchor="d1e1953">
+    <section title="Security Considerations" anchor="d1e2048">
       <t>
 This section only addresses security considerations associated with BrowserID and SASL and GSS-API.</t>
-      <section title="JavaScript" anchor="d1e1962">
+      <section title="JavaScript" anchor="d1e2058">
         <t>
 There are security issues associated with the use of JavaScript for cryptography.</t>
       </section>
-      <section title="Host certificates for mutual authentication" anchor="d1e1971">
+      <section title="Host certificates for mutual authentication" anchor="d1e2067">
         <t>
 Allowing a match on only the DNS subjectAltName in an acceptor's X.509 certificate permits different services on the same host to impersonate each other.</t>
       </section>
     </section>
-    <section title="IANA Considerations" anchor="d1e1980">
+    <section title="IANA Considerations" anchor="d1e2076">
       <t>
 This specification creates a number of IANA registries.</t>
       <section title="OID Registry" anchor="sub_OID_Registry">
@@ -1044,6 +1037,10 @@ Decimal</ttcol>
 Name</ttcol>
           <ttcol align="center">
 Description</ttcol>
+          <ttcol align="center">
+ECDH curve</ttcol>
+          <ttcol align="center">
+Symmetric hash</ttcol>
           <c>
 0</c>
           <c>
@@ -1051,17 +1048,29 @@ gss-browserid-null</c>
           <c>
 The NULL security mechanism</c>
           <c>
+N/A</c>
+          <c>
+N/A</c>
+          <c>
 17</c>
           <c>
 gss-browserid-aes128</c>
           <c>
 The aes128-cts-hmac-sha1-96 mechanism</c>
           <c>
+P-256</c>
+          <c>
+HS256</c>
+          <c>
 18</c>
           <c>
 gss-browserid-aes256</c>
           <c>
 The aes256-cts-hmac-sha1-96 mechanism</c>
+          <c>
+P-521</c>
+          <c>
+HS256</c>
         </texttable>
         <t>
 </t>
@@ -1088,7 +1097,7 @@ GSS_C_NT_BROWSERID_PRINCIPAL</c>
 3.1.1</c>
         </texttable>
       </section>
-      <section title="SASL Registry" anchor="d1e2208">
+      <section title="SASL Registry" anchor="d1e2344">
         <t>
 Subject: Registration of SASL mechanisms BROWSERID-AES128 and BROWSERID-AES128-PLUS</t>
         <t>
