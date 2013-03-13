@@ -1684,8 +1684,9 @@ reference "sub:request-cbt"
 \end_layout
 
 \begin_layout Itemize
-A nonce for binding the request to a response signed with a different key
- (for mutual authentication or fast re-authentication) (see 
+A nonce for binding the request to a response signed with a key distinct
+ from the key agreement key (for mutual authentication or fast re-authentication
+) (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:request-nonce"
@@ -1792,10 +1793,16 @@ The response token is encoded as a backed assertion, even though it will
 \end_layout
 
 \begin_layout Standard
-Finally, the context root key (CRK) is derived from the ECDH shared secret
- and GSS_S_COMPLETE is returned, along with the initiator name from the
- verified assertion.
- Other assertion/certificate attributes MAY be made available via GSS_Get_name_a
+Finally, the Context Root Key (CRK) (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-CRK"
+
+\end_inset
+
+) is derived from the ECDH shared secret and GSS_S_COMPLETE is returned,
+ along with the initiator name from the verified assertion.
+ Other assertion/certificate properties MAY be made available via GSS_Get_name_a
 ttribute().
 \end_layout
 
@@ -1825,9 +1832,8 @@ te expires.
 \end_layout
 
 \begin_layout Standard
-The context root key (CRK) is derived from the ECDH shared secret and GSS_S_COMP
-LETE is returned to indicate the user is authenticated and the context is
- ready for use.
+The CRK is derived from the ECDH shared secret and GSS_S_COMPLETE is returned
+ to indicate the user is authenticated and the context is ready for use.
  No output token is emitted.
 \end_layout
 
@@ -1886,7 +1892,7 @@ While the response is a backed assertion, in order to take advantage of
  existing keying infrastructures BrowserID certificates SHOULD NOT be included
  in the backed assertion.
  Instead, an X.509 certificate SHOULD be included as a value for the "x5c"
- header attribute in the assertion (see 
+ header property in the assertion (see 
 \begin_inset Flex EntityXRef
 status collapsed
 
@@ -1922,8 +1928,8 @@ If X.509 certificates are used, then either the audience URI must be present
 
 \begin_layout Standard
 If BrowserID certificates are used, then either the audience URI must match
- the "uri" key of the "principal" object in the certificate, or the host
- component must match the "hostname" key.
+ the "uri" property of the "principal" object in the certificate, or the
+ host component must match the "hostname" property.
 \end_layout
 
 \begin_layout Standard
@@ -2038,43 +2044,43 @@ The initiator looks in its ticket cache for an unexpired ticket for the
 \end_layout
 
 \begin_layout Enumerate
-The initiator generates a re-authentication assertion containing: the current
- time (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:request-iat"
-
-\end_inset
-
-), a random nonce (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:request-nonce"
-
-\end_inset
-
-), the ticket identifier (
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:request-tkt"
-
-\end_inset
-
-, and the target name (
+The initiator generates a re-authentication assertion containing: the name
+ of the acceptor (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:request-aud"
 
 \end_inset
 
-) and any channel bindings (
+), optional channel binding information (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:request-cbt"
 
 \end_inset
 
-) requested by the application.
+), the current time (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-iat"
+
+\end_inset
+
+), a random nonce (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-nonce"
+
+\end_inset
+
+), and the ticket identifier (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-tkt"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Enumerate
@@ -2091,13 +2097,21 @@ reference "sub:OID Registry"
 \end_layout
 
 \begin_layout Enumerate
-The re-authentication assertion is packed into a backed assertion with no
- certificates.
+The re-authentication assertion is packed into a backed assertion.
+ The certificate count is zero as the assertion is signed with a symmetric
+ key already known to the initiator.
 \end_layout
 
 \begin_layout Enumerate
-The initiator generates an Authenticator Session Key (ASK) to be used in
- verifying the response and in deriving the context root key.
+The initiator generates an Authenticator Session Key (ASK) (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-ASK"
+
+\end_inset
+
+) which is used instead of the ECDH key agreement key to verify the response
+ and derive the CRK.
 \end_layout
 
 \begin_layout Enumerate
@@ -2111,7 +2125,7 @@ Acceptor re-authentication context token
 \begin_layout Enumerate
 The acceptor unpacks the re-authentication assertion and retrieves the authentic
 ator root key, ticket expiry time, mutual authentication state and any other
- attributes (such as the initiator principal) associated with the ticket
+ properties (such as the initiator principal) associated with the ticket
  identifier.
 \end_layout
 
@@ -2224,7 +2238,7 @@ Audience
 \begin_layout Standard
 If the credential passed to GSS_Accept_sec_context() is not for GSS_C_NO_NAME,
  then its string representation as a BrowserID principal MUST match the
- unpacked audience (that is, the audience without the URN prefix).
+ unencoded audience (that is, the audience without the URN prefix).
 \end_layout
 
 \begin_layout Subsection
@@ -2234,7 +2248,7 @@ Channel bindings
 \begin_layout Standard
 If the acceptor passed in channel bindings to GSS_Accept_sec_context(),
  the assertion MUST contain a matching channel binding claim.
- (Only the application_data component is validated.) 
+ (Only the application_data component is validated.)
 \end_layout
 
 \begin_layout Subsection
@@ -2245,6 +2259,8 @@ Signatures
 Signature validation on assertions is the same as for the web usage of BrowserID
 , with the addition that response assertions may and re-authentication assertion
 s must be signed with a symmetric key.
+ In this case the HMAC algorithm associated with the mechanism OID is used,
+ and there are no certificates in the backed assertion.
 \end_layout
 
 \begin_layout Subsection
@@ -2608,7 +2624,7 @@ reference "sub:kd-RRK"
  Alternatively, it may be signed with the acceptor's private RSA or DSA
  key.
  In this case, the acceptor's X.509 certificate is included in the "x5c"
- attribute of the JWT header.
+ property of the JWT header.
 \end_layout
 
 \begin_layout Standard
@@ -2818,8 +2834,8 @@ exp
 \begin_layout Standard
 This contains the time when the context expires, in milliseconds since January
  1, 1970.
- This claim is OPTIONAL; the initiator should use the certificate expiry
- time if absent.
+ This claim is OPTIONAL; the initiator should use the certificate or ticket
+ expiry time if absent.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3132,7 +3148,7 @@ Naming extensions
 \end_layout
 
 \begin_layout Standard
-The acceptor MAY surface attributes from the assertion and any certificates
+The acceptor MAY surface properties from the assertion and any certificates
  using GSS_Get_name_attribute().
  The URN prefix is "urn:ietf:params:gss:jwt".
  The acceptor MUST filter any sensitive attributes before returning them
