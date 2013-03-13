@@ -136,7 +136,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    9.      Example . . . . . . . . . . . . . . . . . . . . . . . . d1e20
    10.     Security Considerations . . . . . . . . . . . . . . . . d1e20
    10.1.   JavaScript  . . . . . . . . . . . . . . . . . . . . . . d1e20
-   10.2.   Host certificates for mutual authentication . . . . . . d1e20
+   10.2.   Host certificates for mutual authentication . . . . . . d1e21
    11.     IANA Considerations . . . . . . . . . . . . . . . . . . d1e21
    11.1.   OID Registry  . . . . . . . . . . . . . . . . . . . . . sub_O
    11.2.   SASL Registry . . . . . . . . . . . . . . . . . . . . . d1e23
@@ -1354,9 +1354,9 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    ASK = browserid-derive-key(ARK, reauth-assertion-as-jwt)
 
-
-
-
+   The salt (reauth-assertion-as-jwt) is the JWT encoding of the re-
+   authentication assertion as sent by the initiator.  This binds the
+   nonce to the session key.
 
 
 

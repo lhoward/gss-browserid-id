@@ -617,14 +617,16 @@ ARK = browserid-derive-key(DHK, "ARK")</t>
 The authenticator session key (ASK) is used instead of the DHK for re-authenticated contexts. (The term “authenticator” is equivalent to “re-authentication assertion” and exists for historical reasons.) It is derived as follows:</t>
         <t>
 ASK = browserid-derive-key(ARK, reauth-assertion-as-jwt)</t>
+        <t>
+The salt (reauth-assertion-as-jwt) is the  JWT encoding of the re-authentication assertion as sent by the initiator. This binds the nonce to the session key.</t>
       </section>
     </section>
-    <section title="GSS-API Extensions" anchor="d1e1919">
-      <section title="PRF" anchor="d1e1925">
+    <section title="GSS-API Extensions" anchor="d1e1922">
+      <section title="PRF" anchor="d1e1928">
         <t>
 See <xref target="RFC4402"/>. </t>
       </section>
-      <section title="Naming extensions" anchor="d1e1940">
+      <section title="Naming extensions" anchor="d1e1943">
         <t>
 The acceptor MAY surface properties from the assertion and any certificates using GSS_Get_name_attribute(). The URN prefix is "urn:ietf:params:gss:jwt". The acceptor MUST filter any sensitive attributes before returning them to the application.</t>
         <t>
@@ -653,7 +655,7 @@ where the third byte (zero above) is set to the <xref target="RFC3961"/> encrypt
 There is currently no initiator-sent metadata defined and acceptors should ignore any sent. The metadata is advisory and the initiator is free to ignore it.</t>
       </section>
     </section>
-    <section title="Example" anchor="d1e2004">
+    <section title="Example" anchor="d1e2007">
       <t>
 Suppose a mail user agent for the user lukeh@lukktone.com wishes to authenticate to an IMAP server rand.mit.de.padl.com. They do not have a re-authentication ticket. The mail user agent would display a dialog box in which the user would sign in to their IdP and request a fresh assertion be generated.</t>
       <t>
@@ -992,19 +994,19 @@ The assertion payload is below (again, for clarity the actual JWT signature has 
       <t>
 Note the fast re-authentication ticket and the nonce echoed back from the initiator.</t>
     </section>
-    <section title="Security Considerations" anchor="d1e2081">
+    <section title="Security Considerations" anchor="d1e2084">
       <t>
 This section only addresses security considerations associated with BrowserID and SASL and GSS-API.</t>
-      <section title="JavaScript" anchor="d1e2090">
+      <section title="JavaScript" anchor="d1e2093">
         <t>
 There are security issues associated with the use of JavaScript for cryptography.</t>
       </section>
-      <section title="Host certificates for mutual authentication" anchor="d1e2099">
+      <section title="Host certificates for mutual authentication" anchor="d1e2102">
         <t>
 Allowing a match on only the DNS subjectAltName in an acceptor's X.509 certificate permits different services on the same host to impersonate each other.</t>
       </section>
     </section>
-    <section title="IANA Considerations" anchor="d1e2108">
+    <section title="IANA Considerations" anchor="d1e2111">
       <t>
 This specification creates a number of IANA registries.</t>
       <section title="OID Registry" anchor="sub_OID_Registry">
@@ -1105,7 +1107,7 @@ GSS_C_NT_BROWSERID_PRINCIPAL</c>
 3.1.1</c>
         </texttable>
       </section>
-      <section title="SASL Registry" anchor="d1e2376">
+      <section title="SASL Registry" anchor="d1e2380">
         <t>
 Subject: Registration of SASL mechanisms BROWSERID-AES128 and BROWSERID-AES128-PLUS</t>
         <t>
