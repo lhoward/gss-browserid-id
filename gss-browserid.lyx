@@ -637,7 +637,7 @@ RFC5801
 \begin_layout Standard
 The BrowserID mechanism described in this document reuses the existing web-based
  BrowserID protocol, but profiles it for use in applications that support
- SASL or GSS-API, adding features such as key exchange, mutual authentication,
+ SASL or GSS-API, adding features such as key agreement, mutual authentication,
  and fast re-authentication.
 \end_layout
 
@@ -939,8 +939,8 @@ backed assertion
 \begin_layout Standard
 The GSS BrowserID protocol extends this by having the RP always send back
  a response to the user agent, which at a minimum provides key confirmation
- (for mechanisms that support key exchange) and indicates the lifetime of
- the established security context.
+ (for mechanisms that support key agreement) and indicates the lifetime
+ of the established security context.
  In an extension of the base protocol, it can also allow the user agent
  to mutually authenticate the RP.
 \end_layout
@@ -1942,11 +1942,15 @@ Acceptor certificate advertisement
 \end_layout
 
 \begin_layout Standard
-The acceptor may include its certificate (and optionally any additional
- certs), formatted as a backed assertion with an empty payload, in its NegoEx
- metadata.
- There is no initiator metadata defined at present.
- Acceptors MUST ignore any initiator metadata they do not understand.
+The acceptor may include one or more certificates in NegoEx metadata.
+ See 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:NegoEx"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -1955,7 +1959,7 @@ Extensions for fast re-authentication
 
 \begin_layout Standard
 Fast re-authentication allows a security context to be established using
- a secret key derived from the initial certificate-signed ECDH key exchange.
+ a secret key derived from the initial certificate-signed ECDH key agreement.
  Re-authentication assertions implicitly expire a short interval after the
  issue time; five minutes is suggested.
  [XXX would it not be more consistent to include an explicit expiry time
@@ -2052,17 +2056,17 @@ reference "sub:request-aud"
 
 \end_inset
 
-), optional channel binding information (see 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:request-cbt"
-
-\end_inset
-
 ), the current time (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:request-iat"
+
+\end_inset
+
+), optional channel binding information (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-cbt"
 
 \end_inset
 
@@ -2084,9 +2088,8 @@ reference "sub:request-tkt"
 \end_layout
 
 \begin_layout Enumerate
-The initiator signs the re-authentication assertion using its copy of the
- ARK, using the hash algorithm associated with the original context key
- (see 
+The initiator signs the re-authentication assertion with the ARK, using
+ the hash algorithm associated with the original context key (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:OID Registry"
@@ -2110,8 +2113,7 @@ reference "sub:kd-ASK"
 
 \end_inset
 
-) which is used instead of the ECDH key agreement key to verify the response
- and derive the CRK.
+) which is used to verify the response and derive the CRK.
 \end_layout
 
 \begin_layout Enumerate
@@ -2135,7 +2137,7 @@ The acceptor validates that the ticket and re-authentication assertion have
 \end_layout
 
 \begin_layout Enumerate
-The acceptor verifies the assertion using its copy of the ARK.
+The acceptor verifies the assertion using the ARK.
 \end_layout
 
 \begin_layout Enumerate
@@ -2249,6 +2251,38 @@ Channel bindings
 If the acceptor passed in channel bindings to GSS_Accept_sec_context(),
  the assertion MUST contain a matching channel binding claim.
  (Only the application_data component is validated.)
+\end_layout
+
+\begin_layout Subsection
+Key agreement
+\end_layout
+
+\begin_layout Standard
+The initiator MUST choose an ECDH curve with an equivalent strength to the
+ negotiated 
+\begin_inset Flex EntityXRef
+status open
+
+\begin_layout Plain Layout
+RFC4121
+\end_layout
+
+\end_inset
+
+ encryption type.
+ Appropriate curves are given in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:OID Registry"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The curve strength MUST be verified by the acceptor.
+ A stronger than required curve MAY be selected by the initiator.
 \end_layout
 
 \begin_layout Subsection
@@ -2453,8 +2487,7 @@ This contains the time the assertion was issued (in milliseconds since January
  1, 1970), when the assertion is being used for fast re-authentication.
  The acceptor MUST validate that the assertion was recently issued (a recommende
 d interval is five minutes).
- This claim is REQUIRED when the assertion is a re-authentication assertion
- and MAY be ignored otherwise.
+ This claim is REQUIRED when the assertion is a re-authentication assertion.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2464,7 +2497,7 @@ name "sub:request-ecdh"
 
 \end_inset
 
-"ecdh" (Elliptic Curve Diffie-Hellman key exchange)
+"ecdh" (Elliptic Curve Diffie-Hellman key agreement)
 \end_layout
 
 \begin_layout Standard
@@ -2484,19 +2517,15 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-The curve should have an equivalent strength to the negotiated 
-\begin_inset Flex EntityXRef
-status open
-
-\begin_layout Plain Layout
-RFC4121
-\end_layout
-
+The 
+\begin_inset Quotes eld
 \end_inset
 
- encryption type: at least P-256 MUST be used for browserid-aes128, and
- P-521 for browserid-aes256.
- This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL,
+ecdh
+\begin_inset Quotes erd
+\end_inset
+
+ claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL,
  or there is already a prior session key (as is the case for re-authentication
  assertions).
 \end_layout
@@ -2520,8 +2549,8 @@ cbt
 \end_layout
 
 \begin_layout Standard
-This contains a channel binding token for binding the GSS context to an
- outer channel (e.g.
+This contains channel binding information for binding the GSS context to
+ an outer channel (e.g.
  see 
 \begin_inset Flex EntityXRef
 status open
@@ -2601,7 +2630,7 @@ Response (acceptor/RP) assertion
 
 \begin_layout Standard
 The response assertion is sent from the acceptor to the initiator to provide
- key exchange, and either key confirmation or mutual authentication.
+ key agreement, and either key confirmation or mutual authentication.
  It is formatted as a backed assertion, however in the current specification
  it consists of a single assertion with zero certificates; that is, it is
  "unbacked".
@@ -2779,7 +2808,7 @@ ecdh
 \begin_inset Quotes erd
 \end_inset
 
- (Elliptic Curve Diffie-Hellman key exchange)
+ (Elliptic Curve Diffie-Hellman key agreement)
 \end_layout
 
 \begin_layout Standard
@@ -2810,7 +2839,7 @@ crv
 \begin_inset Quotes erd
 \end_inset
 
- property MUST NOT be present as it is implied by the request assertion.
+ property MUST NOT be present; it is determined by the initiator.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3121,7 +3150,7 @@ ASK = browserid-derive-key(ARK, reauth-assertion-as-jwt)
 \end_layout
 
 \begin_layout Standard
-The salt (reauth-assertion-as-jwt) is the  JWT encoding of the re-authentication
+The salt (reauth-assertion-as-jwt) is the JWT encoding of the re-authentication
  assertion as sent by the initiator.
  This binds the nonce to the session key.
 \end_layout
