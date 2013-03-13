@@ -1179,6 +1179,12 @@ the <domain> name becomes the third component (service-specific)
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Audience-encoding"
+
+\end_inset
+
 Audience encoding
 \end_layout
 
@@ -1656,6 +1662,17 @@ The innerToken consists of the initiator context token ID concatenated with
 \end_layout
 
 \begin_layout Itemize
+Parameters for ECDH key agreement (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-ecdh"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
 Channel binding information (see 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1667,19 +1684,8 @@ reference "sub:request-cbt"
 \end_layout
 
 \begin_layout Itemize
-ECDH parameters for session key establishment (see 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:request-ecdh"
-
-\end_inset
-
-)
-\end_layout
-
-\begin_layout Itemize
 A nonce for binding the request to a response signed with a different key
- (for mutual authentication) (see 
+ (for mutual authentication or fast re-authentication) (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:request-nonce"
@@ -1703,7 +1709,7 @@ reference "sub:request-tkt"
 
 \begin_layout Standard
 The call to GSS_Init_sec_context() returns GSS_C_CONTINUE_NEEDED to indicate
- that a subsequent token from the acceptor is expected.
+ that a subsequent context token from the acceptor is expected.
 \end_layout
 
 \begin_layout Subsection
@@ -1764,8 +1770,8 @@ reference "sub:kd-RRK"
 \end_inset
 
 ).
- The acceptor then generates a response assertion containing the generated
- ECDH public key and context expiry time.
+ The acceptor then generates a response assertion containing its ECDH public
+ key and context expiry time.
  The response assertion is signed using the RP Response Key (RRK) unless
  mutual authentication is desired, in which case it may be signed in the
  acceptor's private key (see 
@@ -1776,10 +1782,13 @@ reference "sub:Extensions-for-mutual"
 \end_inset
 
 ).
- The response token is encoded as a backed assertion, even though it will
+\end_layout
+
+\begin_layout Standard
+The response token is encoded as a backed assertion, even though it will
  typically have a certificate count of zero (because the signing key is
- the shared RRK, or because an X.509 certificate is included directly in
- the assertion's JWT header).
+ the symmetric RRK, or because an X.509 certificate is included directly
+ in the assertion's JWT header).
 \end_layout
 
 \begin_layout Standard
@@ -1802,14 +1811,15 @@ Initiator context completion
 
 \begin_layout Standard
 Upon receiving the acceptor context token, the initiator unpacks the response
- assertion and, if necessary, computes the ECDH shared secret and RRK.
+ assertion and, if applicable, computes the ECDH shared secret and RRK.
  The RRK is used to verify the response assertion unless mutual authentication
  is desired, in which case the acceptor's public key will be used.
 \end_layout
 
 \begin_layout Standard
 The initiator sets the context expiry time with that received in the response
- assertion.
+ assertion, if present; otherwise, the context expires when the user's certifica
+te expires.
  If the context has expired, GSS_S_CONTEXT_EXPIRED is returned and context
  establishment fails.
 \end_layout
@@ -1855,7 +1865,8 @@ reference "sub:request-nonce"
 \end_inset
 
 ) is included in the assertion to bind the initiator and acceptor tokens.
- The presence of this nonce indicates that mutual authentication is desired.
+ The presence of a nonce in a certificate-signed assertion indicates that
+ mutual authentication is desired.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1863,10 +1874,11 @@ Acceptor mutual authentication context token
 \end_layout
 
 \begin_layout Standard
-If the acceptor has a private key available and received a nonce in the
- initiator assertion, it signs the response using a private key rather than
- the RP Response Key (RRK).
- The response includes the nonce from the initiator's assertion.
+If the acceptor has a private key and certificate available and received
+ a nonce in the initiator assertion, it signs the response using a private
+ key rather than the RP Response Key (RRK).
+ The response includes the nonce from the initiator's assertion, to bind
+ the two.
 \end_layout
 
 \begin_layout Standard
@@ -1885,7 +1897,10 @@ I-D.ietf-jose-json-web-signature
 \end_inset
 
  4.1.6).
- This may be changed in a future revision of this specification.
+\end_layout
+
+\begin_layout Standard
+[XXX should we allow both BrowserID and X.509 certificates?]
 \end_layout
 
 \begin_layout Subsubsection
@@ -1894,9 +1909,9 @@ Initiator mutual authentication context completion
 
 \begin_layout Standard
 The initiator verifies the assertion signature and that the nonce matches,
- and validates the certificate chain (for X.509 certificate chains, trust
- anchors SHOULD be configurable both system-wide and specifically for the
- BrowserID mechanism).
+ and validates the certificate chain.
+ For X.509 certificate chains, trust anchors SHOULD be configurable both
+ system-wide and specifically for the BrowserID mechanism.
 \end_layout
 
 \begin_layout Standard
@@ -1924,7 +1939,8 @@ Acceptor certificate advertisement
 The acceptor may include its certificate (and optionally any additional
  certs), formatted as a backed assertion with an empty payload, in its NegoEx
  metadata.
- There is no initiator metadata defined.
+ There is no initiator metadata defined at present.
+ Acceptors MUST ignore any initiator metadata they do not understand.
 \end_layout
 
 \begin_layout Subsection
@@ -1932,38 +1948,37 @@ Extensions for fast re-authentication
 \end_layout
 
 \begin_layout Standard
-Fast re-authentication allows a security context to be established without
- acquiring a new BrowserID assertion.
- Instead an assertion signed with a secret key derived from the initial
- ECDH key exchange is used.
+Fast re-authentication allows a security context to be established using
+ a secret key derived from the initial certificate-signed ECDH key exchange.
  Re-authentication assertions implicitly expire a short interval after the
  issue time; five minutes is suggested.
- This lifetime is distinct from the ticket lifetime, which default SHOULD
- match the user's certificate expiry time (but also SHOULD be configurable).
+ [XXX would it not be more consistent to include an explicit expiry time
+ as is the case with non-re-authentication assertions?] (This lifetime is
+ distinct from the ticket lifetime, which SHOULD be configurable, but by
+ default match the user's certificate expiry time.)
 \end_layout
 
 \begin_layout Standard
 The ticket expiry time must be securely available to the acceptor, along
- with the subject, issuer, audience, expiry time and authenticator root
- key (ARK) of the original assertion.
- One implementation choice may be to use the opaque ticket identifier as
- a key into a dictionary containing this information (possibly sharing the
- replay cache).
- Another would be to encrypt this information in a long-term secret only
- known to the acceptor and encode the resulting ciphertext in the opaque
- ticket identifier.
-\end_layout
-
-\begin_layout Standard
-The re-authentication assertion is signed with a HMAC using the ARK (see
- 
+ with the subject, issuer, audience, expiry time and Authenticator Root
+ Key (ARK) (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:kd-ARK"
 
 \end_inset
 
-), rather than a user's BrowserID certificate.
+) of the original assertion.
+ One implementation choice may be to use the opaque ticket identifier as
+ a key into a dictionary containing this information.
+ Another would be to encrypt this information in a long-term secret only
+ known to the acceptor and encode the resulting ciphertext in the opaque
+ ticket identifier.
+\end_layout
+
+\begin_layout Standard
+The re-authentication assertion is signed with a HMAC using the ARK, rather
+ than a user's BrowserID certificate.
 \end_layout
 
 \begin_layout Standard
@@ -1989,7 +2004,7 @@ reference "sub:Acceptor-context-token"
 
 \begin_layout Enumerate
 A unique ticket identifier is generated.
- The acceptor must be able to use this to retrieve any attributes re-authenticat
+ The acceptor must be able to use this to retrieve any properties re-authenticat
 ed acceptor contexts will need.
 \end_layout
 
@@ -2018,11 +2033,13 @@ Initiator re-authentication context token
 \begin_layout Standard
 The initiator looks in its ticket cache for an unexpired ticket for the
  desired acceptor.
- If none is found, the normal authentication flow is performed, otherwise:
+ If none is found, the normal certificate-based authentication flow is performed
+, otherwise:
 \end_layout
 
 \begin_layout Enumerate
-The initiator generates an authenticator containing: the current time (
+The initiator generates a re-authentication assertion containing: the current
+ time (
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:request-iat"
@@ -2061,18 +2078,26 @@ reference "sub:request-cbt"
 \end_layout
 
 \begin_layout Enumerate
-The initiator signs the authenticator using its copy of the ARK , using
- the appropriate hash algorithm associated with the original context (only
- HS256 is presently specified).
+The initiator signs the re-authentication assertion using its copy of the
+ ARK, using the hash algorithm associated with the original context key
+ (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:OID Registry"
+
+\end_inset
+
+; HS256 is required by this specification).
 \end_layout
 
 \begin_layout Enumerate
-The authenticator is packed into a backed assertion with no certificates.
+The re-authentication assertion is packed into a backed assertion with no
+ certificates.
 \end_layout
 
 \begin_layout Enumerate
-The initiator generates an authenticator session key to be used in verifying
- the response and in deriving the context root key.
+The initiator generates an Authenticator Session Key (ASK) to be used in
+ verifying the response and in deriving the context root key.
 \end_layout
 
 \begin_layout Enumerate
@@ -2084,18 +2109,19 @@ Acceptor re-authentication context token
 \end_layout
 
 \begin_layout Enumerate
-The acceptor unpacks the authenticator assertion and retrieves the authenticator
- root key, ticket expiry time, mutual authentication state and any other
+The acceptor unpacks the re-authentication assertion and retrieves the authentic
+ator root key, ticket expiry time, mutual authentication state and any other
  attributes (such as the initiator principal) associated with the ticket
  identifier.
 \end_layout
 
 \begin_layout Enumerate
-The acceptor validates that the ticket and authenticator have not expired.
+The acceptor validates that the ticket and re-authentication assertion have
+ not expired.
 \end_layout
 
 \begin_layout Enumerate
-The acceptor verifies the authenticator using its copy of the ARK.
+The acceptor verifies the assertion using its copy of the ARK.
 \end_layout
 
 \begin_layout Enumerate
@@ -2125,7 +2151,6 @@ reference "sub:kd-CRK"
 
 \begin_layout Enumerate
 The acceptor generates a response and signs and returns it.
- 
 \end_layout
 
 \begin_layout Standard
@@ -2218,8 +2243,8 @@ Signatures
 
 \begin_layout Standard
 Signature validation on assertions is the same as for the web usage of BrowserID
-, with the addition that response and re-authentication assertions may be
- signed with a symmetric key.
+, with the addition that response assertions may and re-authentication assertion
+s must be signed with a symmetric key.
 \end_layout
 
 \begin_layout Subsection
@@ -2243,9 +2268,10 @@ Request (initiator/UA) assertion
 
 \begin_layout Standard
 These claims are included in the assertion sent to the acceptor and are
- authenticated by the initiator's private key and certificate chain.
+ authenticated by the initiator's private key and certificate chain (directly,
+ or in the case of re-authentication assertions, transitively).
  Here is an example assertion containing Elliptic Curve Diffie-Hellman parameter
-s:
+s, along with a nonce indicating that mutual authentication is desired:
 \end_layout
 
 \begin_layout Standard
@@ -2260,42 +2286,42 @@ status open
 
 \begin_layout Plain Layout
 
- 	"exp": 1360158396188,
+     "exp": 1360158396188,
 \end_layout
 
 \begin_layout Plain Layout
 
- 	"ecdh": {
+     "ecdh": {
 \end_layout
 
 \begin_layout Plain Layout
 
- 		"crv": "P-256",
+         "crv": "P-256",
 \end_layout
 
 \begin_layout Plain Layout
 
- 		"x": "JR5UPDgMLFPZwOGaKKSF24658tB1DccM1_oHPbCHeZg",
+         "x": "JR5UPDgMLFPZwOGaKKSF24658tB1DccM1_oHPbCHeZg",
 \end_layout
 
 \begin_layout Plain Layout
 
- 		"y": "S45Esx_6DfE5-xdB3X7sIIJ16MwO0Y_RiDc-i5ZTLQ8"
+         "y": "S45Esx_6DfE5-xdB3X7sIIJ16MwO0Y_RiDc-i5ZTLQ8"
 \end_layout
 
 \begin_layout Plain Layout
 
- 	},
+     },
 \end_layout
 
 \begin_layout Plain Layout
 
- 	"nonce": "GnK2IBA42iQ",
+     "nonce": "GnK2IBA42iQ",
 \end_layout
 
 \begin_layout Plain Layout
 
- 	"aud": "urn:x-gss:imap/mail.ietf.org"
+     "aud": "urn:x-gss:imap/mail.ietf.org"
 \end_layout
 
 \begin_layout Plain Layout
@@ -2309,7 +2335,7 @@ status open
 \end_layout
 
 \begin_layout Standard
-The request assertion may contain the following claims:
+The following claims are permitted in the request assertion:
 \end_layout
 
 \begin_layout Subsubsection
@@ -2331,7 +2357,15 @@ aud
 \end_layout
 
 \begin_layout Standard
-The audience, formatted as a URN containing the acceptor's principal name.
+The audience, formatted as a URN containing the acceptor's principal name
+ (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Audience-encoding"
+
+\end_inset
+
+).
  This claim is REQUIRED.
 \end_layout
 
@@ -2360,6 +2394,26 @@ This contains the time when the assertion expires, in milliseconds since
  certificate; it MUST be ignored if present in a re-authentication assertion.
 \end_layout
 
+\begin_layout Standard
+[XXX this asymmetry of 
+\begin_inset Quotes eld
+\end_inset
+
+exp
+\begin_inset Quotes erd
+\end_inset
+
+ vs 
+\begin_inset Quotes eld
+\end_inset
+
+iat
+\begin_inset Quotes erd
+\end_inset
+
+ for different kinds of assertions is troubling.]
+\end_layout
+
 \begin_layout Subsubsection
 \begin_inset CommandInset label
 LatexCommand label
@@ -2381,10 +2435,10 @@ iat
 \begin_layout Standard
 This contains the time the assertion was issued (in milliseconds since January
  1, 1970), when the assertion is being used for fast re-authentication.
- The acceptor MUST validate that the ticket was recently issued (a recommended
- interval is five minutes).
+ The acceptor MUST validate that the assertion was recently issued (a recommende
+d interval is five minutes).
  This claim is REQUIRED when the assertion is a re-authentication assertion
- and SHOULD be ignored otherwise.
+ and MAY be ignored otherwise.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2535,10 +2589,10 @@ The response assertion is sent from the acceptor to the initiator to provide
  It is formatted as a backed assertion, however in the current specification
  it consists of a single assertion with zero certificates; that is, it is
  "unbacked".
- It is encoded as a backed assertion in order to provide future support
+ (It is encoded as a backed assertion in order to provide future support
  for mutual authentication using native BrowserID certificates.
  Such support is not defined by this specification; implementations of this
- version of the specification SHOULD reject backed response assertions.
+ version of the specification SHOULD reject backed response assertions.)
 \end_layout
 
 \begin_layout Standard
@@ -2566,8 +2620,17 @@ The HMAC-SHA256 (HS256) algorithm MUST be supported by implementors of this
 If a key is unavailable, then the signature is absent and the value of the
  "alg" header claim is "none".
  No signature verification is required in this case, however the initiator
- MUST NOT return GSS_C_COMPLETE unless the associated RFC3961 encryption
- type for the mechanism OID is ENCTYPE_NULL.
+ MUST NOT return GSS_C_COMPLETE unless the 
+\begin_inset Flex EntityXRef
+status open
+
+\begin_layout Plain Layout
+RFC3961
+\end_layout
+
+\end_inset
+
+ encryption type for the mechanism is ENCTYPE_NULL.
 \end_layout
 
 \begin_layout Standard
@@ -2657,7 +2720,7 @@ status open
 \end_layout
 
 \begin_layout Standard
-The response assertion payload may contain the following claims:
+The following claims are permitted in the response assertion:
 \end_layout
 
 \begin_layout Subsubsection
@@ -2722,6 +2785,18 @@ status collapsed
 ation assertions.
 \end_layout
 
+\begin_layout Standard
+The 
+\begin_inset Quotes eld
+\end_inset
+
+crv
+\begin_inset Quotes erd
+\end_inset
+
+ property MUST NOT be present as it is implied by the request assertion.
+\end_layout
+
 \begin_layout Subsubsection
 \begin_inset CommandInset label
 LatexCommand label
@@ -2767,7 +2842,8 @@ nonce
 
 \begin_layout Standard
 The nonce as received from the initiator.
- This MUST NOT be present unless a nonce was received from the initiator.
+ This MUST NOT be present unless a nonce was received from the initiator,
+ and the acceptor is signing the assertion with a non-ephemeral key.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2889,7 +2965,7 @@ Diffie-Hellman Key (DHK)
 This key is the shared secret resulting from the ECDH exchange.
  Its length corresponds to the selected EC curve.
  It is never used without derivation and thus may be used with implementations
- that do not expose the DH value directly.
+ that do not expose the ECDH value directly.
 \end_layout
 
 \begin_layout Subsection
@@ -2969,7 +3045,23 @@ Authenticator Root Key (ARK)
 \begin_layout Standard
 The authenticator root key (ARK) is used to sign assertions used for fast
  re-authentication.
- It is derived as follows:
+ (The term 
+\begin_inset Quotes eld
+\end_inset
+
+authenticator
+\begin_inset Quotes erd
+\end_inset
+
+ is equivalent to 
+\begin_inset Quotes eld
+\end_inset
+
+re-authentication assertion
+\begin_inset Quotes erd
+\end_inset
+
+ and exists for historical reasons.) It is derived as follows:
 \end_layout
 
 \begin_layout Standard
@@ -2989,7 +3081,23 @@ Authenticator Session Key (ASK)
 \begin_layout Standard
 The authenticator session key (ASK) is used instead of the DHK for re-authentica
 ted contexts.
- It is derived as follows:
+ (The term 
+\begin_inset Quotes eld
+\end_inset
+
+authenticator
+\begin_inset Quotes erd
+\end_inset
+
+ is equivalent to 
+\begin_inset Quotes eld
+\end_inset
+
+re-authentication assertion
+\begin_inset Quotes erd
+\end_inset
+
+ and exists for historical reasons.) It is derived as follows:
 \end_layout
 
 \begin_layout Standard
