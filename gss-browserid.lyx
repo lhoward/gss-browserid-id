@@ -1153,7 +1153,7 @@ GSS_C_NT_DOMAINBASED_SERVICE
 
 \begin_layout Standard
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC5178
@@ -1923,7 +1923,7 @@ While the response is a backed assertion, in order to take advantage of
  Instead, an X.509 certificate SHOULD be included as a value for the "x5c"
  header property in the assertion (see 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 I-D.ietf-jose-json-web-signature
@@ -1967,6 +1967,12 @@ If BrowserID certificates are used, then either the audience URI must match
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:NegoEx"
+
+\end_inset
+
 Acceptor certificate advertisement
 \end_layout
 
@@ -2098,7 +2104,8 @@ A unique ticket identifier is generated.
  The acceptor must be able to use this to retrieve any properties re-authenticat
 ed acceptor contexts will need.
  The ticket expiry time by default SHOULD match the initiator's certificate
- expiry, however it MAY be configurable.
+ expiry, however it MAY be configurable so the ticket expires before or
+ after the certificate.
 \end_layout
 
 \begin_layout Enumerate
@@ -2114,9 +2121,8 @@ reference "sub:response-tkt"
 \end_layout
 
 \begin_layout Standard
-The initiator MAY cache such tickets, along with the ARK and expiry time,
- received from the acceptor in order to re-authenticate to it at a future
- time.
+The initiator MAY cache such tickets, along with the ARK, received from
+ the acceptor in order to re-authenticate to it at a future time.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2139,7 +2145,14 @@ reference "sub:request-aud"
 
 \end_inset
 
-), the current time (see 
+), an expiry time (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-exp"
+
+\end_inset
+
+) and/or the current time (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:request-iat"
@@ -2184,8 +2197,8 @@ reference "sub:OID Registry"
 
 \begin_layout Enumerate
 The re-authentication assertion is packed into a backed assertion.
- The certificate count is zero as the assertion is signed with a symmetric
- key already known to the initiator.
+ The certificate count is zero as the assertion is signed with an established
+ symmetric key.
 \end_layout
 
 \begin_layout Enumerate
@@ -2200,7 +2213,7 @@ reference "sub:kd-ASK"
 \end_layout
 
 \begin_layout Enumerate
-The assertion is sent to the acceptor.
+The assertion is packed into a backed assertion, and sent to the acceptor.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2254,7 +2267,7 @@ The acceptor generates a response and signs and returns it.
 
 \begin_layout Standard
 If the ticket cannot be found, or the authentication fails, the acceptor
- MAY return an error code in its response, permitting the initiator to recover
+ SHOULD return a REAUTH_FAILED error, permitting the initiator to recover
  and fallback to generating a BrowserID assertion.
  It MAY also include its local timestamp (see 
 \begin_inset CommandInset ref
@@ -2324,7 +2337,15 @@ Audience
 \begin_layout Standard
 If the credential passed to GSS_Accept_sec_context() is not for GSS_C_NO_NAME,
  then its string representation as a BrowserID principal MUST match the
- unencoded audience (that is, the audience without the URN prefix).
+ unencoded audience (that is, the audience without the URN prefix defined
+ in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Audience-encoding"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Subsection
@@ -2532,7 +2553,7 @@ exp
 \begin_inset Quotes erd
 \end_inset
 
- and/or 
+ or 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2573,7 +2594,7 @@ exp
 \begin_inset Quotes erd
 \end_inset
 
- and/or 
+ or 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2582,6 +2603,30 @@ iat
 \end_inset
 
  MUST be present.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:request-nbf"
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+nbf
+\begin_inset Quotes erd
+\end_inset
+
+ (Not before time)
+\end_layout
+
+\begin_layout Standard
+This contains the time, in milliseconds sinces January 1, 1970, from which
+ the assertion begins to be valid.
+ This claim is OPTIONAL.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2598,11 +2643,11 @@ name "sub:request-ecdh"
 These contain ECDH key parameters for deriving a shared session key with
  the relying party: "crv" contains the curve, "x" the X coordinate and "y"
  the Y coordinate (see 
-\begin_inset Flex BibXML
-status collapsed
+\begin_inset Flex EntityXRef
+status open
 
 \begin_layout Plain Layout
-.I-D.ietf-oauth-json-web-token
+I-D.ietf-oauth-json-web-token
 \end_layout
 
 \end_inset
@@ -2639,7 +2684,7 @@ cbt
 \begin_inset Quotes erd
 \end_inset
 
- (Channel Binding Token)
+ (Channel binding token)
 \end_layout
 
 \begin_layout Standard
@@ -2662,6 +2707,26 @@ ext().
  This claim is OPTIONAL.
 \end_layout
 
+\begin_layout Standard
+[XXX should this be 
+\begin_inset Quotes eld
+\end_inset
+
+cb
+\begin_inset Quotes erd
+\end_inset
+
+ instead of 
+\begin_inset Quotes eld
+\end_inset
+
+cbt
+\begin_inset Quotes erd
+\end_inset
+
+?]
+\end_layout
+
 \begin_layout Subsubsection
 \begin_inset CommandInset label
 LatexCommand label
@@ -2679,9 +2744,7 @@ This is a random quantity of at least 64 bits, base 64 URL encoded, which
  for re-authentication assertions and mutual authentication).
  This claim is REQUIRED for re-authentication assertions or if mutual authentica
 tion is desired.
- Otherwise, i.e.
- for certificate signed assertions where mutual authentication is unavailable,
- it MUST be ignored.
+ Otherwise it MUST be ignored.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2730,8 +2793,8 @@ The response assertion is sent from the acceptor to the initiator to provide
  "unbacked".
  (It is encoded as a backed assertion in order to provide future support
  for mutual authentication using native BrowserID certificates.
- Such support is not defined by this specification; implementations of this
- version of the specification SHOULD reject backed response assertions.)
+ Such support is not specified here; implementations of this version of
+ the specification SHOULD reject backed response assertions.)
 \end_layout
 
 \begin_layout Standard
@@ -2910,7 +2973,7 @@ This contains a JSON object containing the coordinates of the acceptor's
  ECDH public key: "x" contains the X coordinate and "y" the Y coordinate
  (see 
 \begin_inset Flex BibXML
-status collapsed
+status open
 
 \begin_layout Plain Layout
 .I-D.ietf-oauth-json-web-token
@@ -3072,6 +3135,8 @@ If REAUTH_FAILED is received, the initiator SHOULD attempt to send another
 The following protocol minor status codes are defined.
  Note that the API representation of these status codes is implementation
  dependent.
+ Status codes with the high bit set are GSS BrowserID protocol errors; the
+ remainder are BrowserID protocol errors.
 \end_layout
 
 \begin_layout Standard
@@ -3133,7 +3198,7 @@ INVALID_JSON
 \begin_inset Text
 
 \begin_layout Plain Layout
-Invalid JSON
+Invalid JSON encoding
 \end_layout
 
 \end_inset
@@ -3162,7 +3227,7 @@ INVALID_BASE64
 \begin_inset Text
 
 \begin_layout Plain Layout
-Invalid Base64
+Invalid Base64 encoding
 \end_layout
 
 \end_inset
@@ -4468,11 +4533,18 @@ The salt (reauth-assertion-as-jwt) is the JWT encoding of the re-authentication
 \end_layout
 
 \begin_layout Subsection
-GSS-API PRF
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:GSS-PRF"
+
+\end_inset
+
+GSS Pseudo-Random Function (PRF)
 \end_layout
 
 \begin_layout Standard
-See 
+The BrowserID mechanism shares the same Pseudo-Random Function (PRF) as
+ the Kerberos GSS mechanism, defined in 
 \begin_inset Flex EntityXRef
 status open
 
