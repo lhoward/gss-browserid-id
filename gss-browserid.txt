@@ -96,7 +96,7 @@ Table of Contents
    5.1.    Expiry times  . . . . . . . . . . . . . . . . . . . . . d1e15
    5.2.    Audience  . . . . . . . . . . . . . . . . . . . . . . . d1e15
    5.3.    Channel bindings  . . . . . . . . . . . . . . . . . . . d1e15
-   5.4.    Key agreement . . . . . . . . . . . . . . . . . . . . . d1e15
+   5.4.    Key agreement . . . . . . . . . . . . . . . . . . . . . d1e16
    5.5.    Signatures  . . . . . . . . . . . . . . . . . . . . . . d1e16
    5.6.    Replay detection  . . . . . . . . . . . . . . . . . . . d1e16
    6.      Assertion claims  . . . . . . . . . . . . . . . . . . . d1e16
@@ -652,15 +652,15 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 4.4.  Extensions for mutual authentication
 
    Mutual authentication allows the acceptor to be authenticated to the
-   initiator.  The mechanism may return GSS_C_MUTUAL_FLAG flag to the
-   caller if mutual authentication succeeded.  Support for mutual
-   authentication is OPTIONAL.
+   initiator.  The mechanism may set the returned mutual_state flag
+   (GSS_C_MUTUAL_FLAG) to TRUE if mutual authentication succeeded.
+   Support for mutual authentication is OPTIONAL.
 
    The base protocol is extended as follows to support this:
 
 4.4.1.  Initiator mutual authentication context token
 
-   If the initiator requested GSS_C_MUTUAL_FLAG, a nonce (see
+   If the initiator requested the mutual_state flag, a nonce (see
    Section 6.1.7) is included in the assertion to bind the initiator and
    acceptor tokens.  The presence of a nonce in a certificate-signed
    assertion indicates that mutual authentication is desired.
@@ -859,7 +859,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 4.5.4.  Interaction with mutual authentication
 
    The mutual authentication state of a re-authenticated context is
-   transitive.  The initiator MUST NOT return GSS_C_MUTUAL_FLAG for a
+   transitive.  The initiator MUST NOT set the mutual_state flag for a
    re-authenticated context unless the original context was mutually
    authenticated.
 
@@ -929,21 +929,21 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 5.3.  Channel bindings
 
-   If the acceptor passed in channel bindings to
-   GSS_Accept_sec_context(), the assertion MUST contain a matching
-   channel binding claim.  (Only the application_data component is
-   validated.)
+   GSS-API channel binding is a protected facility for naming an
+   enclosing channel between the initiator and acceptor.  If the
+   acceptor passed in channel bindings to GSS_Accept_sec_context(), the
+   assertion MUST contain a matching channel binding claim.  (Only the
+   application_data component is validated.)
+
+   The acceptor SHOULD accept any channel binding provided by the
+   initiator if NULL channel bindings are passed to
+   GSS_Accept_sec_context().
 
 5.4.  Key agreement
 
    The initiator MUST choose an ECDH curve with an equivalent strength
    to the negotiated [RFC4121] encryption type.  Appropriate curves are
    given in Section 10.1.
-
-   The curve strength MUST be verified by the acceptor.  A stronger than
-   required curve MAY be selected by the initiator.
-
-
 
 
 
@@ -952,6 +952,9 @@ Howard & Williams      Expires September 18, 2013              [Page 17]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
+
+   The curve strength MUST be verified by the acceptor.  A stronger than
+   required curve MAY be selected by the initiator.
 
 5.5.  Signatures
 
@@ -966,9 +969,6 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    The acceptor SHOULD maintain a cache of received assertions in order
    to guard against replay attacks.  GSS_C_REPLAY_FLAG MUST NOT be
    returned if the implementation does not support replay detection.
-
-
-
 
 
 

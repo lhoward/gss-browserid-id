@@ -1878,8 +1878,8 @@ Extensions for mutual authentication
 
 \begin_layout Standard
 Mutual authentication allows the acceptor to be authenticated to the initiator.
- The mechanism may return GSS_C_MUTUAL_FLAG flag to the caller if mutual
- authentication succeeded.
+ The mechanism may set the returned mutual_state flag (GSS_C_MUTUAL_FLAG)
+ to TRUE if mutual authentication succeeded.
  Support for mutual authentication is OPTIONAL.
 \end_layout
 
@@ -1892,7 +1892,7 @@ Initiator mutual authentication context token
 \end_layout
 
 \begin_layout Standard
-If the initiator requested GSS_C_MUTUAL_FLAG, a nonce (see 
+If the initiator requested the mutual_state flag, a nonce (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:request-nonce"
@@ -2285,7 +2285,7 @@ Interaction with mutual authentication
 
 \begin_layout Standard
 The mutual authentication state of a re-authenticated context is transitive.
- The initiator MUST NOT return GSS_C_MUTUAL_FLAG for a re-authenticated
+ The initiator MUST NOT set the mutual_state flag for a re-authenticated
  context unless the original context was mutually authenticated.
 \end_layout
 
@@ -2353,9 +2353,16 @@ Channel bindings
 \end_layout
 
 \begin_layout Standard
-If the acceptor passed in channel bindings to GSS_Accept_sec_context(),
+GSS-API channel binding is a protected facility for naming an enclosing
+ channel between the initiator and acceptor.
+ If the acceptor passed in channel bindings to GSS_Accept_sec_context(),
  the assertion MUST contain a matching channel binding claim.
  (Only the application_data component is validated.)
+\end_layout
+
+\begin_layout Standard
+The acceptor SHOULD accept any channel binding provided by the initiator
+ if NULL channel bindings are passed to GSS_Accept_sec_context().
 \end_layout
 
 \begin_layout Subsection
