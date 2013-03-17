@@ -4555,7 +4555,9 @@ RFC4402
 \end_inset
 
 .
- 
+ GSS_C_PRF_KEY_FULL and GSS_C_PRF_KEY_PARTIAL are equivalent.
+ The protocol key to be used for GSS_Pseudo_random() SHALL by the Context
+ Root Key (CRK).
 \end_layout
 
 \begin_layout Section

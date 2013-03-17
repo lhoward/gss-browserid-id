@@ -907,7 +907,7 @@ The salt (reauth-assertion-as-jwt) is the JWT encoding of the re-authentication 
       </section>
       <section title="GSS Pseudo-Random Function (PRF)" anchor="sub_GSS_PRF">
         <t>
-The BrowserID mechanism shares the same Pseudo-Random Function (PRF) as the Kerberos GSS mechanism, defined in <xref target="RFC4402"/>. </t>
+The BrowserID mechanism shares the same Pseudo-Random Function (PRF) as the Kerberos GSS mechanism, defined in <xref target="RFC4402"/>. GSS_C_PRF_KEY_FULL and GSS_C_PRF_KEY_PARTIAL are equivalent. The protocol key to be used for GSS_Pseudo_random() SHALL by the Context Root Key (CRK).</t>
       </section>
     </section>
     <section title="Example" anchor="d1e2708">
