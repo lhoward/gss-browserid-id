@@ -1242,6 +1242,34 @@ RFC2743
 .
 \end_layout
 
+\begin_layout Subsection
+Naming extensions
+\end_layout
+
+\begin_layout Standard
+The acceptor MAY surface attributes from the assertion and any certificates
+ using GSS_Get_name_attribute().
+ The URN prefix is "urn:ietf:params:gss:jwt".
+ The acceptor MUST filter any sensitive attributes before returning them
+ to the application.
+\end_layout
+
+\begin_layout Standard
+If a SAML assertion is present in the "saml" parameter of the leaf certificate,
+ it may be surfaced using the URN prefix "urn:ietf:params:gss:federated-saml-att
+ribute".
+\end_layout
+
+\begin_layout Standard
+Attributes from the assertion MUST be marked as unauthenticated unless otherwise
+ validated by the acceptor (e.g.
+ the audience).
+\end_layout
+
+\begin_layout Standard
+Attributes from certificates SHOULD be marked as authenticated.
+\end_layout
+
 \begin_layout Section
 Context tokens
 \end_layout
@@ -1662,7 +1690,7 @@ The innerToken consists of the initiator context token ID concatenated with
 \end_layout
 
 \begin_layout Itemize
-Parameters for ECDH key agreement (see 
+ECDH key agreement parameters (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:request-ecdh"
@@ -1740,7 +1768,8 @@ The acceptor then verifies the backed identity assertion per the BrowserID
 \begin_layout Standard
 The acceptor then verifies the channel binding token, if present, and any
  other GSS-specific claims in the assertion.
- In case of failure, an error token is generated.
+ In case of failure, a response assertion containing a GSS error code is
+ returned.
 \end_layout
 
 \begin_layout Standard
@@ -1800,8 +1829,8 @@ reference "sub:kd-CRK"
 
 \end_inset
 
-) is derived from the ECDH shared secret and GSS_S_COMPLETE is returned,
- along with the initiator name from the verified assertion.
+) is derived from the ECDH shared secret (if present) and GSS_S_COMPLETE
+ is returned, along with the initiator name from the verified assertion.
  Other assertion/certificate properties MAY be made available via GSS_Get_name_a
 ttribute().
 \end_layout
@@ -1942,15 +1971,74 @@ Acceptor certificate advertisement
 \end_layout
 
 \begin_layout Standard
-The acceptor may include one or more certificates in NegoEx metadata.
- See 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:NegoEx"
+\begin_inset Flex EntityXRef
+status open
+
+\begin_layout Plain Layout
+I-D.zhu-negoex
+\end_layout
 
 \end_inset
 
+ may be used to advertise acceptor certificates.
+\end_layout
+
+\begin_layout Standard
+If the acceptor supports mutual authentication, it MAY include its certificate
+ and any additional certificates inside a backed assertion with an empty
+ payload as output for GSS_Query_meta_data().
+ The "assertion" is prepended with the two byte token identifier 
+\begin_inset Quotes eld
+\end_inset
+
+M,
+\begin_inset Quotes erd
+\end_inset
+
 .
+\end_layout
+
+\begin_layout Standard
+Upon receiving this, the initiator SHOULD display the certificate information
+ or fingerprint to the user and allow them to confirm it before committing
+ to authenticate.
+\end_layout
+
+\begin_layout Standard
+The NegoEx signing key is the output of GSS_Pseudo_random() with an input
+ of GSS_C_PRF_KEY_FULL and "gss-browserid-negoex-initiator" or "gss-browserid-ne
+goex-acceptor", depending on the party generating the signature.
+\end_layout
+
+\begin_layout Standard
+The NegoEx authentication scheme is the binary encoding of the following
+ hexadecimal string:
+\end_layout
+
+\begin_layout Standard
+535538008647F5BC624BD8076949F0
+\end_layout
+
+\begin_layout Standard
+where the third byte (zero above) is set to the 
+\begin_inset Flex EntityXRef
+status open
+
+\begin_layout Plain Layout
+RFC3961
+\end_layout
+
+\end_inset
+
+ encryption type for the selected mechanism.
+ The authentication scheme for encryption types greater than 255 is not
+ specified here.
+\end_layout
+
+\begin_layout Standard
+There is currently no initiator-sent metadata defined and acceptors should
+ ignore any sent.
+ The metadata is advisory and the initiator is free to ignore it.
 \end_layout
 
 \begin_layout Subsection
@@ -1960,25 +2048,18 @@ Extensions for fast re-authentication
 \begin_layout Standard
 Fast re-authentication allows a security context to be established using
  a secret key derived from the initial certificate-signed ECDH key agreement.
- Re-authentication assertions implicitly expire a short interval after the
- issue time; five minutes is suggested.
- [XXX would it not be more consistent to include an explicit expiry time
- as is the case with non-re-authentication assertions?] (This lifetime is
- distinct from the ticket lifetime, which SHOULD be configurable, but by
- default match the user's certificate expiry time.)
 \end_layout
 
 \begin_layout Standard
-The ticket expiry time must be securely available to the acceptor, along
- with the subject, issuer, audience, expiry time and Authenticator Root
- Key (ARK) (see 
+The subject, issuer, audience, expiry time and Authenticator Root Key (ARK)
+ (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:kd-ARK"
 
 \end_inset
 
-) of the original assertion.
+) of the original assertion must be securely available to the acceptor.
  One implementation choice may be to use the opaque ticket identifier as
  a key into a dictionary containing this information.
  Another would be to encrypt this information in a long-term secret only
@@ -2016,6 +2097,8 @@ reference "sub:Acceptor-context-token"
 A unique ticket identifier is generated.
  The acceptor must be able to use this to retrieve any properties re-authenticat
 ed acceptor contexts will need.
+ The ticket expiry time by default SHOULD match the initiator's certificate
+ expiry, however it MAY be configurable.
 \end_layout
 
 \begin_layout Enumerate
@@ -2212,8 +2295,9 @@ The expiry and, if present, issued-at and not-before times of all elements
  This applies equally to re-authentication assertions, public key assertions,
  and the entire certificate chain.
  If the expiry time is absent, the issued-at time MUST be present, and the
- JWT implicitly expires a configurable interval (typically five minutes)
- after the issued-at time.
+ JWT implicitly expires a short, implementation-defined interval after the
+ issued-at time.
+ (A suggested interval is five minutes.)
 \end_layout
 
 \begin_layout Standard
@@ -2440,12 +2524,7 @@ exp
 \begin_layout Standard
 This contains the time when the assertion expires, in milliseconds since
  January 1, 1970.
- This claim is REQUIRED when the assertion is signed with a user's BrowserID
- certificate; it MUST be ignored if present in a re-authentication assertion.
-\end_layout
-
-\begin_layout Standard
-[XXX this asymmetry of 
+ At least one of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2453,7 +2532,7 @@ exp
 \begin_inset Quotes erd
 \end_inset
 
- vs 
+ and/or 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2461,7 +2540,7 @@ iat
 \begin_inset Quotes erd
 \end_inset
 
- for different kinds of assertions is troubling.]
+ MUST be present.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2485,9 +2564,24 @@ iat
 \begin_layout Standard
 This contains the time the assertion was issued (in milliseconds since January
  1, 1970), when the assertion is being used for fast re-authentication.
- The acceptor MUST validate that the assertion was recently issued (a recommende
-d interval is five minutes).
- This claim is REQUIRED when the assertion is a re-authentication assertion.
+ The acceptor MUST validate that the assertion was recently issued.
+ At least one of 
+\begin_inset Quotes eld
+\end_inset
+
+exp
+\begin_inset Quotes erd
+\end_inset
+
+ and/or 
+\begin_inset Quotes eld
+\end_inset
+
+iat
+\begin_inset Quotes erd
+\end_inset
+
+ MUST be present.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2584,7 +2678,7 @@ This is a random quantity of at least 64 bits, base 64 URL encoded, which
  key is used to sign the response assertion (i.e.
  for re-authentication assertions and mutual authentication).
  This claim is REQUIRED for re-authentication assertions or if mutual authentica
-tion was desired.
+tion is desired.
  Otherwise, i.e.
  for certificate signed assertions where mutual authentication is unavailable,
  it MUST be ignored.
@@ -2970,12 +3064,1246 @@ This contains a GSS minor status code represented as a number.
 \end_layout
 
 \begin_layout Standard
-If GSSBID_REAUTH_FAILED is received, the initiator SHOULD attempt to send
- another initial context token containing a fresh assertion.
+If REAUTH_FAILED is received, the initiator SHOULD attempt to send another
+ initial context token containing a fresh assertion.
 \end_layout
 
 \begin_layout Standard
-[XXX define error codes]
+The following protocol minor status codes are defined.
+ Note that the API representation of these status codes is implementation
+ dependent.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="42" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Error
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Protocol
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+INVALID_JSON
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Invalid JSON
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+INVALID_BASE64
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Invalid Base64
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+INVALID_ASSERTION
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Invalid assertion
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+TOO_MANY_CERTS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+13
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Too many certificates
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+UNTRUSTED_ISSUER
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+14
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Untrusted issuer
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+INVALID_ISSUER
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+15
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Invalid issuer
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MISSING_ISSUER
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Missing issuer
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MISSING_AUDIENCE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+17
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Missing audience
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+BAD_AUDIENCE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+18
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bad audience
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+EXPIRED_ASSERTION
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+19
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Assertion expired
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ASSERTION_NOT_YET_VALID
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Assertion not yet valid
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+EXPIRED_CERT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+21
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Certificate expired
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+CERT_NOT_YET_VALID
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+22
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Certificate not yet valid
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+INVALID_SIGNATURE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+23
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Invalid signature
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MISSING_ALGORITHM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+24
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Missing JWS algorithm
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+UNKNOWN_ALGORITHM
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Unknown JWS algorithm
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MISSING_PRINCIPAL
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+34
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Missing principal attribute
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+UNKNOWN_PRINCIPAL_TYPE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+35
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Unknown principal type
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MISSING_CERT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+36
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Missing certificate
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MISSING_CHANNEL_BINDINGS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+38
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Missing channel bindings
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+CHANNEL_BINDINGS_MISMATCH
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+39
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Channel bindings do not match
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+NOT_REAUTH_ASSERTION
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+70
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Not a re-authentication assertion
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+BAD_SUBJECT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+71
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bad subject name
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MISMATCHED_RP_RESPONSE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+72
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mismatched RP response token
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+REFLECTED_RP_RESPOSNE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+73
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Reflected RP response token
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+UNKNOWN_EC_CURVE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+77
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Unknown ECC curve
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+INVALID_EC_CURVE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+78
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Invalid ECC curve
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+WRONG_SIZE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x80000001
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Buffer is incorrect size
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+WRONG_MECH
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x80000002
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mechanism OID is incorrect
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+BAD_TOK_HEADER
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x80000003
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Token header is malformed or corrupt
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+TOK_TRUNC
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x80000004
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Token is missing data
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+BAD_DIRECTION
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x80000005
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Packet was replayed in wrong direction
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+WRONG_TOK_ID
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x80000006
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Received token ID does not match expected
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+KEY_UNAVAILABLE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x80000007
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Key unavailable
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+KEY_TOO_SHORT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x80000008
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Key too weak
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+CONTEXT_ESTABLISHED
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x80000009
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Context already established
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+CONTEXT_INCOMPLETE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x8000000A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Context incomplete
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+BAD_CONTEXT_TOKEN
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x8000000B
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Context token malformed or corrupt
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+BAD_ERROR_TOKEN
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x8000000C
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Error token malformed or corrupt
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+BAD_CONTEXT_OPTION
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x8000000D
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bad context option
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+REAUTH_FAILED
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0x8000000E
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Re-authentication failured
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -2983,7 +4311,7 @@ Key derivation
 \end_layout
 
 \begin_layout Standard
-The following algorithm is used as the base algorithm for deriving keys:
+The following functionrithm is used as the base algorithm for deriving keys:
 \end_layout
 
 \begin_layout Standard
@@ -3039,9 +4367,9 @@ RP Response Key (RRK)
 \end_layout
 
 \begin_layout Standard
-The response from the acceptor is signed using this key for fresh assertions,
- unless mutual authentication is being performed (in which case a private
- key signature is used):
+The response from the acceptor is signed using this key for certificate-signed
+ assertions, unless mutual authentication is being performed (in which case
+ a private key signature is used):
 \end_layout
 
 \begin_layout Standard
@@ -3126,23 +4454,7 @@ Authenticator Session Key (ASK)
 \begin_layout Standard
 The authenticator session key (ASK) is used instead of the DHK for re-authentica
 ted contexts.
- (The term 
-\begin_inset Quotes eld
-\end_inset
-
-authenticator
-\begin_inset Quotes erd
-\end_inset
-
- is equivalent to 
-\begin_inset Quotes eld
-\end_inset
-
-re-authentication assertion
-\begin_inset Quotes erd
-\end_inset
-
- and exists for historical reasons.) It is derived as follows:
+ It is derived as follows:
 \end_layout
 
 \begin_layout Standard
@@ -3155,12 +4467,8 @@ The salt (reauth-assertion-as-jwt) is the JWT encoding of the re-authentication
  This binds the nonce to the session key.
 \end_layout
 
-\begin_layout Section
-GSS-API Extensions
-\end_layout
-
 \begin_layout Subsection
-PRF
+GSS-API PRF
 \end_layout
 
 \begin_layout Standard
@@ -3176,114 +4484,6 @@ RFC4402
 
 .
  
-\end_layout
-
-\begin_layout Subsection
-Naming extensions
-\end_layout
-
-\begin_layout Standard
-The acceptor MAY surface properties from the assertion and any certificates
- using GSS_Get_name_attribute().
- The URN prefix is "urn:ietf:params:gss:jwt".
- The acceptor MUST filter any sensitive attributes before returning them
- to the application.
-\end_layout
-
-\begin_layout Standard
-If a SAML assertion is present in the "saml" parameter of the leaf certificate,
- it may be surfaced using the URN prefix "urn:ietf:params:gss:federated-saml-att
-ribute".
-\end_layout
-
-\begin_layout Standard
-Attributes from the assertion MUST be marked as unauthenticated unless otherwise
- validated by the acceptor (e.g.
- the audience).
-\end_layout
-
-\begin_layout Standard
-Attributes from certificates SHOULD be marked as authenticated.
-\end_layout
-
-\begin_layout Subsection
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:NegoEx"
-
-\end_inset
-
-NegoEx
-\end_layout
-
-\begin_layout Standard
-GSS BrowserID supports 
-\begin_inset Flex EntityXRef
-status open
-
-\begin_layout Plain Layout
-I-D.zhu-negoex
-\end_layout
-
-\end_inset
-
- for advertising RP certificates used in mutual authentication.
-\end_layout
-
-\begin_layout Standard
-If the acceptor supports mutual authentication, it MAY include its certificate
- and any additional certificates inside a backed assertion with an empty
- payload as output for GSS_Query_meta_data().
- The "assertion" is prepended with the two byte token identifier 
-\begin_inset Quotes eld
-\end_inset
-
-M,
-\begin_inset Quotes erd
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-Upon receiving this, the initiator SHOULD display the certificate information
- or fingerprint to the user and allow them to confirm it before committing
- to authenticate.
-\end_layout
-
-\begin_layout Standard
-The NegoEx signing key is the output of GSS_Pseudo_random() with an input
- of GSS_C_PRF_KEY_FULL and "gss-browserid-negoex-initiator" or "gss-browserid-ne
-goex-acceptor", depending on the party generating the signature.
-\end_layout
-
-\begin_layout Standard
-The NegoEx authentication scheme is the binary encoding of the following
- hexadecimal string:
-\end_layout
-
-\begin_layout Standard
-535538008647F5BC624BD8076949F0
-\end_layout
-
-\begin_layout Standard
-where the third byte (zero above) is set to the 
-\begin_inset Flex EntityXRef
-status open
-
-\begin_layout Plain Layout
-RFC3961
-\end_layout
-
-\end_inset
-
- encryption type for the selected mechanism.
-\end_layout
-
-\begin_layout Standard
-There is currently no initiator-sent metadata defined and acceptors should
- ignore any sent.
- The metadata is advisory and the initiator is free to ignore it.
 \end_layout
 
 \begin_layout Section
