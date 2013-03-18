@@ -2086,17 +2086,7 @@ reference "sub:Acceptor-context-token"
 \end_layout
 
 \begin_layout Enumerate
-A unique ticket identifier is generated.
- The acceptor must be able to use this to securely retrieve the subject,
- issuer, audience, expiry time, ARK and any other relevant properties of
- the original security context.
- (One implementation choice may be to use the opaque ticket identifier as
- a key into a dictionary containing this information.
- Another would be to encrypt this information in a long-term secret only
- known to the acceptor and encode the resulting ciphertext in the opaque
- ticket identifier.) The ticket expiry time by default SHOULD match the initiator
-'s certificate expiry, however it MAY be configurable so the ticket expires
- before or after the certificate.
+A unique, opaque ticket identifier is generated.
 \end_layout
 
 \begin_layout Enumerate
@@ -2112,8 +2102,25 @@ reference "sub:response-tkt"
 \end_layout
 
 \begin_layout Standard
-The initiator MAY cache such tickets, along with the ARK, received from
- the acceptor in order to re-authenticate to it at a future time.
+The acceptor must be able to use the ticket identifier to securely retrieve
+ the subject, issuer, audience, expiry time, ARK and any other relevant
+ properties of the original security context.
+ One implementation choice may be to use the ticket identifier as a key
+ into a dictionary containing this information.
+ Another would be to encrypt this information in a long-term secret only
+ known to the acceptor and encode the resulting ciphertext in the opaque
+ ticket identifier.
+\end_layout
+
+\begin_layout Standard
+The ticket expiry time by default SHOULD match the initiator's certificate
+ expiry, however it MAY be configurable so the ticket expires before or
+ after the certificate.
+\end_layout
+
+\begin_layout Standard
+The initiator MAY cache tickets, along with the ARK, received from the acceptor
+ in order to re-authenticate to it at a future time.
 \end_layout
 
 \begin_layout Subsubsection
