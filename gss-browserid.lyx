@@ -1248,10 +1248,20 @@ Naming extensions
 
 \begin_layout Standard
 The acceptor MAY surface attributes from the assertion and any certificates
- using GSS_Get_name_attribute().
+ using GSS_Get_name_attribute() (see 
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+RFC6680
+\end_layout
+
+\end_inset
+
+).
  The URN prefix is "urn:ietf:params:gss:jwt".
- The acceptor MUST filter any sensitive attributes before returning them
- to the application.
+ [XXX we do not have authority to assign this here.] The acceptor MUST filter
+ any sensitive attributes before returning them to the application.
 \end_layout
 
 \begin_layout Standard
@@ -2219,10 +2229,9 @@ Acceptor re-authentication context token
 \end_layout
 
 \begin_layout Enumerate
-The acceptor unpacks the re-authentication assertion and retrieves the authentic
-ator root key, ticket expiry time, mutual authentication state and any other
- properties (such as the initiator principal) associated with the ticket
- identifier.
+The acceptor unpacks the re-authentication assertion and retrieves the ARK,
+ ticket expiry time, mutual authentication state and any other properties
+ (such as the initiator principal) associated with the ticket identifier.
 \end_layout
 
 \begin_layout Enumerate
@@ -6873,6 +6882,26 @@ status open
 LatexCommand href
 name "RFC5929"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC6680"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6680.xml"
 
 \end_inset
 

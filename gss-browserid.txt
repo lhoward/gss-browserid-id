@@ -124,7 +124,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    6.2.4.  "nonce" (Mutual authentication nonce) . . . . . . . . . sub_r
    6.2.5.  "tkt" (Ticket)  . . . . . . . . . . . . . . . . . . . . sub_r
    6.2.6.  "gss-maj" (GSS major status code) . . . . . . . . . . . d1e18
-   6.2.7.  "gss-min" (GSS minor status code) . . . . . . . . . . . d1e18
+   6.2.7.  "gss-min" (GSS minor status code) . . . . . . . . . . . d1e19
    7.      Key derivation  . . . . . . . . . . . . . . . . . . . . d1e25
    7.1.    Diffie-Hellman Key (DHK)  . . . . . . . . . . . . . . . sub_k
    7.2.    Context Master Key (CMK)  . . . . . . . . . . . . . . . sub_k
@@ -135,7 +135,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    7.7.    GSS Pseudo-Random Function (PRF)  . . . . . . . . . . . sub_G
    8.      Example . . . . . . . . . . . . . . . . . . . . . . . . d1e27
    9.      Security Considerations . . . . . . . . . . . . . . . . d1e27
-   9.1.    JavaScript  . . . . . . . . . . . . . . . . . . . . . . d1e27
+   9.1.    JavaScript  . . . . . . . . . . . . . . . . . . . . . . d1e28
    9.2.    Host certificates for mutual authentication . . . . . . d1e28
    10.     IANA Considerations . . . . . . . . . . . . . . . . . . d1e28
    10.1.   OID Registry  . . . . . . . . . . . . . . . . . . . . . sub_O
@@ -475,8 +475,9 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 3.5.  Naming extensions
 
    The acceptor MAY surface attributes from the assertion and any
-   certificates using GSS_Get_name_attribute().  The URN prefix is
-   "urn:ietf:params:gss:jwt".  The acceptor MUST filter any sensitive
+   certificates using GSS_Get_name_attribute() (see RFC6680 ).  The URN
+   prefix is "urn:ietf:params:gss:jwt".  [XXX we do not have authority
+   to assign this here.]  The acceptor MUST filter any sensitive
    attributes before returning them to the application.
 
    If a SAML assertion is present in the "saml" parameter of the leaf
@@ -487,7 +488,6 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    unless otherwise validated by the acceptor (e.g. the audience).
 
    Attributes from certificates SHOULD be marked as authenticated.
-
 
 
 
@@ -826,9 +826,9 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 4.5.3.  Acceptor re-authentication context token
 
    1.  The acceptor unpacks the re-authentication assertion and
-       retrieves the authenticator root key, ticket expiry time, mutual
-       authentication state and any other properties (such as the
-       initiator principal) associated with the ticket identifier.
+       retrieves the ARK, ticket expiry time, mutual authentication
+       state and any other properties (such as the initiator principal)
+       associated with the ticket identifier.
 
    2.  The acceptor validates that the ticket and re-authentication
        assertion have not expired.
@@ -2169,14 +2169,14 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    [RFC5929]  Altman, J., Williams, N., and L. Zhu, "Channel Bindings
               for TLS", RFC 5929, July 2010.
 
+   [RFC6680]  Williams, N., Johansson, L., Hartman, S., and S.
+              Josefsson, "Generic Security Service Application
+              Programming Interface (GSS-API) Naming Extensions",
+              RFC 6680, August 2012.
+
    [I-D.ietf-jose-json-web-algorithms]
               Jones, M., "JSON Web Algorithms (JWA)",
               draft-ietf-jose-json-web-algorithms-08 (work in progress),
-              December 2012.
-
-   [I-D.ietf-jose-json-web-signature]
-              Jones, M., Bradley, J., and N. Sakimura, "JSON Web
-              Signature (JWS)", draft-ietf-jose-json-web-signature-08
 
 
 
@@ -2185,6 +2185,11 @@ Howard & Williams      Expires September 19, 2013              [Page 39]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
+              December 2012.
+
+   [I-D.ietf-jose-json-web-signature]
+              Jones, M., Bradley, J., and N. Sakimura, "JSON Web
+              Signature (JWS)", draft-ietf-jose-json-web-signature-08
               (work in progress), December 2012.
 
    [I-D.ietf-oauth-json-web-token]
@@ -2209,11 +2214,6 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    [RFC4120]  Neuman, C., Yu, T., Hartman, S., and K. Raeburn, "The
               Kerberos Network Authentication Service (V5)", RFC 4120,
               July 2005.
-
-
-
-
-
 
 
 
