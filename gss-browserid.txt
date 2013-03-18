@@ -64,20 +64,20 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 Table of Contents
 
    1.      Introduction  . . . . . . . . . . . . . . . . . . . . . d1e71
-   1.1.    Discovery and Negotiation . . . . . . . . . . . . . . . d1e77
+   1.1.    Discovery and Negotiation . . . . . . . . . . . . . . . d1e78
    1.2.    Authentication  . . . . . . . . . . . . . . . . . . . . d1e80
-   1.3.    Message protection services . . . . . . . . . . . . . . d1e81
-   2.      Requirements notation . . . . . . . . . . . . . . . . . d1e84
+   1.3.    Message protection services . . . . . . . . . . . . . . d1e82
+   2.      Requirements notation . . . . . . . . . . . . . . . . . d1e85
    3.      Naming  . . . . . . . . . . . . . . . . . . . . . . . . d1e86
-   3.1.    GSS name types  . . . . . . . . . . . . . . . . . . . . d1e86
+   3.1.    GSS name types  . . . . . . . . . . . . . . . . . . . . d1e87
    3.1.1.  GSS_C_NT_BROWSERID_PRINCIPAL  . . . . . . . . . . . . . sub_G
    3.1.2.  GSS_C_NT_USER_NAME  . . . . . . . . . . . . . . . . . . d1e90
    3.1.3.  GSS_C_NT_HOSTBASED_SERVICE  . . . . . . . . . . . . . . d1e91
-   3.1.4.  GSS_C_NT_DOMAINBASED_SERVICE  . . . . . . . . . . . . . d1e91
+   3.1.4.  GSS_C_NT_DOMAINBASED_SERVICE  . . . . . . . . . . . . . d1e92
    3.2.    Audience encoding . . . . . . . . . . . . . . . . . . . sub_A
-   3.3.    Name Canonicalization . . . . . . . . . . . . . . . . . d1e96
-   3.4.    Exported Name Token Format  . . . . . . . . . . . . . . d1e97
-   3.5.    Naming extensions . . . . . . . . . . . . . . . . . . . d1e98
+   3.3.    Name Canonicalization . . . . . . . . . . . . . . . . . d1e97
+   3.4.    Exported Name Token Format  . . . . . . . . . . . . . . d1e98
+   3.5.    Naming extensions . . . . . . . . . . . . . . . . . . . d1e99
    4.      Context tokens  . . . . . . . . . . . . . . . . . . . . d1e10
    4.1.    Initial context token . . . . . . . . . . . . . . . . . sub_I
    4.2.    Acceptor context token  . . . . . . . . . . . . . . . . sub_A
@@ -95,7 +95,7 @@ Table of Contents
    5.      Validation  . . . . . . . . . . . . . . . . . . . . . . d1e15
    5.1.    Expiry times  . . . . . . . . . . . . . . . . . . . . . d1e15
    5.2.    Audience  . . . . . . . . . . . . . . . . . . . . . . . d1e15
-   5.3.    Channel bindings  . . . . . . . . . . . . . . . . . . . d1e15
+   5.3.    Channel bindings  . . . . . . . . . . . . . . . . . . . d1e16
    5.4.    Key agreement . . . . . . . . . . . . . . . . . . . . . d1e16
    5.5.    Signatures  . . . . . . . . . . . . . . . . . . . . . . d1e16
    5.6.    Replay detection  . . . . . . . . . . . . . . . . . . . d1e16
@@ -125,7 +125,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    6.2.5.  "tkt" (Ticket)  . . . . . . . . . . . . . . . . . . . . sub_r
    6.2.6.  "gss-maj" (GSS major status code) . . . . . . . . . . . d1e18
    6.2.7.  "gss-min" (GSS minor status code) . . . . . . . . . . . d1e19
-   7.      Key derivation  . . . . . . . . . . . . . . . . . . . . d1e25
+   7.      Key derivation  . . . . . . . . . . . . . . . . . . . . d1e26
    7.1.    Diffie-Hellman Key (DHK)  . . . . . . . . . . . . . . . sub_k
    7.2.    Context Master Key (CMK)  . . . . . . . . . . . . . . . sub_k
    7.3.    RP Response Key (RRK) . . . . . . . . . . . . . . . . . sub_k
@@ -134,7 +134,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    7.6.    Authenticator Session Key (ASK) . . . . . . . . . . . . sub_k
    7.7.    GSS Pseudo-Random Function (PRF)  . . . . . . . . . . . sub_G
    8.      Example . . . . . . . . . . . . . . . . . . . . . . . . d1e27
-   9.      Security Considerations . . . . . . . . . . . . . . . . d1e27
+   9.      Security Considerations . . . . . . . . . . . . . . . . d1e28
    9.1.    JavaScript  . . . . . . . . . . . . . . . . . . . . . . d1e28
    9.2.    Host certificates for mutual authentication . . . . . . d1e28
    10.     IANA Considerations . . . . . . . . . . . . . . . . . . d1e28
@@ -171,8 +171,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 1.  Introduction
 
-   BrowserID is a web-based three-party security protocol by which user
-   agents can present to a Relying Party (RP) a signed assertion of
+   [BrowserID] is a web-based three-party security protocol by which
+   user agents can present to a Relying Party (RP) a signed assertion of
    e-mail address ownership.  BrowserID was intended to be used for web
    authentication.  We find BrowserID to be useful in general, therefore
    we define herein how to use it in many more applications.
@@ -2133,6 +2133,13 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 11.1.  Normative References
 
+   [RFC1113]  Linn, J., "Privacy enhancement for Internet electronic
+              mail: Part I - message encipherment and authentication
+              procedures", RFC 1113, August 1989.
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997.
+
    [RFC2743]  Linn, J., "Generic Security Service Application Program
               Interface Version 2, Update 1", RFC 2743, January 2000.
 
@@ -2170,13 +2177,6 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
               for TLS", RFC 5929, July 2010.
 
    [RFC6680]  Williams, N., Johansson, L., Hartman, S., and S.
-              Josefsson, "Generic Security Service Application
-              Programming Interface (GSS-API) Naming Extensions",
-              RFC 6680, August 2012.
-
-   [I-D.ietf-jose-json-web-algorithms]
-              Jones, M., "JSON Web Algorithms (JWA)",
-              draft-ietf-jose-json-web-algorithms-08 (work in progress),
 
 
 
@@ -2185,6 +2185,13 @@ Howard & Williams      Expires September 19, 2013              [Page 39]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
+              Josefsson, "Generic Security Service Application
+              Programming Interface (GSS-API) Naming Extensions",
+              RFC 6680, August 2012.
+
+   [I-D.ietf-jose-json-web-algorithms]
+              Jones, M., "JSON Web Algorithms (JWA)",
+              draft-ietf-jose-json-web-algorithms-08 (work in progress),
               December 2012.
 
    [I-D.ietf-jose-json-web-signature]
@@ -2202,21 +2209,14 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
               Extended Negotiation (NEGOEX) Security Mechanism",
               draft-zhu-negoex-04 (work in progress), January 2011.
 
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119, March 1997.
-
-   [RFC1113]  Linn, J., "Privacy enhancement for Internet electronic
-              mail: Part I - message encipherment and authentication
-              procedures", RFC 1113, August 1989.
+   [BrowserID]
+              Adida, B., "BrowserID Specification", February 2013.
 
 11.2.  Informative References
 
    [RFC4120]  Neuman, C., Yu, T., Hartman, S., and K. Raeburn, "The
               Kerberos Network Authentication Service (V5)", RFC 4120,
               July 2005.
-
-
-
 
 
 

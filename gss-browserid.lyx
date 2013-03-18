@@ -584,9 +584,17 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-BrowserID is a web-based three-party security protocol by which user agents
- can present to a Relying Party (RP) a signed assertion of e-mail address
- ownership.
+\begin_inset Flex EntityXRef
+status open
+
+\begin_layout Plain Layout
+BrowserID
+\end_layout
+
+\end_inset
+
+ is a web-based three-party security protocol by which user agents can present
+ to a Relying Party (RP) a signed assertion of e-mail address ownership.
  BrowserID was intended to be used for web authentication.
  We find BrowserID to be useful in general, therefore we define herein how
  to use it in many more applications.
@@ -1250,7 +1258,7 @@ Naming extensions
 The acceptor MAY surface attributes from the assertion and any certificates
  using GSS_Get_name_attribute() (see 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC6680
@@ -2988,7 +2996,7 @@ This contains a JSON object containing the coordinates of the acceptor's
  ECDH public key: "x" contains the X coordinate and "y" the Y coordinate
  (see 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 I-D.ietf-oauth-json-web-token
@@ -6714,6 +6722,63 @@ Normative References
 \end_layout
 
 \begin_layout Standard
+\begin_inset Flex EmbeddedBibXML
+status open
+
+\begin_layout Plain Layout
+<reference anchor="BrowserID"><front><title>BrowserID Specification</title><auth
+or initials="B." surname="Adida" fullname="Ben Adida"><organization>The Mozilla
+ Foundation</organization></author><date year="2013" day="26" month="February"/>
+</front><format type="TXT" target="https://raw.github.com/mozilla/id-specs/prod/br
+owserid/index.md"/></reference>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC1113"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1113.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC2119"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset Flex BibXML
 status open
 
@@ -6986,66 +7051,6 @@ target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zhu-negoex.xml"
 \end_inset
 
 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex EmbeddedBibXML
-status open
-
-\begin_layout Plain Layout
-<reference anchor='RFC2119'> <front> <title abbrev='RFC Key Words'>Key words
- for use in RFCs to Indicate Requirement Levels</title> <author initials='S.'
- surname='Bradner' fullname='Scott Bradner'> <organization>Harvard University</o
-rganization> <address> <postal> <street>1350 Mass.
- Ave.</street> <street>Cambridge</street> <street>MA 02138</street></postal>
- <phone>- +1 617 495 3864</phone> <email>sob@harvard.edu</email></address></autho
-r> <date year='1997' month='March' /> <area>General</area> <keyword>keyword</key
-word> <abstract> <t> In many standards track documents several words are
- used to signify the requirements in the specification.
- These words are often capitalized.
- This document defines these words as they should be interpreted in IETF
- documents.
- Authors who follow these guidelines should incorporate this phrase near
- the beginning of their document: <list> <t> The key words "MUST", "MUST
- NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",
- "MAY", and "OPTIONAL" in this document are to be interpreted as described
- in RFC 2119.
- </t></list></t> <t> Note that the force of these words is modified by the
- requirement level of the document in which they are used.
- </t></abstract></front> <seriesInfo name='BCP' value='14' /> <seriesInfo
- name='RFC' value='2119' /> <format type='TXT' octets='4723' target='http://www.r
-fc-editor.org/rfc/rfc2119.txt' /> <format type='HTML' octets='17970' target='http:
-//xml.resource.org/public/rfc/html/rfc2119.html' /> <format type='XML' octets='5777
-' target='http://xml.resource.org/public/rfc/xml/rfc2119.xml' /> </reference>
- 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex EmbeddedBibXML
-status open
-
-\begin_layout Plain Layout
-<reference anchor='RFC1113'> <front> <title abbrev='Mail Privacy: Procedures'>Pr
-ivacy enhancement for Internet electronic mail: Part I - message encipherment
- and authentication procedures</title> <author initials='J.' surname='Linn'
- fullname='John Linn'> <organization>Digital Equipment Corporation (DEC),
- Secure Systems</organization> <address> <postal> <street>85 Swanson Road</stree
-t> <street>BXB1-2/D04</street> <city>Boxborough</city> <region>MA</region>
- <code>01719-1326</code> <country>US</country></postal> <phone>+1 508 264
- 5491</phone> <email>Linn@ultra.enet.dec.com</email></address></author> <date
- year='1989' day='1' month='August' /></front> <seriesInfo name='RFC' value='111
-3' /> <format type='TXT' octets='89293' target='http://www.rfc-editor.org/rfc/rfc1
-113.txt' /> </reference> 
 \end_layout
 
 \end_inset
