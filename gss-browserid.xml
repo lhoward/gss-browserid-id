@@ -207,9 +207,7 @@ The exported name token format for the BrowserID GSS-API mechanism is the same a
       </section>
       <section title="Naming extensions" anchor="d1e989">
         <t>
-The acceptor MAY surface attributes from the assertion and any certificates using GSS_Get_name_attribute() (see 
-RFC6680
-). The URN prefix is "urn:ietf:params:gss:jwt". [XXX we do not have authority to assign this here.] The acceptor MUST filter any sensitive attributes before returning them to the application.</t>
+The acceptor MAY surface attributes from the assertion and any certificates using GSS_Get_name_attribute() (see <xref target="RFC6680"/>). The URN prefix is "urn:ietf:params:gss:jwt". [XXX we do not have authority to assign this here.] The acceptor MUST filter any sensitive attributes before returning them to the application.</t>
         <t>
 If a SAML assertion is present in the "saml" parameter of the leaf certificate, it may be surfaced using the URN prefix "urn:ietf:params:gss:federated-saml-attribute".</t>
         <t>
@@ -583,9 +581,7 @@ The current acceptor time, in milliseconds since January 1, 1970. This allows th
         </section>
         <section title="“ecdh” (Elliptic Curve Diffie-Hellman key agreement)" anchor="sub_response_ecdh">
           <t>
-This contains a JSON object containing the coordinates of the acceptor's ECDH public key: "x" contains the X coordinate and "y" the Y coordinate (see 
-I-D.ietf-oauth-json-web-token
- section 5.2). This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL, or there is already an established session key, as is the case for re-authentication assertions.</t>
+This contains a JSON object containing the coordinates of the acceptor's ECDH public key: "x" contains the X coordinate and "y" the Y coordinate (see <xref target="I-D.ietf-oauth-json-web-token"/> section 5.2). This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL, or there is already an established session key, as is the case for re-authentication assertions.</t>
           <t>
 The “crv” property MUST NOT be present; it is determined by the initiator.</t>
         </section>

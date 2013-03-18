@@ -475,7 +475,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 3.5.  Naming extensions
 
    The acceptor MAY surface attributes from the assertion and any
-   certificates using GSS_Get_name_attribute() (see RFC6680 ).  The URN
+   certificates using GSS_Get_name_attribute() (see [RFC6680]).  The URN
    prefix is "urn:ietf:params:gss:jwt".  [XXX we do not have authority
    to assign this here.]  The acceptor MUST filter any sensitive
    attributes before returning them to the application.
@@ -1177,7 +1177,7 @@ Howard & Williams      Expires September 19, 2013              [Page 21]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-   Y coordinate (see I-D.ietf-oauth-json-web-token section 5.2).  This
+   Y coordinate (see [I-D.ietf-oauth-json-web-token] section 5.2).  This
    claim is REQUIRED unless the associated encryption type is
    ENCTYPE_NULL, or there is already an established session key, as is
    the case for re-authentication assertions.

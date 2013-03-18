@@ -1249,7 +1249,7 @@ Naming extensions
 \begin_layout Standard
 The acceptor MAY surface attributes from the assertion and any certificates
  using GSS_Get_name_attribute() (see 
-\begin_inset Flex BibXML
+\begin_inset Flex EntityXRef
 status collapsed
 
 \begin_layout Plain Layout
@@ -2987,8 +2987,8 @@ ecdh
 This contains a JSON object containing the coordinates of the acceptor's
  ECDH public key: "x" contains the X coordinate and "y" the Y coordinate
  (see 
-\begin_inset Flex BibXML
-status open
+\begin_inset Flex EntityXRef
+status collapsed
 
 \begin_layout Plain Layout
 I-D.ietf-oauth-json-web-token
