@@ -1762,14 +1762,10 @@ The acceptor then verifies the backed identity assertion per the BrowserID
  specification.
  This includes validating the expiry times, audience, certificate chain,
  and assertion signature.
- In the case of failure, an error token is generated and immediately returned.
-\end_layout
-
-\begin_layout Standard
-The acceptor then verifies the channel binding token, if present, and any
+ The acceptor then verifies the channel binding token, if present, and any
  other GSS-specific claims in the assertion.
- In case of failure, a response assertion containing a GSS error code is
- returned.
+ In case of failure, a response assertion containing GSS major and minor
+ status codes is returned.
 \end_layout
 
 \begin_layout Standard
@@ -2057,25 +2053,15 @@ Fast re-authentication allows a security context to be established using
 \end_layout
 
 \begin_layout Standard
-The subject, issuer, audience, expiry time and Authenticator Root Key (ARK)
- (see 
+The re-authentication assertion is signed with a HMAC using the Authenticator
+ Root Key (ARK) (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:kd-ARK"
 
 \end_inset
 
-) of the original assertion must be securely available to the acceptor.
- One implementation choice may be to use the opaque ticket identifier as
- a key into a dictionary containing this information.
- Another would be to encrypt this information in a long-term secret only
- known to the acceptor and encode the resulting ciphertext in the opaque
- ticket identifier.
-\end_layout
-
-\begin_layout Standard
-The re-authentication assertion is signed with a HMAC using the ARK, rather
- than a user's BrowserID certificate.
+), rather than a user's BrowserID certificate.
 \end_layout
 
 \begin_layout Standard
@@ -2101,11 +2087,16 @@ reference "sub:Acceptor-context-token"
 
 \begin_layout Enumerate
 A unique ticket identifier is generated.
- The acceptor must be able to use this to retrieve any properties re-authenticat
-ed acceptor contexts will need.
- The ticket expiry time by default SHOULD match the initiator's certificate
- expiry, however it MAY be configurable so the ticket expires before or
- after the certificate.
+ The acceptor must be able to use this to securely retrieve the subject,
+ issuer, audience, expiry time, ARK and any other relevant properties of
+ the original security context.
+ (One implementation choice may be to use the opaque ticket identifier as
+ a key into a dictionary containing this information.
+ Another would be to encrypt this information in a long-term secret only
+ known to the acceptor and encode the resulting ciphertext in the opaque
+ ticket identifier.) The ticket expiry time by default SHOULD match the initiator
+'s certificate expiry, however it MAY be configurable so the ticket expires
+ before or after the certificate.
 \end_layout
 
 \begin_layout Enumerate
@@ -2801,7 +2792,8 @@ The response assertion is sent from the acceptor to the initiator to provide
  (It is encoded as a backed assertion in order to provide future support
  for mutual authentication using native BrowserID certificates.
  Such support is not specified here; implementations of this version of
- the specification SHOULD reject backed response assertions.)
+ the specification SHOULD reject response assertions with BrowserID certificates.
+)
 \end_layout
 
 \begin_layout Standard
@@ -2983,7 +2975,7 @@ This contains a JSON object containing the coordinates of the acceptor's
 status open
 
 \begin_layout Plain Layout
-.I-D.ietf-oauth-json-web-token
+I-D.ietf-oauth-json-web-token
 \end_layout
 
 \end_inset
@@ -3128,7 +3120,7 @@ gss-min
 
 \begin_layout Standard
 This contains a GSS minor status code represented as a number.
- It MUST not be present if the acceptor did not return an error and SHOULD
+ It MUST not be present if the acceptor did not return an error and MUST
  not be present if there is no minor status code for the given major error.
  This claim is OPTIONAL.
 \end_layout
@@ -4383,7 +4375,7 @@ Key derivation
 \end_layout
 
 \begin_layout Standard
-The following functionrithm is used as the base algorithm for deriving keys:
+The following function is used as the base algorithm for deriving keys:
 \end_layout
 
 \begin_layout Standard
@@ -6096,8 +6088,10 @@ Security Considerations
 \end_layout
 
 \begin_layout Standard
-This section only addresses security considerations associated with BrowserID
- and SASL and GSS-API.
+This section only addresses security considerations associated with the
+ BrowserID GSS mechanism described in this document.
+ It does not address security considerations associated with the BrowserID
+ protocol or the GSS-API themselves.
 \end_layout
 
 \begin_layout Subsection
