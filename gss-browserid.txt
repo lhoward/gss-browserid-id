@@ -619,11 +619,11 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    (see Section 4.4).
 
-   The response assertion is encoded as a backed assertion (prefixed
-   with the acceptor context token ID), even though it will typically
-   have a certificate count of zero (because the signing key is the
-   symmetric RRK, or because an X.509 certificate is included directly
-   in the assertion's JWT header).
+   The response assertion is encoded as a backed assertion, prefixed
+   with the acceptor context token ID.  It will typically have a
+   certificate count of zero, because the signing key is the symmetric
+   RRK, or because an X.509 certificate is included directly in the
+   assertion's JWT header.
 
    Finally, the Context Root Key (CRK) (see Section 7.4) is derived from
    the ECDH shared secret (if present) and GSS_S_COMPLETE is returned,
@@ -636,8 +636,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    Upon receiving the acceptor context token, the initiator unpacks the
    response assertion and, if applicable, computes the ECDH shared
    secret and RRK.  The RRK is used to verify the response assertion
-   unless mutual authentication is desired, in which case the acceptor's
-   public key will be used.
+   unless mutual authentication is available, in which case the
+   acceptor's public key will be used.
 
    The initiator sets the context expiry time with that received in the
    response assertion, if present; otherwise, the context expires when
@@ -716,11 +716,11 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    If the acceptor supports mutual authentication, it MAY include its
    certificate and any additional certificates inside a backed assertion
    with an empty payload as output for GSS_Query_meta_data().  The
-   "assertion" is prepended with the two byte token identifier "M,".
+   "assertion" is prefixed with the two byte token identifier "M,".
 
-   Upon receiving this, the initiator SHOULD display the certificate
-   information or fingerprint to the user and allow them to confirm it
-   before committing to authenticate.
+   Upon receiving this, the initiator MAY validate the certificate or
+   fingerprint, or present either to the user before committing to
+   authenticate.
 
 
 
@@ -729,10 +729,10 @@ Howard & Williams      Expires September 21, 2013              [Page 13]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-   The NegoEx signing key is the output of GSS_Pseudo_random() with an
-   input of GSS_C_PRF_KEY_FULL and "gss-browserid-negoex-initiator" or
-   "gss-browserid-negoex-acceptor", depending on the party generating
-   the signature.
+   The NegoEx signing key is the output of GSS_Pseudo_random() (see
+   Section 7.7) with an input of GSS_C_PRF_KEY_FULL and "gss-browserid-
+   negoex-initiator" or "gss-browserid-negoex-acceptor", depending on
+   the party generating the signature.
 
    The NegoEx authentication scheme is the binary encoding of the
    following hexadecimal string:
@@ -820,18 +820,18 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
        Section 7.6) which is used to verify the response and derive the
        CRK.
 
-   5.  The assertion is packed into a backed assertion, and sent to the
-       acceptor.
-
 4.5.3.  Acceptor re-authentication context token
 
    1.  The acceptor unpacks the re-authentication assertion and
        retrieves the ARK, ticket expiry time, mutual authentication
-       state and any other properties (such as the initiator principal)
+       state and any other properties (such as the initiator name)
        associated with the ticket identifier.
 
    2.  The acceptor validates that the ticket and re-authentication
        assertion have not expired.
+
+   3.  The acceptor verifies the assertion using the ARK.
+
 
 
 
@@ -840,8 +840,6 @@ Howard & Williams      Expires September 21, 2013              [Page 15]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
-
-   3.  The acceptor verifies the assertion using the ARK.
 
    4.  The acceptor generates the ASK (see Section 7.6) and derives the
        RRK and CRK from this (see Section 7.3 and Section 7.4,
@@ -877,6 +875,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    lifetime when the initiator used a re-authentication assertion.  The
    issuing of new tickets MUST be subject to a policy that prevents them
    from being renewed indefinitely.
+
+
 
 
 
@@ -1047,9 +1047,9 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 6.1.3.  "iat" (Issued at time)
 
    This contains the time the assertion was issued (in milliseconds
-   since January 1, 1970), when the assertion is being used for fast re-
-   authentication.  The acceptor MUST validate that the assertion was
-   recently issued.  At least one of "exp" or "iat" MUST be present.
+   since January 1, 1970).  The acceptor MUST validate that the
+   assertion was recently issued.  At least one of "exp" or "iat" MUST
+   be present.
 
 6.1.4.  "nbf" (Not before time)
 
@@ -1090,10 +1090,10 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    This is a random quantity of at least 64 bits, base 64 URL encoded,
    which is used to bind the request and response assertions in the case
-   a non-ephemeral key is used to sign the response assertion (i.e. for
-   re-authentication assertions and mutual authentication).  This claim
-   is REQUIRED if mutual authentication is desired.  Otherwise it MUST
-   be ignored.
+   a freshly agreed key is not used to sign the response assertion.
+   This claim is REQUIRED if mutual authentication is desired and the
+   assertion is signed using a certificate, or if re-authentication is
+   being performed.  Otherwise it MUST be ignored.
 
 6.1.8.  "tkt" (Ticket identifier)
 

@@ -1862,10 +1862,11 @@ reference "sub:Extensions-for-mutual"
 \end_layout
 
 \begin_layout Standard
-The response assertion is encoded as a backed assertion (prefixed with the
- acceptor context token ID), even though it will typically have a certificate
- count of zero (because the signing key is the symmetric RRK, or because
- an X.509 certificate is included directly in the assertion's JWT header).
+The response assertion is encoded as a backed assertion, prefixed with the
+ acceptor context token ID.
+ It will typically have a certificate count of zero, because the signing
+ key is the symmetric RRK, or because an X.509 certificate is included directly
+ in the assertion's JWT header.
 \end_layout
 
 \begin_layout Standard
@@ -1896,7 +1897,7 @@ Initiator context completion
 Upon receiving the acceptor context token, the initiator unpacks the response
  assertion and, if applicable, computes the ECDH shared secret and RRK.
  The RRK is used to verify the response assertion unless mutual authentication
- is desired, in which case the acceptor's public key will be used.
+ is available, in which case the acceptor's public key will be used.
 \end_layout
 
 \begin_layout Standard
@@ -2038,7 +2039,7 @@ I-D.zhu-negoex
 If the acceptor supports mutual authentication, it MAY include its certificate
  and any additional certificates inside a backed assertion with an empty
  payload as output for GSS_Query_meta_data().
- The "assertion" is prepended with the two byte token identifier 
+ The "assertion" is prefixed with the two byte token identifier 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2050,15 +2051,21 @@ M,
 \end_layout
 
 \begin_layout Standard
-Upon receiving this, the initiator SHOULD display the certificate information
- or fingerprint to the user and allow them to confirm it before committing
- to authenticate.
+Upon receiving this, the initiator MAY validate the certificate or fingerprint,
+ or present either to the user before committing to authenticate.
 \end_layout
 
 \begin_layout Standard
-The NegoEx signing key is the output of GSS_Pseudo_random() with an input
- of GSS_C_PRF_KEY_FULL and "gss-browserid-negoex-initiator" or "gss-browserid-ne
-goex-acceptor", depending on the party generating the signature.
+The NegoEx signing key is the output of GSS_Pseudo_random() (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:GSS-PRF"
+
+\end_inset
+
+) with an input of GSS_C_PRF_KEY_FULL and "gss-browserid-negoex-initiator"
+ or "gss-browserid-negoex-acceptor", depending on the party generating the
+ signature.
 \end_layout
 
 \begin_layout Standard
@@ -2259,10 +2266,6 @@ reference "sub:kd-ASK"
 ) which is used to verify the response and derive the CRK.
 \end_layout
 
-\begin_layout Enumerate
-The assertion is packed into a backed assertion, and sent to the acceptor.
-\end_layout
-
 \begin_layout Subsubsection
 Acceptor re-authentication context token
 \end_layout
@@ -2270,7 +2273,7 @@ Acceptor re-authentication context token
 \begin_layout Enumerate
 The acceptor unpacks the re-authentication assertion and retrieves the ARK,
  ticket expiry time, mutual authentication state and any other properties
- (such as the initiator principal) associated with the ticket identifier.
+ (such as the initiator name) associated with the ticket identifier.
 \end_layout
 
 \begin_layout Enumerate
@@ -2656,7 +2659,7 @@ iat
 
 \begin_layout Standard
 This contains the time the assertion was issued (in milliseconds since January
- 1, 1970), when the assertion is being used for fast re-authentication.
+ 1, 1970).
  The acceptor MUST validate that the assertion was recently issued.
  At least one of 
 \begin_inset Quotes eld
@@ -2811,10 +2814,10 @@ name "sub:request-nonce"
 
 \begin_layout Standard
 This is a random quantity of at least 64 bits, base 64 URL encoded, which
- is used to bind the request and response assertions in the case a non-ephemeral
- key is used to sign the response assertion (i.e.
- for re-authentication assertions and mutual authentication).
- This claim is REQUIRED if mutual authentication is desired.
+ is used to bind the request and response assertions in the case a freshly
+ agreed key is not used to sign the response assertion.
+ This claim is REQUIRED if mutual authentication is desired and the assertion
+ is signed using a certificate, or if re-authentication is being performed.
  Otherwise it MUST be ignored.
 \end_layout
 

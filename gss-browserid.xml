@@ -321,13 +321,13 @@ The acceptor then verifies the backed identity assertion per the BrowserID speci
         <t>
 If the <xref target="RFC3961"/> encryption type for the selected mechanism is not ENCTYPE_NULL, the acceptor generates a ECDH public key using the parameters received from the client (see  <xref target="sub_response_ecdh"/>), and from it derives the RP Response Key (RRK) (see  <xref target="sub_kd_RRK"/>). The acceptor then generates a response assertion containing its ECDH public key and context expiration time (note that the context expiration time is a purely informational quantity). The response assertion is signed using the RP Response Key (RRK) unless mutual authentication is desired, in which case it may be signed in the acceptor's private key (see  <xref target="sub_Extensions_for_mutual"/>).</t>
         <t>
-The response assertion is encoded as a backed assertion (prefixed with the acceptor context token ID), even though it will typically have a certificate count of zero (because the signing key is the symmetric RRK, or because an X.509 certificate is included directly in the assertion's JWT header).</t>
+The response assertion is encoded as a backed assertion, prefixed with the acceptor context token ID. It will typically have a certificate count of zero, because the signing key is the symmetric RRK, or because an X.509 certificate is included directly in the assertion's JWT header.</t>
         <t>
 Finally, the Context Root Key (CRK) (see  <xref target="sub_kd_CRK"/>) is derived from the ECDH shared secret (if present) and GSS_S_COMPLETE is returned, along with the initiator name from the verified assertion. Other assertion/certificate properties MAY be made available via GSS_Get_name_attribute().</t>
       </section>
       <section title="Initiator context completion" anchor="sub_Initiator_context_completion">
         <t>
-Upon receiving the acceptor context token, the initiator unpacks the response assertion and, if applicable, computes the ECDH shared secret and RRK. The RRK is used to verify the response assertion unless mutual authentication is desired, in which case the acceptor's public key will be used.</t>
+Upon receiving the acceptor context token, the initiator unpacks the response assertion and, if applicable, computes the ECDH shared secret and RRK. The RRK is used to verify the response assertion unless mutual authentication is available, in which case the acceptor's public key will be used.</t>
         <t>
 The initiator sets the context expiry time with that received in the response assertion, if present; otherwise, the context expires when the user's certificate expires.</t>
         <t>
@@ -363,11 +363,11 @@ If BrowserID certificates are used, then either the audience URI must match the 
         <section title="Acceptor certificate advertisement" anchor="sub_NegoEx">
           <t><xref target="I-D.zhu-negoex"/> may be used to advertise acceptor certificates.</t>
           <t>
-If the acceptor supports mutual authentication, it MAY include its certificate and any additional certificates inside a backed assertion with an empty payload as output for GSS_Query_meta_data(). The "assertion" is prepended with the two byte token identifier “M,”.</t>
+If the acceptor supports mutual authentication, it MAY include its certificate and any additional certificates inside a backed assertion with an empty payload as output for GSS_Query_meta_data(). The "assertion" is prefixed with the two byte token identifier “M,”.</t>
           <t>
-Upon receiving this, the initiator SHOULD display the certificate information or fingerprint to the user and allow them to confirm it before committing to authenticate.</t>
+Upon receiving this, the initiator MAY validate the certificate or fingerprint, or present either to the user before committing to authenticate.</t>
           <t>
-The NegoEx signing key is the output of GSS_Pseudo_random() with an input of GSS_C_PRF_KEY_FULL and "gss-browserid-negoex-initiator" or "gss-browserid-negoex-acceptor", depending on the party generating the signature.</t>
+The NegoEx signing key is the output of GSS_Pseudo_random() (see  <xref target="sub_GSS_PRF"/>) with an input of GSS_C_PRF_KEY_FULL and "gss-browserid-negoex-initiator" or "gss-browserid-negoex-acceptor", depending on the party generating the signature.</t>
           <t>
 The NegoEx authentication scheme is the binary encoding of the following hexadecimal string:</t>
           <t>
@@ -378,14 +378,14 @@ where the third byte (zero above) is set to the <xref target="RFC3961"/> encrypt
 There is currently no initiator-sent metadata defined and acceptors should ignore any sent. The metadata is advisory and the initiator is free to ignore it.</t>
         </section>
       </section>
-      <section title="Fast re-authentication" anchor="d1e1429">
+      <section title="Fast re-authentication" anchor="d1e1432">
         <t>
 Fast re-authentication allows a security context to be established using a secret key derived from the initial certificate-signed ECDH key agreement.</t>
         <t>
 The re-authentication assertion is signed with a HMAC using the Authenticator Root Key (ARK) (see  <xref target="sub_kd_ARK"/>), rather than a user's BrowserID certificate.</t>
         <t>
 Support for fast re-authentication is OPTIONAL and is indicated by the acceptor returning a ticket in the response assertion.</t>
-        <section title="Ticket generation" anchor="d1e1447">
+        <section title="Ticket generation" anchor="d1e1450">
           <t>
 If the acceptor supports re-authentication, the following steps are added to  <xref target="sub_Acceptor_context_token"/>:</t>
           <t>
@@ -403,7 +403,7 @@ The ticket expiry time by default SHOULD match the initiator's certificate expir
           <t>
 The initiator MAY cache tickets, along with the ARK, received from the acceptor in order to re-authenticate to it at a future time.</t>
         </section>
-        <section title="Initiator re-authentication context token" anchor="d1e1479">
+        <section title="Initiator re-authentication context token" anchor="d1e1482">
           <t>
 The initiator looks in its ticket cache for an unexpired ticket for the desired acceptor. If none is found, the normal certificate-based authentication flow is performed, otherwise:</t>
           <t>
@@ -416,8 +416,6 @@ The initiator signs the re-authentication assertion with the ARK, using the hash
 The re-authentication assertion is packed into a backed assertion. The certificate count is zero as the assertion is signed with an established symmetric key.</t>
               <t>
 The initiator generates an Authenticator Session Key (ASK) (see  <xref target="sub_kd_ASK"/>) which is used to verify the response and derive the CRK.</t>
-              <t>
-The assertion is packed into a backed assertion, and sent to the acceptor.</t>
             </list>
           </t>
         </section>
@@ -425,7 +423,7 @@ The assertion is packed into a backed assertion, and sent to the acceptor.</t>
           <t>
             <list style="numbers">
               <t>
-The acceptor unpacks the re-authentication assertion and retrieves the ARK, ticket expiry time, mutual authentication state and any other properties (such as the initiator principal) associated with the ticket identifier.</t>
+The acceptor unpacks the re-authentication assertion and retrieves the ARK, ticket expiry time, mutual authentication state and any other properties (such as the initiator name) associated with the ticket identifier.</t>
               <t>
 The acceptor validates that the ticket and re-authentication assertion have not expired.</t>
               <t>
@@ -519,7 +517,7 @@ This contains the time when the assertion expires, in milliseconds since January
         </section>
         <section title="“iat” (Issued at time)" anchor="sub_request_iat">
           <t>
-This contains the time the assertion was issued (in milliseconds since January 1, 1970), when the assertion is being used for fast re-authentication. The acceptor MUST validate that the assertion was recently issued. At least one of “exp” or “iat” MUST be present.</t>
+This contains the time the assertion was issued (in milliseconds since January 1, 1970). The acceptor MUST validate that the assertion was recently issued. At least one of “exp” or “iat” MUST be present.</t>
         </section>
         <section title="”nbf” (Not before time)" anchor="sub_request_nbf">
           <t>
@@ -539,7 +537,7 @@ This contains channel binding information for binding the GSS context to an oute
         </section>
         <section title="&quot;nonce&quot; (Mutual authentication nonce)" anchor="sub_request_nonce">
           <t>
-This is a random quantity of at least 64 bits, base 64 URL encoded, which is used to bind the request and response assertions in the case a non-ephemeral key is used to sign the response assertion (i.e. for re-authentication assertions and mutual authentication). This claim is REQUIRED if mutual authentication is desired. Otherwise it MUST be ignored.</t>
+This is a random quantity of at least 64 bits, base 64 URL encoded, which is used to bind the request and response assertions in the case a freshly agreed key is not used to sign the response assertion. This claim is REQUIRED if mutual authentication is desired and the assertion is signed using a certificate, or if re-authentication is being performed. Otherwise it MUST be ignored.</t>
         </section>
         <section title="“tkt” (Ticket identifier)" anchor="sub_request_tkt">
           <t>
