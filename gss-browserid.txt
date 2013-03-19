@@ -4,8 +4,8 @@
 Network Working Group                                          L. Howard
 Internet-Draft                                                      PADL
 Intended status: Experimental                                N. Williams
-Expires: September 20, 2013                                 Cryptonector
-                                                          March 19, 2013
+Expires: September 21, 2013                                 Cryptonector
+                                                          March 20, 2013
 
 
  A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol
@@ -35,7 +35,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 20, 2013.
+   This Internet-Draft will expire on September 21, 2013.
 
 Copyright Notice
 
@@ -52,7 +52,7 @@ Copyright Notice
 
 
 
-Howard & Williams      Expires September 20, 2013               [Page 1]
+Howard & Williams      Expires September 21, 2013               [Page 1]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -108,7 +108,7 @@ Table of Contents
 
 
 
-Howard & Williams      Expires September 20, 2013               [Page 2]
+Howard & Williams      Expires September 21, 2013               [Page 2]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -164,7 +164,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013               [Page 3]
+Howard & Williams      Expires September 21, 2013               [Page 3]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -220,7 +220,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013               [Page 4]
+Howard & Williams      Expires September 21, 2013               [Page 4]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -276,7 +276,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013               [Page 5]
+Howard & Williams      Expires September 21, 2013               [Page 5]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -332,7 +332,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013               [Page 6]
+Howard & Williams      Expires September 21, 2013               [Page 6]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -388,7 +388,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013               [Page 7]
+Howard & Williams      Expires September 21, 2013               [Page 7]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -444,7 +444,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013               [Page 8]
+Howard & Williams      Expires September 21, 2013               [Page 8]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -484,12 +484,9 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    The acceptor MAY surface attributes from the assertion and any
    certificates using GSS_Get_name_attribute() (see [RFC6680]).  The URN
-   prefix is "urn:<TBD>:params:gss:jwt".  The acceptor MUST filter any
-   sensitive attributes before returning them to the application.
-
-   If a SAML assertion is present in the "saml" parameter of the leaf
-   certificate, it may be surfaced using the URN prefix
-   "urn:<TBD>:params:gss:federated-saml-attribute".
+   prefix is "urn:<TBD>:params:gss:jwt".  If a SAML assertion is present
+   in the "saml" parameter of the leaf certificate, it may be surfaced
+   using the URN prefix "urn:<TBD>:params:gss:federated-saml-attribute".
 
    Attributes from the assertion MUST be marked as unauthenticated
    unless otherwise validated by the acceptor (e.g. the audience).
@@ -500,7 +497,10 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013               [Page 9]
+
+
+
+Howard & Williams      Expires September 21, 2013               [Page 9]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -556,7 +556,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 10]
+Howard & Williams      Expires September 21, 2013              [Page 10]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -576,9 +576,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    o  Channel binding information (see Section 6.1.6)
 
-   o  A nonce for binding the request to a response signed with a key
-      distinct from the key agreement key (for mutual authentication or
-      fast re-authentication) (see Section 6.1.7)
+   o  A nonce for binding the request to a response signed with a
+      private key for mutual authentication (see Section 6.1.7)
 
    o  A ticket identifier for fast re-authentication using an
       established session key rather than a BrowserID certificate (see
@@ -609,15 +608,15 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    and context expiration time (note that the context expiration time is
    a purely informational quantity).  The response assertion is signed
    using the RP Response Key (RRK) unless mutual authentication is
+   desired, in which case it may be signed in the acceptor's private key
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 11]
+Howard & Williams      Expires September 21, 2013              [Page 11]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-   desired, in which case it may be signed in the acceptor's private key
    (see Section 4.4).
 
    The response assertion is encoded as a backed assertion (prefixed
@@ -668,7 +667,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 12]
+
+Howard & Williams      Expires September 21, 2013              [Page 12]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -724,7 +724,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 13]
+Howard & Williams      Expires September 21, 2013              [Page 13]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -780,7 +780,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 14]
+Howard & Williams      Expires September 21, 2013              [Page 14]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -836,7 +836,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 15]
+Howard & Williams      Expires September 21, 2013              [Page 15]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -847,7 +847,10 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
        RRK and CRK from this (see Section 7.3 and Section 7.4,
        respectively).
 
-   5.  The acceptor generates a response and signs and returns it.
+   5.  The acceptor generates a response and signs and returns it.  Note
+       that, unlike the certificate-based mutual authentication case,
+       the nonce SHOULD NOT be echoed back as the ASK (and thus the RRK)
+       is cryptographically bound to the nonce.
 
    If the ticket cannot be found, or the authentication fails, the
    acceptor SHOULD return a REAUTH_FAILED error, permitting the
@@ -889,10 +892,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-
-
-
-Howard & Williams      Expires September 20, 2013              [Page 16]
+Howard & Williams      Expires September 21, 2013              [Page 16]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -948,7 +948,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 17]
+Howard & Williams      Expires September 21, 2013              [Page 17]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1004,7 +1004,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 18]
+Howard & Williams      Expires September 21, 2013              [Page 18]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1060,7 +1060,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 19]
+Howard & Williams      Expires September 21, 2013              [Page 19]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1092,8 +1092,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    which is used to bind the request and response assertions in the case
    a non-ephemeral key is used to sign the response assertion (i.e. for
    re-authentication assertions and mutual authentication).  This claim
-   is REQUIRED for re-authentication assertions or if mutual
-   authentication is desired.  Otherwise it MUST be ignored.
+   is REQUIRED if mutual authentication is desired.  Otherwise it MUST
+   be ignored.
 
 6.1.8.  "tkt" (Ticket identifier)
 
@@ -1116,7 +1116,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 20]
+Howard & Williams      Expires September 21, 2013              [Page 20]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1172,7 +1172,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 21]
+Howard & Williams      Expires September 21, 2013              [Page 21]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1195,7 +1195,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
    The nonce as received from the initiator.  This MUST NOT be present
    unless a nonce was received from the initiator, and the acceptor is
-   signing the assertion with a non-ephemeral key.
+   signing the assertion with a private key.
 
 6.2.5.  "tkt" (Ticket)
 
@@ -1228,7 +1228,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 22]
+Howard & Williams      Expires September 21, 2013              [Page 22]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1284,7 +1284,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 23]
+Howard & Williams      Expires September 21, 2013              [Page 23]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1303,6 +1303,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    |      UNKNOWN_EC_CURVE     |     77     |     Unknown ECC curve    |
    |                           |            |                          |
    |      INVALID_EC_CURVE     |     78     |     Invalid ECC curve    |
+   |                           |            |                          |
+   |       MISSING_NONCE       |     79     |       Missing nonce      |
    |                           |            |                          |
    |         WRONG_SIZE        | 0x80000001 | Buffer is incorrect size |
    |                           |            |                          |
@@ -1335,16 +1337,16 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    |      BAD_ERROR_TOKEN      | 0x8000000C | Error token malformed or |
    |                           |            |          corrupt         |
    |                           |            |                          |
-   |     BAD_CONTEXT_OPTION    | 0x8000000D |    Bad context option    |
-   |                           |            |                          |
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 24]
+Howard & Williams      Expires September 21, 2013              [Page 24]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
+   |     BAD_CONTEXT_OPTION    | 0x8000000D |    Bad context option    |
+   |                           |            |                          |
    |       REAUTH_FAILED       | 0x8000000E |     Re-authentication    |
    |                           |            |         failured         |
    +---------------------------+------------+--------------------------+
@@ -1394,9 +1396,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-
-
-Howard & Williams      Expires September 20, 2013              [Page 25]
+Howard & Williams      Expires September 21, 2013              [Page 25]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1452,7 +1452,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 26]
+Howard & Williams      Expires September 21, 2013              [Page 26]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1508,7 +1508,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 27]
+Howard & Williams      Expires September 21, 2013              [Page 27]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1564,7 +1564,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 28]
+Howard & Williams      Expires September 21, 2013              [Page 28]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1620,7 +1620,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 29]
+Howard & Williams      Expires September 21, 2013              [Page 29]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1676,7 +1676,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 30]
+Howard & Williams      Expires September 21, 2013              [Page 30]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1732,7 +1732,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 31]
+Howard & Williams      Expires September 21, 2013              [Page 31]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1788,7 +1788,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 32]
+Howard & Williams      Expires September 21, 2013              [Page 32]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1844,7 +1844,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 33]
+Howard & Williams      Expires September 21, 2013              [Page 33]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1900,7 +1900,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 34]
+Howard & Williams      Expires September 21, 2013              [Page 34]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -1956,7 +1956,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 35]
+Howard & Williams      Expires September 21, 2013              [Page 35]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -2012,7 +2012,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 36]
+Howard & Williams      Expires September 21, 2013              [Page 36]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -2068,7 +2068,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 37]
+Howard & Williams      Expires September 21, 2013              [Page 37]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -2124,7 +2124,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 38]
+Howard & Williams      Expires September 21, 2013              [Page 38]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -2180,7 +2180,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 39]
+Howard & Williams      Expires September 21, 2013              [Page 39]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -2236,7 +2236,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 40]
+Howard & Williams      Expires September 21, 2013              [Page 40]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
@@ -2292,5 +2292,5 @@ Authors' Addresses
 
 
 
-Howard & Williams      Expires September 20, 2013              [Page 41]
+Howard & Williams      Expires September 21, 2013              [Page 41]
 
