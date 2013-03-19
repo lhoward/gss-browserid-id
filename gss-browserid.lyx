@@ -1221,7 +1221,7 @@ status open
 \end_layout
 
 \begin_layout Subsection
-Name Canonicalization
+Name canonicalization
 \end_layout
 
 \begin_layout Standard
@@ -1231,7 +1231,7 @@ The BrowserID GSS-API mechanism performs no name canonicalization.
 \end_layout
 
 \begin_layout Subsection
-Exported Name Token Format
+Exported name token format
 \end_layout
 
 \begin_layout Standard
@@ -1829,10 +1829,10 @@ reference "sub:Extensions-for-mutual"
 \end_layout
 
 \begin_layout Standard
-The response token is encoded as a backed assertion, even though it will
- typically have a certificate count of zero (because the signing key is
- the symmetric RRK, or because an X.509 certificate is included directly
- in the assertion's JWT header).
+The response assertion is encoded as a backed assertion (prefixed with the
+ acceptor context token ID), even though it will typically have a certificate
+ count of zero (because the signing key is the symmetric RRK, or because
+ an X.509 certificate is included directly in the assertion's JWT header).
 \end_layout
 
 \begin_layout Standard
@@ -2307,6 +2307,19 @@ The mutual authentication state of a re-authenticated context is transitive.
 \begin_layout Standard
 As such, the initiator's ticket cache must store the mutual authentication
  state of the original context.
+\end_layout
+
+\begin_layout Subsubsection
+Ticket renewal
+\end_layout
+
+\begin_layout Standard
+Normally, re-authentication tickets are only issued when the initiator authentic
+ated with a certificate-signed assertion.
+ Acceptors MAY issue a new ticket with an expiry beyond the ticket lifetime
+ when the initiator used a re-authentication assertion.
+ The issuing of new tickets MUST be subject to a policy that prevents them
+ from being renewed indefinitely.
 \end_layout
 
 \begin_layout Section
@@ -6731,26 +6744,6 @@ or initials="B." surname="Adida" fullname="Ben Adida"><organization>The Mozilla
  Foundation</organization></author><date year="2013" day="26" month="February"/>
 </front><format type="TXT" target="https://raw.github.com/mozilla/id-specs/prod/br
 owserid/index.md"/></reference>
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex BibXML
-status open
-
-\begin_layout Plain Layout
-\begin_inset CommandInset href
-LatexCommand href
-name "RFC1113"
-target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1113.xml"
-
-\end_inset
-
-
 \end_layout
 
 \end_inset

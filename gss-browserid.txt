@@ -2133,10 +2133,6 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 11.1.  Normative References
 
-   [RFC1113]  Linn, J., "Privacy enhancement for Internet electronic
-              mail: Part I - message encipherment and authentication
-              procedures", RFC 1113, August 1989.
-
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
@@ -2177,6 +2173,10 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
               for TLS", RFC 5929, July 2010.
 
    [RFC6680]  Williams, N., Johansson, L., Hartman, S., and S.
+              Josefsson, "Generic Security Service Application
+              Programming Interface (GSS-API) Naming Extensions",
+              RFC 6680, August 2012.
+
 
 
 
@@ -2184,10 +2184,6 @@ Howard & Williams      Expires September 19, 2013              [Page 39]
 
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
-
-              Josefsson, "Generic Security Service Application
-              Programming Interface (GSS-API) Naming Extensions",
-              RFC 6680, August 2012.
 
    [I-D.ietf-jose-json-web-algorithms]
               Jones, M., "JSON Web Algorithms (JWA)",
@@ -2217,6 +2213,10 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    [RFC4120]  Neuman, C., Yu, T., Hartman, S., and K. Raeburn, "The
               Kerberos Network Authentication Service (V5)", RFC 4120,
               July 2005.
+
+
+
+
 
 
 
