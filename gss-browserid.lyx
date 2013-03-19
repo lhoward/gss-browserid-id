@@ -1763,9 +1763,8 @@ reference "sub:request-cbt"
 \end_layout
 
 \begin_layout Itemize
-A nonce for binding the request to a response signed with a key distinct
- from the key agreement key (for mutual authentication or fast re-authentication
-) (see 
+A nonce for binding the request to a response signed with a private key
+ for mutual authentication (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:request-nonce"
@@ -2310,6 +2309,9 @@ reference "sub:kd-CRK"
 
 \begin_layout Enumerate
 The acceptor generates a response and signs and returns it.
+ Note that, unlike the certificate-based mutual authentication case, the
+ nonce SHOULD NOT be echoed back as the ASK (and thus the RRK) is cryptographica
+lly bound to the nonce.
 \end_layout
 
 \begin_layout Standard
@@ -2812,8 +2814,7 @@ This is a random quantity of at least 64 bits, base 64 URL encoded, which
  is used to bind the request and response assertions in the case a non-ephemeral
  key is used to sign the response assertion (i.e.
  for re-authentication assertions and mutual authentication).
- This claim is REQUIRED for re-authentication assertions or if mutual authentica
-tion is desired.
+ This claim is REQUIRED if mutual authentication is desired.
  Otherwise it MUST be ignored.
 \end_layout
 
@@ -3116,7 +3117,7 @@ nonce
 \begin_layout Standard
 The nonce as received from the initiator.
  This MUST NOT be present unless a nonce was received from the initiator,
- and the acceptor is signing the assertion with a non-ephemeral key.
+ and the acceptor is signing the assertion with a private key.
 \end_layout
 
 \begin_layout Subsubsection
