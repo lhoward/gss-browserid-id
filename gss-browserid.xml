@@ -900,7 +900,7 @@ CRK = random-to-key(browserid-derive-key(CMK, "CRK"))</t>
         <t>
 The authenticator root key (ARK) is used to sign assertions used for fast re-authentication. (The term “authenticator” is equivalent to “re-authentication assertion” and exists for historical reasons.) It is derived as follows:</t>
         <t>
-ARK = browserid-derive-key(DHK, "ARK")</t>
+ARK = browserid-derive-key(CMK, "ARK")</t>
       </section>
       <section title="Authenticator Session Key (ASK)" anchor="sub_kd_ASK">
         <t>

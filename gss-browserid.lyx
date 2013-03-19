@@ -4539,7 +4539,7 @@ re-authentication assertion
 \end_layout
 
 \begin_layout Standard
-ARK = browserid-derive-key(DHK, "ARK")
+ARK = browserid-derive-key(CMK, "ARK")
 \end_layout
 
 \begin_layout Subsection

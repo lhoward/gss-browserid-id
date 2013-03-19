@@ -1448,7 +1448,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    "re-authentication assertion" and exists for historical reasons.)  It
    is derived as follows:
 
-   ARK = browserid-derive-key(DHK, "ARK")
+   ARK = browserid-derive-key(CMK, "ARK")
 
 
 
