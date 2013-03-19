@@ -947,10 +947,10 @@ backed assertion
 \begin_layout Standard
 The GSS BrowserID protocol extends this by having the RP always send back
  a response to the user agent, which at a minimum provides key confirmation
- (for mechanisms that support key agreement) and indicates the lifetime
+ (this is needed for some key agreement methods) and indicates the lifetime
  of the established security context.
- In an extension of the base protocol, it can also allow the user agent
- to mutually authenticate the RP.
+ The key confirmation token is also required for mutual authentication,
+ when the initiator application requests that feature.
 \end_layout
 
 \begin_layout Subsection
@@ -970,12 +970,13 @@ GSS_GetMIC() integrity for a message sent separately
 \end_layout
 
 \begin_layout Description
-GSS_Pseudo_random() key derivation
+GSS_Pseudo_random() shared key derivation (e.g., for keying external confidentiali
+ty+integrity layers)
 \end_layout
 
 \begin_layout Standard
 These services may be used with security contexts that have a shared session
- key, to protect messages that are exchanged by the application protocol.
+ key, to protect application-layer messages.
 \end_layout
 
 \begin_layout Section
@@ -1005,6 +1006,40 @@ The reader is assumed to be familiar with the terms used in the BrowserID
 
 \begin_layout Section
 Naming
+\end_layout
+
+\begin_layout Standard
+The GSS-API provides a rich security principal naming model.
+ At its most basic the query forms of names consist of a user-entered/displayabl
+e string and a 
+\begin_inset Quotes eld
+\end_inset
+
+name-type
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Name-types are constants with names prefixed with 
+\begin_inset Quotes eld
+\end_inset
+
+GSS_C_NT_
+\begin_inset Quotes erd
+\end_inset
+
+ in the GSS-API.
+ Names may also have attributes 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC6680
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -1228,6 +1263,9 @@ Name canonicalization
 The BrowserID GSS-API mechanism performs no name canonicalization.
  The mechanism's GSS_Canonicalize_name() returns an MN whose display form
  is the same as the query form.
+ Of course, the principal named obtained from a CREDENTIAL HANDLE may be
+ canonical in that the IdP might only issue credentials for canonical names,
+ but credential acquisition is out of scope here.
 \end_layout
 
 \begin_layout Subsection
@@ -1267,15 +1305,15 @@ RFC6680
 \end_inset
 
 ).
- The URN prefix is "urn:ietf:params:gss:jwt".
- [XXX we do not have authority to assign this here.] The acceptor MUST filter
- any sensitive attributes before returning them to the application.
+ The URN prefix is "urn:<TBD>:params:gss:jwt".
+ The acceptor MUST filter any sensitive attributes before returning them
+ to the application.
 \end_layout
 
 \begin_layout Standard
 If a SAML assertion is present in the "saml" parameter of the leaf certificate,
- it may be surfaced using the URN prefix "urn:ietf:params:gss:federated-saml-att
-ribute".
+ it may be surfaced using the URN prefix "urn:<TBD>:params:gss:federated-saml-at
+tribute".
 \end_layout
 
 \begin_layout Standard
@@ -1815,7 +1853,8 @@ reference "sub:kd-RRK"
 
 ).
  The acceptor then generates a response assertion containing its ECDH public
- key and context expiry time.
+ key and context expiration time (note that the context expiration time
+ is a purely informational quantity).
  The response assertion is signed using the RP Response Key (RRK) unless
  mutual authentication is desired, in which case it may be signed in the
  acceptor's private key (see 
@@ -1870,8 +1909,6 @@ Upon receiving the acceptor context token, the initiator unpacks the response
 The initiator sets the context expiry time with that received in the response
  assertion, if present; otherwise, the context expires when the user's certifica
 te expires.
- If the context has expired, GSS_S_CONTEXT_EXPIRED is returned and context
- establishment fails.
 \end_layout
 
 \begin_layout Standard
@@ -1887,12 +1924,12 @@ name "sub:Extensions-for-mutual"
 
 \end_inset
 
-Extensions for mutual authentication
+Mutual authentication
 \end_layout
 
 \begin_layout Standard
 Mutual authentication allows the acceptor to be authenticated to the initiator.
- The mechanism may set the returned mutual_state flag (GSS_C_MUTUAL_FLAG)
+ The mechanism SHALL set the returned mutual_state flag (GSS_C_MUTUAL_FLAG)
  to TRUE if mutual authentication succeeded.
  Support for mutual authentication is OPTIONAL.
 \end_layout
@@ -2062,7 +2099,7 @@ There is currently no initiator-sent metadata defined and acceptors should
 \end_layout
 
 \begin_layout Subsection
-Extensions for fast re-authentication
+Fast re-authentication
 \end_layout
 
 \begin_layout Standard
@@ -2446,6 +2483,9 @@ The acceptor SHOULD maintain a cache of received assertions in order to
  guard against replay attacks.
  GSS_C_REPLAY_FLAG MUST NOT be returned if the implementation does not support
  replay detection.
+ [Well, we get this automatically by re-using the RFC4401 cryptosystem for
+ wrap and MIC tokens.
+ -Nico]
 \end_layout
 
 \begin_layout Section
