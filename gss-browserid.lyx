@@ -1306,12 +1306,7 @@ RFC6680
 
 ).
  The URN prefix is "urn:<TBD>:params:gss:jwt".
- The acceptor MUST filter any sensitive attributes before returning them
- to the application.
-\end_layout
-
-\begin_layout Standard
-If a SAML assertion is present in the "saml" parameter of the leaf certificate,
+ If a SAML assertion is present in the "saml" parameter of the leaf certificate,
  it may be surfaced using the URN prefix "urn:<TBD>:params:gss:federated-saml-at
 tribute".
 \end_layout
