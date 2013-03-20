@@ -3179,7 +3179,7 @@ gss-maj
 
 \begin_layout Standard
 This contains a GSS major status code represented as a number.
- It MUST not be present if the acceptor did not return an error.
+ It MUST NOT be present if the acceptor did not return an error.
  This claim is OPTIONAL.
 \end_layout
 
@@ -3196,8 +3196,8 @@ gss-min
 
 \begin_layout Standard
 This contains a GSS minor status code represented as a number.
- It MUST not be present if the acceptor did not return an error and MUST
- not be present if there is no minor status code for the given major error.
+ It MUST NOT be present if the acceptor did not return an error and MUST
+ NOT be present if there is no minor status code for the given major error.
  This claim is OPTIONAL.
 \end_layout
 
