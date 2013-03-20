@@ -1614,7 +1614,7 @@ Initial context token
 \end_layout
 
 \begin_layout Standard
-The initial context token is framed per section 1 of 
+The initial context token is framed per Section 1 of 
 \begin_inset Flex EntityXRef
 status open
 
@@ -2727,7 +2727,7 @@ I-D.ietf-oauth-json-web-token
 
 \end_inset
 
- section 5.2).
+ Section 5.2).
 \end_layout
 
 \begin_layout Standard
@@ -3056,7 +3056,7 @@ I-D.ietf-oauth-json-web-token
 
 \end_inset
 
- section 5.2).
+ Section 5.2).
  This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL,
  or there is already an established session key, as is the case for re-authentic
 ation assertions.

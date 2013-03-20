@@ -530,7 +530,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 4.1.  Initial context token
 
-   The initial context token is framed per section 1 of [RFC2743]:
+   The initial context token is framed per Section 1 of [RFC2743]:
 
     GSS-API DEFINITIONS ::=
         BEGIN
@@ -1070,7 +1070,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    These contain ECDH key parameters for deriving a shared session key
    with the relying party: "crv" contains the curve, "x" the X
    coordinate and "y" the Y coordinate (see
-   [I-D.ietf-oauth-json-web-token] section 5.2).
+   [I-D.ietf-oauth-json-web-token] Section 5.2).
 
    The "ecdh" claim is REQUIRED unless the associated encryption type is
    ENCTYPE_NULL, or there is already a prior session key (as is the case
@@ -1177,7 +1177,7 @@ Howard & Williams      Expires September 21, 2013              [Page 21]
 Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
-   Y coordinate (see [I-D.ietf-oauth-json-web-token] section 5.2).  This
+   Y coordinate (see [I-D.ietf-oauth-json-web-token] Section 5.2).  This
    claim is REQUIRED unless the associated encryption type is
    ENCTYPE_NULL, or there is already an established session key, as is
    the case for re-authentication assertions.

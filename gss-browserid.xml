@@ -273,7 +273,7 @@ Acceptor metadata token</c>
 The token ID has a human-readable ASCII encoding for the benefit of pure SASL implementations of this mechanism.</t>
       <section title="Initial context token" anchor="sub_Initial_context_token">
         <t>
-The initial context token is framed per section 1 of <xref target="RFC2743"/>:</t>
+The initial context token is framed per Section 1 of <xref target="RFC2743"/>:</t>
         <t>
 </t>
         <t>
@@ -525,7 +525,7 @@ This contains the time, in milliseconds sinces January 1, 1970, from which the a
         </section>
         <section title="&quot;ecdh&quot; (Elliptic Curve Diffie-Hellman key agreement)" anchor="sub_request_ecdh">
           <t>
-These contain ECDH key parameters for deriving a shared session key with the relying party: "crv" contains the curve, "x" the X coordinate and "y" the Y coordinate (see <xref target="I-D.ietf-oauth-json-web-token"/> section 5.2).</t>
+These contain ECDH key parameters for deriving a shared session key with the relying party: "crv" contains the curve, "x" the X coordinate and "y" the Y coordinate (see <xref target="I-D.ietf-oauth-json-web-token"/> Section 5.2).</t>
           <t>
 The “ecdh” claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL, or there is already a prior session key (as is the case for re-authentication assertions).</t>
         </section>
@@ -583,7 +583,7 @@ The current acceptor time, in milliseconds since January 1, 1970. This allows th
         </section>
         <section title="“ecdh” (Elliptic Curve Diffie-Hellman key agreement)" anchor="sub_response_ecdh">
           <t>
-This contains a JSON object containing the coordinates of the acceptor's ECDH public key: "x" contains the X coordinate and "y" the Y coordinate (see <xref target="I-D.ietf-oauth-json-web-token"/> section 5.2). This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL, or there is already an established session key, as is the case for re-authentication assertions.</t>
+This contains a JSON object containing the coordinates of the acceptor's ECDH public key: "x" contains the X coordinate and "y" the Y coordinate (see <xref target="I-D.ietf-oauth-json-web-token"/> Section 5.2). This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL, or there is already an established session key, as is the case for re-authentication assertions.</t>
           <t>
 The “crv” property MUST NOT be present; it is determined by the initiator.</t>
         </section>
