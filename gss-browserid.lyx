@@ -282,7 +282,7 @@ A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol
 status open
 
 \begin_layout Plain Layout
-draft-howard-gss-browserid-00.txt
+draft-howard-gss-browserid-01.txt
 \end_layout
 
 \end_inset
@@ -2100,6 +2100,12 @@ There is currently no initiator-sent metadata defined and acceptors should
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Fast-re-authentication"
+
+\end_inset
+
 Fast re-authentication
 \end_layout
 
@@ -2359,6 +2365,170 @@ ated with a certificate-signed assertion.
  from being renewed indefinitely.
 \end_layout
 
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:XRT-option"
+
+\end_inset
+
+Extra round-trip (XRT) option
+\end_layout
+
+\begin_layout Standard
+The extra round-trip (XRT) option adds an additional round trip to the context
+ token exchange.
+ It allows the initiator to prove knowledge of the Context Master Key (CMK)
+ (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-CMK"
+
+\end_inset
+
+) by sending an additional token signed in a key derived from an acceptor-issued
+ challenge.
+ Support for the extra round-trip option is OPTIONAL.
+\end_layout
+
+\begin_layout Subsubsection
+Initiator XRT advertisement
+\end_layout
+
+\begin_layout Standard
+The initiator advertises to the acceptor that it supports the XRT option
+ by sending in its request assertion an 
+\begin_inset Quotes eld
+\end_inset
+
+opts
+\begin_inset Quotes erd
+\end_inset
+
+ claim (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-opts"
+
+\end_inset
+
+) containing the 
+\begin_inset Quotes eld
+\end_inset
+
+xrt
+\begin_inset Quotes erd
+\end_inset
+
+ value.
+ This option SHOULD be set if the caller requested GSS_C_DCE_STYLE (see
+ 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4757
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Subsubsection
+Acceptor XRT advertisement
+\end_layout
+
+\begin_layout Standard
+If the initiator advertised support for the XRT option, and the acceptor
+ also supports this option, the acceptor sends a 
+\begin_inset Quotes eld
+\end_inset
+
+jti
+\begin_inset Quotes erd
+\end_inset
+
+ claim (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:response-jti"
+
+\end_inset
+
+) in the response assertion, containing a random base 64 URL encoded value.
+ This value SHOULD be at least 64 bits in length.
+ (The 
+\begin_inset Quotes eld
+\end_inset
+
+jti
+\begin_inset Quotes erd
+\end_inset
+
+ claim is distinct from any nonce that may be echoed back to the initiator.)
+ The acceptor then returns GSS_C_CONTINUE_NEEDED to indicate that an additional
+ context token is expected from the initiator.
+\end_layout
+
+\begin_layout Subsubsection
+Initiator XRT context token
+\end_layout
+
+\begin_layout Standard
+If the initiator requested the XRT option and the acceptor indicated support
+ for it in its response assertion by including a 
+\begin_inset Quotes eld
+\end_inset
+
+jti
+\begin_inset Quotes erd
+\end_inset
+
+ claim, then the initiator sends an additional context token to the acceptor.
+ This token contains a backed assertion with zero certificates and an empty
+ payload, signed in a key derived from the CMK and the acceptor challenge
+ (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-XRTK"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Further, this key is used instead of the CMK for deriving the Context Root
+ Key (CRK) (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-CRK"
+
+\end_inset
+
+) used for GSS-API message protection services.
+ In the event that the initial context token was replayed, this prevents
+ key reuse.
+\end_layout
+
+\begin_layout Subsubsection
+Acceptor XRT context token validation
+\end_layout
+
+\begin_layout Standard
+The acceptor MUST validate the XRT context token received from the initiator
+ by deriving the XRTK and validating the signature on the unpacked assertion.
+ The acceptor SHOULD reject XRT context tokens with a certificate count
+ greater than zero.
+ Unknown claims in the assertion payload MUST be ignored.
+ The acceptor then returns GSS_C_COMPLETE to the caller.
+\end_layout
+
+\begin_layout Standard
+The acceptor MAY avoid using a replay cache when this option is in effect.
+\end_layout
+
 \begin_layout Section
 Validation
 \end_layout
@@ -2482,10 +2652,7 @@ Replay detection
 The acceptor SHOULD maintain a cache of received assertions in order to
  guard against replay attacks.
  GSS_C_REPLAY_FLAG MUST NOT be returned if the implementation does not support
- replay detection.
- [Well, we get this automatically by re-using the RFC4401 cryptosystem for
- wrap and MIC tokens.
- -Nico]
+ replay detection through the use of a replay cache or the XRT option.
 \end_layout
 
 \begin_layout Section
@@ -2660,7 +2827,8 @@ iat
 \begin_layout Standard
 This contains the time the assertion was issued (in milliseconds since January
  1, 1970).
- The acceptor MUST validate that the assertion was recently issued.
+ If present, the acceptor MUST validate that the assertion was recently
+ issued.
  At least one of 
 \begin_inset Quotes eld
 \end_inset
@@ -2853,6 +3021,109 @@ jti
  value sent back in the response assertion ticket.
  This claim is REQUIRED for re-authentication assertions, otherwise it the
  assertion MUST be rejected.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:request-opts"
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+opts
+\begin_inset Quotes erd
+\end_inset
+
+ (Options)
+\end_layout
+
+\begin_layout Standard
+This contains a JSON array of string values indicating various protocol
+ options that are supported by the initiator.
+ Unknown options MUST be ignored by the acceptor.
+ This document defines only one such extension:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Section
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:XRT-option"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+xrt
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+The initiator supports the extra round trip option
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -3164,6 +3435,33 @@ exp
 
 , the expiry time of the ticket.
  This claim is OPTIONAL.
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:response-jti"
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+jti
+\begin_inset Quotes erd
+\end_inset
+
+ (JWT ID)
+\end_layout
+
+\begin_layout Standard
+This contains a base64 URL encoded random value of at least 64 bits that
+ is used to uniquely identify the acceptor response, in the case that the
+ extra round trip option is used.
+ It MUST be ignored if this option is not in effect.
+ It SHOULD not be present unless the initiator requested the extra round
+ trip option.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4556,7 +4854,7 @@ Context Root Key (CRK)
 \end_layout
 
 \begin_layout Standard
-The context root key is used for 
+The Context Root Key is used for 
 \begin_inset Flex EntityXRef
 status open
 
@@ -4568,10 +4866,27 @@ RFC4121
 
  message protection services, e.g.
  GSS_Wrap() and GSS_Get_MIC().
+ If the extra round-trip option is not used, it is derived as follows:
 \end_layout
 
 \begin_layout Standard
 CRK = random-to-key(browserid-derive-key(CMK, "CRK"))
+\end_layout
+
+\begin_layout Standard
+Otherwise, the XRTK key is used:
+\end_layout
+
+\begin_layout Standard
+CRK = random-to-key(browserid-derive-key(XRTK, 
+\begin_inset Quotes eld
+\end_inset
+
+CRK
+\begin_inset Quotes erd
+\end_inset
+
+))
 \end_layout
 
 \begin_layout Subsection
@@ -4585,7 +4900,7 @@ Authenticator Root Key (ARK)
 \end_layout
 
 \begin_layout Standard
-The authenticator root key (ARK) is used to sign assertions used for fast
+The Authenticator Root Key (ARK) is used to sign assertions used for fast
  re-authentication.
  (The term 
 \begin_inset Quotes eld
@@ -4621,7 +4936,7 @@ Authenticator Session Key (ASK)
 \end_layout
 
 \begin_layout Standard
-The authenticator session key (ASK) is used instead of the DHK for re-authentica
+The Authenticator Session Key (ASK) is used instead of the DHK for re-authentica
 ted contexts.
  It is derived as follows:
 \end_layout
@@ -4634,6 +4949,31 @@ ASK = browserid-derive-key(ARK, reauth-assertion-as-jwt)
 The salt (reauth-assertion-as-jwt) is the JWT encoding of the re-authentication
  assertion as sent by the initiator.
  This binds the nonce to the session key.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:kd-XRTK"
+
+\end_inset
+
+Extra Round Trip Key (XRTK)
+\end_layout
+
+\begin_layout Standard
+The Extra Round Trip Key (XRTK) is used to sign the extra round trip token,
+ and also as the master key for the CRK when the extra round trip option
+ is used.
+\end_layout
+
+\begin_layout Standard
+XRTK = browserid-derive-key(CMK, acceptor-jti-binary)
+\end_layout
+
+\begin_layout Standard
+The salt (acceptor-jti-binary) is the base64 URL decoding of the acceptor
+ JWI ID claim.
 \end_layout
 
 \begin_layout Subsection
@@ -6948,6 +7288,26 @@ status open
 LatexCommand href
 name "RFC4422"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC4757"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4757.xml"
 
 \end_inset
 
