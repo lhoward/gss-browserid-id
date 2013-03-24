@@ -881,8 +881,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    The extra round-trip (XRT) option adds an additional round trip to
    the context token exchange.  It allows the initiator to prove
    knowledge of the Context Master Key (CMK) (see Section 7.2) by
-   sending an additional token signed in a key derived from an acceptor-
-   issued challenge.  Support for the extra round-trip option is
+   sending an additional token signed in a key derived from the CMK and
+   an acceptor-issued challenge.  Support for the XRT option is
    OPTIONAL.
 
 4.6.1.  Initiator XRT advertisement
@@ -898,7 +898,8 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 
 
    Section 6.1.9) containing the "xrt" value.  This option SHOULD be set
-   if the caller requested GSS_C_DCE_STYLE (see [RFC4757]).
+   if the caller requested GSS_C_DCE_STYLE (see [RFC4757]).  Otherwise,
+   the setting of this option is implementation dependent.
 
 4.6.2.  Acceptor XRT advertisement
 
@@ -906,19 +907,18 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    acceptor also supports this option, the acceptor sends a "jti" claim
    (see Section 6.2.6) in the response assertion, containing a random
    base 64 URL encoded value.  This value SHOULD be at least 64 bits in
-   length.  (The "jti" claim is distinct from any nonce that may be
-   echoed back to the initiator.)  The acceptor then returns
-   GSS_C_CONTINUE_NEEDED to indicate that an additional context token is
-   expected from the initiator.
+   length.  (This top-level "jti" claim is unrelated to the "nonce"
+   claim and to the "jti" ticket identifier claim.)  The acceptor then
+   returns GSS_C_CONTINUE_NEEDED to indicate that an additional context
+   token is expected from the initiator.
 
 4.6.3.  Initiator XRT context token
 
    If the initiator requested the XRT option and the acceptor indicated
-   support for it in its response assertion by including a "jti" claim,
-   then the initiator sends an additional context token to the acceptor.
-   This token contains a backed assertion with zero certificates and an
-   empty payload, signed in a key derived from the CMK and the acceptor
-   challenge (see Section 7.7).
+   support for it by including a "jti" claim in its response, then the
+   initiator sends an additional context token to the acceptor.  This
+   token contains a backed assertion with zero certificates and an empty
+   payload, signed using the XRT key (see Section 7.7).
 
    Further, this key is used instead of the CMK for deriving the Context
    Root Key (CRK) (see Section 7.4) used for GSS-API message protection
@@ -928,7 +928,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
 4.6.4.  Acceptor XRT context token validation
 
    The acceptor MUST validate the XRT context token received from the
-   initiator by deriving the XRTK and validating the signature on the
+   initiator by deriving the XRT key and validating the signature on the
    unpacked assertion.  The acceptor SHOULD reject XRT context tokens
    with a certificate count greater than zero.  Unknown claims in the
    assertion payload MUST be ignored.  The acceptor then returns
@@ -1542,7 +1542,7 @@ Internet-Draft          BrowserID SASL & GSS-API              March 2013
    XRTK = browserid-derive-key(CMK, acceptor-jti-binary)
 
    The salt (acceptor-jti-binary) is the base64 URL decoding of the
-   acceptor JWI ID claim.
+   acceptor JWT ID claim.
 
 7.8.  GSS Pseudo-Random Function (PRF)
 

@@ -2386,9 +2386,9 @@ reference "sub:kd-CMK"
 
 \end_inset
 
-) by sending an additional token signed in a key derived from an acceptor-issued
- challenge.
- Support for the extra round-trip option is OPTIONAL.
+) by sending an additional token signed in a key derived from the CMK and
+ an acceptor-issued challenge.
+ Support for the XRT option is OPTIONAL.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2433,6 +2433,7 @@ RFC4757
 \end_inset
 
 ).
+ Otherwise, the setting of this option is implementation dependent.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2458,7 +2459,7 @@ reference "sub:response-jti"
 
 ) in the response assertion, containing a random base 64 URL encoded value.
  This value SHOULD be at least 64 bits in length.
- (The 
+ (This top-level 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2466,9 +2467,24 @@ jti
 \begin_inset Quotes erd
 \end_inset
 
- claim is distinct from any nonce that may be echoed back to the initiator.)
- The acceptor then returns GSS_C_CONTINUE_NEEDED to indicate that an additional
- context token is expected from the initiator.
+ claim is unrelated to the 
+\begin_inset Quotes eld
+\end_inset
+
+nonce
+\begin_inset Quotes erd
+\end_inset
+
+ claim and to the 
+\begin_inset Quotes eld
+\end_inset
+
+jti
+\begin_inset Quotes erd
+\end_inset
+
+ ticket identifier claim.) The acceptor then returns GSS_C_CONTINUE_NEEDED
+ to indicate that an additional context token is expected from the initiator.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2477,7 +2493,7 @@ Initiator XRT context token
 
 \begin_layout Standard
 If the initiator requested the XRT option and the acceptor indicated support
- for it in its response assertion by including a 
+ for it by including a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2485,10 +2501,10 @@ jti
 \begin_inset Quotes erd
 \end_inset
 
- claim, then the initiator sends an additional context token to the acceptor.
+ claim in its response, then the initiator sends an additional context token
+ to the acceptor.
  This token contains a backed assertion with zero certificates and an empty
- payload, signed in a key derived from the CMK and the acceptor challenge
- (see 
+ payload, signed using the XRT key (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:kd-XRTK"
@@ -2518,7 +2534,7 @@ Acceptor XRT context token validation
 
 \begin_layout Standard
 The acceptor MUST validate the XRT context token received from the initiator
- by deriving the XRTK and validating the signature on the unpacked assertion.
+ by deriving the XRT key and validating the signature on the unpacked assertion.
  The acceptor SHOULD reject XRT context tokens with a certificate count
  greater than zero.
  Unknown claims in the assertion payload MUST be ignored.
@@ -4973,7 +4989,7 @@ XRTK = browserid-derive-key(CMK, acceptor-jti-binary)
 
 \begin_layout Standard
 The salt (acceptor-jti-binary) is the base64 URL decoding of the acceptor
- JWI ID claim.
+ JWT ID claim.
 \end_layout
 
 \begin_layout Subsection

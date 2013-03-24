@@ -451,24 +451,24 @@ Normally, re-authentication tickets are only issued when the initiator authentic
       </section>
       <section title="Extra round-trip (XRT) option" anchor="sub_XRT_option">
         <t>
-The extra round-trip (XRT) option adds an additional round trip to the context token exchange. It allows the initiator to prove knowledge of the Context Master Key (CMK) (see  <xref target="sub_kd_CMK"/>) by sending an additional token signed in a key derived from an acceptor-issued challenge. Support for the extra round-trip option is OPTIONAL.</t>
+The extra round-trip (XRT) option adds an additional round trip to the context token exchange. It allows the initiator to prove knowledge of the Context Master Key (CMK) (see  <xref target="sub_kd_CMK"/>) by sending an additional token signed in a key derived from the CMK and an acceptor-issued challenge. Support for the XRT option is OPTIONAL.</t>
         <section title="Initiator XRT advertisement" anchor="d1e1661">
           <t>
-The initiator advertises to the acceptor that it supports the XRT option by sending in its request assertion an “opts” claim (see  <xref target="sub_request_opts"/>) containing the “xrt” value. This option SHOULD be set if the caller requested GSS_C_DCE_STYLE (see <xref target="RFC4757"/>).</t>
+The initiator advertises to the acceptor that it supports the XRT option by sending in its request assertion an “opts” claim (see  <xref target="sub_request_opts"/>) containing the “xrt” value. This option SHOULD be set if the caller requested GSS_C_DCE_STYLE (see <xref target="RFC4757"/>). Otherwise, the setting of this option is implementation dependent.</t>
         </section>
         <section title="Acceptor XRT advertisement" anchor="d1e1679">
           <t>
-If the initiator advertised support for the XRT option, and the acceptor also supports this option, the acceptor sends a “jti” claim (see  <xref target="sub_response_jti"/>) in the response assertion, containing a random base 64 URL encoded value. This value SHOULD be at least 64 bits in length. (The “jti” claim is distinct from any nonce that may be echoed back to the initiator.) The acceptor then returns GSS_C_CONTINUE_NEEDED to indicate that an additional context token is expected from the initiator.</t>
+If the initiator advertised support for the XRT option, and the acceptor also supports this option, the acceptor sends a “jti” claim (see  <xref target="sub_response_jti"/>) in the response assertion, containing a random base 64 URL encoded value. This value SHOULD be at least 64 bits in length. (This top-level “jti” claim is unrelated to the “nonce” claim and to the “jti” ticket identifier claim.) The acceptor then returns GSS_C_CONTINUE_NEEDED to indicate that an additional context token is expected from the initiator.</t>
         </section>
         <section title="Initiator XRT context token" anchor="d1e1691">
           <t>
-If the initiator requested the XRT option and the acceptor indicated support for it in its response assertion by including a “jti” claim, then the initiator sends an additional context token to the acceptor. This token contains a backed assertion with zero certificates and an empty payload, signed in a key derived from the CMK and the acceptor challenge (see  <xref target="sub_kd_XRTK"/>).</t>
+If the initiator requested the XRT option and the acceptor indicated support for it by including a “jti” claim in its response, then the initiator sends an additional context token to the acceptor. This token contains a backed assertion with zero certificates and an empty payload, signed using the XRT key (see  <xref target="sub_kd_XRTK"/>).</t>
           <t>
 Further, this key is used instead of the CMK for deriving the Context Root Key (CRK) (see  <xref target="sub_kd_CRK"/>) used for GSS-API message protection services. In the event that the initial context token was replayed, this prevents key reuse.</t>
         </section>
         <section title="Acceptor XRT context token validation" anchor="d1e1710">
           <t>
-The acceptor MUST validate the XRT context token received from the initiator by deriving the XRTK and validating the signature on the unpacked assertion. The acceptor SHOULD reject XRT context tokens with a certificate count greater than zero. Unknown claims in the assertion payload MUST be ignored. The acceptor then returns GSS_C_COMPLETE to the caller.</t>
+The acceptor MUST validate the XRT context token received from the initiator by deriving the XRT key and validating the signature on the unpacked assertion. The acceptor SHOULD reject XRT context tokens with a certificate count greater than zero. Unknown claims in the assertion payload MUST be ignored. The acceptor then returns GSS_C_COMPLETE to the caller.</t>
           <t>
 The acceptor MAY avoid using a replay cache when this option is in effect.</t>
         </section>
@@ -971,7 +971,7 @@ The Extra Round Trip Key (XRTK) is used to sign the extra round trip token, and 
         <t>
 XRTK = browserid-derive-key(CMK, acceptor-jti-binary)</t>
         <t>
-The salt (acceptor-jti-binary) is the base64 URL decoding of the acceptor JWI ID claim.</t>
+The salt (acceptor-jti-binary) is the base64 URL decoding of the acceptor JWT ID claim.</t>
       </section>
       <section title="GSS Pseudo-Random Function (PRF)" anchor="sub_GSS_PRF">
         <t>
