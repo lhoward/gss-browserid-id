@@ -1104,7 +1104,12 @@ status open
 
 \begin_layout Plain Layout
 
- name-char = char-normal / char-escaped name-string = 1*name-char
+ name-char = char-normal / char-escaped
+\end_layout
+
+\begin_layout Plain Layout
+
+ name-string = 1*name-char
 \end_layout
 
 \begin_layout Plain Layout
@@ -1604,6 +1609,10 @@ The token ID has a human-readable ASCII encoding for the benefit of pure
 \end_layout
 
 \begin_layout Subsection
+Base protocol
+\end_layout
+
+\begin_layout Subsubsection
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Initial-context-token"
@@ -1791,7 +1800,7 @@ The call to GSS_Init_sec_context() returns GSS_C_CONTINUE_NEEDED to indicate
  that a subsequent context token from the acceptor is expected.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Acceptor-context-token"
@@ -1883,7 +1892,7 @@ reference "sub:kd-CRK"
 ttribute().
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Initiator-context-completion"
