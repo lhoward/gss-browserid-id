@@ -1031,7 +1031,7 @@ GSS_C_NT_
  in the GSS-API.
  Names may also have attributes 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC6680
@@ -2398,6 +2398,19 @@ reference "sub:kd-CMK"
 ) by sending an additional token signed in a key derived from the CMK and
  an acceptor-issued challenge.
  Support for the XRT option is OPTIONAL.
+ (Note that the term 
+\begin_inset Quotes eld
+\end_inset
+
+extra round trip
+\begin_inset Quotes erd
+\end_inset
+
+ is something of a misnomer; it only adds an additional leg to the context
+ token exchange.
+ It is anticipated however that this mechanism will most commonly be used
+ with pseudo-mechanisms or application protocols that require an even number
+ of legs.)
 \end_layout
 
 \begin_layout Subsubsection
@@ -2433,7 +2446,7 @@ xrt
  This option SHOULD be set if the caller requested GSS_C_DCE_STYLE (see
  
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC4757
@@ -2692,8 +2705,12 @@ Request (initiator/UA) assertion
 These claims are included in the assertion sent to the acceptor and are
  authenticated by the initiator's private key and certificate chain (directly,
  or in the case of re-authentication assertions, transitively).
- Here is an example assertion containing Elliptic Curve Diffie-Hellman parameter
-s, along with a nonce indicating that mutual authentication is desired:
+ Claims not specified here MUST be ignored by the acceptor.
+\end_layout
+
+\begin_layout Standard
+Here is an example assertion containing Elliptic Curve Diffie-Hellman parameters
+, along with a nonce indicating that mutual authentication is desired:
 \end_layout
 
 \begin_layout Standard
@@ -3216,6 +3233,7 @@ aud
 \end_inset
 
 ) MUST be rejected to prevent reflection attacks.
+ Claims not specified here MUST be ignored by the initiator.
 \end_layout
 
 \begin_layout Standard
@@ -4796,6 +4814,15 @@ Re-authentication failured
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+XRT assertion
+\end_layout
+
+\begin_layout Standard
+No claims are presently defined for the extra round trip assertion.
+ Unknown claims MUST be ignored by the acceptor.
 \end_layout
 
 \begin_layout Section
