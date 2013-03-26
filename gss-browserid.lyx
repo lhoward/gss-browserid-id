@@ -2525,8 +2525,9 @@ jti
 
  claim in its response, then the initiator sends an additional context token
  to the acceptor.
- This token contains a backed assertion with zero certificates and an empty
- payload, signed using the XRT key (see 
+ This token contains the initiator context token ID concatenated with a
+ backed assertion with zero certificates and an empty payload, signed using
+ the XRT key (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:kd-XRTK"
@@ -2555,8 +2556,9 @@ Acceptor XRT context token validation
 \end_layout
 
 \begin_layout Standard
-The acceptor MUST validate the XRT context token received from the initiator
- by deriving the XRT key and validating the signature on the unpacked assertion.
+The acceptor MUST validate the XRT context token by first validating the
+ context token ID, and then verifying the assertion signature with the XRT
+ key.
  The acceptor SHOULD reject XRT context tokens with a certificate count
  greater than zero.
  Unknown claims in the assertion payload MUST be ignored.
@@ -2565,6 +2567,25 @@ The acceptor MUST validate the XRT context token received from the initiator
 
 \begin_layout Standard
 The acceptor MAY avoid using a replay cache when this option is in effect.
+\end_layout
+
+\begin_layout Subsubsection
+Interaction with message protection services
+\end_layout
+
+\begin_layout Standard
+When the XRT option is negotiated, per-message tokens MUST have the AcceptorSubk
+ey flag set (see 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4121
+\end_layout
+
+\end_inset
+
+ Section 4.2.2).
 \end_layout
 
 \begin_layout Section
@@ -3087,26 +3108,16 @@ opts
 This contains a JSON array of string values indicating various protocol
  options that are supported by the initiator.
  Unknown options MUST be ignored by the acceptor.
- This document defines only one such extension:
+ This document defines the following extensions:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="2" columns="3">
+<lyxtabular version="3" rows="3" columns="2">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Section
-\end_layout
-
-\end_inset
-</cell>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -3127,22 +3138,7 @@ Description
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:XRT-option"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -3151,11 +3147,48 @@ xrt
 
 \end_inset
 </cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+The initiator supports the extra round trip option (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:XRT-option"
+
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+dce
+\end_layout
+
+\end_inset
+</cell>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-The initiator supports the extra round trip option
+The initiator requested GSS_C_DCE_STYLE (see 
+\begin_inset Flex BibXML
+status collapsed
+
+\begin_layout Plain Layout
+RFC4767
+\end_layout
+
+\end_inset
+
+)
 \end_layout
 
 \end_inset
