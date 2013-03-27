@@ -2527,7 +2527,7 @@ jti
  to the acceptor.
  This token contains the initiator context token ID concatenated with a
  backed assertion with zero certificates and an empty payload, signed using
- the XRT key (see 
+ the XRTK (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:kd-XRTK"
@@ -2537,28 +2537,13 @@ reference "sub:kd-XRTK"
 ).
 \end_layout
 
-\begin_layout Standard
-Further, this key is used instead of the CMK for deriving the Context Root
- Key (CRK) (see 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:kd-CRK"
-
-\end_inset
-
-) used for GSS-API message protection services.
- In the event that the initial context token was replayed, this prevents
- key reuse.
-\end_layout
-
 \begin_layout Subsubsection
 Acceptor XRT context token validation
 \end_layout
 
 \begin_layout Standard
 The acceptor MUST validate the XRT context token by first validating the
- context token ID, and then verifying the assertion signature with the XRT
- key.
+ context token ID, and then verifying the assertion signature with the XRTK.
  The acceptor SHOULD reject XRT context tokens with a certificate count
  greater than zero.
  Unknown claims in the assertion payload MUST be ignored.
@@ -2574,8 +2559,16 @@ Interaction with message protection services
 \end_layout
 
 \begin_layout Standard
-When the XRT option is negotiated, per-message tokens MUST have the AcceptorSubk
-ey flag set (see 
+When the XRT option is in effect, the XRTK is used instead of the CMK to
+ derive the Context Root Key (CRK) (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:kd-CRK"
+
+\end_inset
+
+).
+ Per-message tokens MUST have the AcceptorSubkey flag set (see 
 \begin_inset Flex EntityXRef
 status collapsed
 
