@@ -2073,8 +2073,8 @@ reference "sub:GSS-PRF"
 \end_inset
 
 ) with an input of GSS_C_PRF_KEY_FULL and "gss-browserid-negoex-initiator"
- or "gss-browserid-negoex-acceptor", depending on the party generating the
- signature.
+ or "gss-browserid-negoex-acceptor" (without quotes), depending on the party
+ generating the signature.
 \end_layout
 
 \begin_layout Standard
@@ -2106,6 +2106,11 @@ RFC3961
 There is currently no initiator-sent metadata defined and acceptors should
  ignore any sent.
  The metadata is advisory and the initiator is free to ignore it.
+\end_layout
+
+\begin_layout Standard
+[XXX we should have a way for to suppress this when the initiator is performing
+ re-authentication]
 \end_layout
 
 \begin_layout Subsection
@@ -2261,7 +2266,7 @@ reference "sub:OID Registry"
 
 \end_inset
 
-; HS256 is required by this specification).
+; HS256 is specified for the encryption types referenced in this document).
 \end_layout
 
 \begin_layout Enumerate
@@ -2328,8 +2333,8 @@ reference "sub:kd-CRK"
 \begin_layout Enumerate
 The acceptor generates a response and signs and returns it.
  Note that, unlike the certificate-based mutual authentication case, the
- nonce SHOULD NOT be echoed back as the ASK (and thus the RRK) is cryptographica
-lly bound to the nonce.
+ nonce need not be echoed back as the ASK (and thus the RRK) is cryptographicall
+y bound to the nonce.
 \end_layout
 
 \begin_layout Standard
@@ -2443,8 +2448,7 @@ xrt
 \end_inset
 
  value.
- This option SHOULD be set if the caller requested GSS_C_DCE_STYLE (see
- 
+ This option MUST be set if the caller requested GSS_C_DCE_STYLE (see 
 \begin_inset Flex EntityXRef
 status open
 
@@ -2497,7 +2501,7 @@ nonce
 \begin_inset Quotes erd
 \end_inset
 
- claim and to the 
+ claim or to the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2570,7 +2574,7 @@ reference "sub:kd-CRK"
 ).
  Per-message tokens MUST have the AcceptorSubkey flag set (see 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC4121
@@ -2701,8 +2705,8 @@ Replay detection
 \end_layout
 
 \begin_layout Standard
-The acceptor SHOULD maintain a cache of received assertions in order to
- guard against replay attacks.
+If the XRT option is not in effect, the acceptor SHOULD maintain a cache
+ of received assertions in order to guard against replay attacks.
  GSS_C_REPLAY_FLAG MUST NOT be returned if the implementation does not support
  replay detection through the use of a replay cache or the XRT option.
 \end_layout
@@ -2774,7 +2778,7 @@ status open
 
 \begin_layout Plain Layout
 
-     "aud": "urn:x-gss:imap/mail.ietf.org"
+     "aud": "urn:x-gss:imap/mail.example.com"
 \end_layout
 
 \begin_layout Plain Layout
@@ -3042,7 +3046,6 @@ This is a random quantity of at least 64 bits, base 64 URL encoded, which
  agreed key is not used to sign the response assertion.
  This claim is REQUIRED if mutual authentication is desired and the assertion
  is signed using a certificate, or if re-authentication is being performed.
- Otherwise it MUST be ignored.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3106,7 +3109,7 @@ This contains a JSON array of string values indicating various protocol
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="2">
+<lyxtabular version="3" rows="4" columns="2">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -3144,7 +3147,7 @@ xrt
 \begin_inset Text
 
 \begin_layout Plain Layout
-The initiator supports the extra round trip option (see 
+The initiator supports the extra round trip option (see Section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:XRT-option"
@@ -3158,7 +3161,7 @@ reference "sub:XRT-option"
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -3167,21 +3170,51 @@ dce
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 The initiator requested GSS_C_DCE_STYLE (see 
-\begin_inset Flex BibXML
-status collapsed
+\begin_inset Flex EntityXRef
+status open
 
 \begin_layout Plain Layout
-RFC4767
+RFC4757
 \end_layout
 
 \end_inset
 
-)
+ Section 7.1)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ify
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+The initiator requested GSS_C_IDENTIFY_FLAG (see 
+\begin_inset Flex EntityXRef
+status open
+
+\begin_layout Plain Layout
+RFC4757
+\end_layout
+
+\end_inset
+
+ Section 7.1)
 \end_layout
 
 \end_inset
@@ -3207,8 +3240,7 @@ The response assertion is sent from the acceptor to the initiator to provide
  (It is encoded as a backed assertion in order to provide future support
  for mutual authentication using native BrowserID certificates.
  Such support is not specified here; implementations of this version of
- the specification SHOULD reject response assertions with BrowserID certificates.
-)
+ the specification MAY reject response assertions with BrowserID certificates.)
 \end_layout
 
 \begin_layout Standard
@@ -3528,12 +3560,18 @@ jti
 This contains a base64 URL encoded random value of at least 64 bits that
  is used to uniquely identify the acceptor response, in the case that the
  extra round trip option is used.
- It MUST be ignored if this option is not in effect.
  It SHOULD not be present unless the initiator requested the extra round
  trip option.
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:response-gss-maj"
+
+\end_inset
+
+
 \begin_inset Quotes eld
 \end_inset
 
@@ -3551,6 +3589,13 @@ This contains a GSS major status code represented as a number.
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:response-gss-min"
+
+\end_inset
+
+
 \begin_inset Quotes eld
 \end_inset
 
@@ -4944,19 +4989,19 @@ RFC4121
 
  message protection services, e.g.
  GSS_Wrap() and GSS_Get_MIC().
- If the extra round-trip option is not used, it is derived as follows:
+ If the extra round-trip option is in effect, it is derived as follows:
 \end_layout
 
 \begin_layout Standard
-CRK = random-to-key(browserid-derive-key(CMK, "CRK"))
+CRK = random-to-key(browserid-derive-key(XRTK, "CRK"))
 \end_layout
 
 \begin_layout Standard
-Otherwise, the XRTK key is used:
+Otherwise, the CMK is used:
 \end_layout
 
 \begin_layout Standard
-CRK = random-to-key(browserid-derive-key(XRTK, 
+CRK = random-to-key(browserid-derive-key(CMK, 
 \begin_inset Quotes eld
 \end_inset
 
@@ -6632,6 +6677,24 @@ Host certificates for mutual authentication
 \begin_layout Standard
 Allowing a match on only the DNS subjectAltName in an acceptor's X.509 certificat
 e permits different services on the same host to impersonate each other.
+\end_layout
+
+\begin_layout Subsection
+Error statuses
+\end_layout
+
+\begin_layout Standard
+Returning rich error information in the clear (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:response-gss-min"
+
+\end_inset
+
+) may leak information.
+ Implementations may squash status codes and/or avoid returning minor statuses
+ entirely.
+ 
 \end_layout
 
 \begin_layout Section
