@@ -48,7 +48,7 @@
         <email>nico@cryptonector.com</email>
       </address>
     </author>
-    <date month="March" year="2013"/>
+    <date month="April" year="2013"/>
     <area>
 Security Area
 </area>
@@ -149,7 +149,7 @@ The following ABNF defines the 'name' rule that names of this type must match. [
           <t>
 </t>
           <t>
-            <figure suppress-title="" align="">
+            <figure suppress-title="true" align="center">
               <artwork> char-normal = %x00-2E/%x30-3F/%x41-5B/%x5D-FF
  char-escaped = "\" %x2F / "\" %x40 / "\" %x5C
  name-char = char-normal / char-escaped
@@ -194,7 +194,7 @@ A GSS-API service name is encoded into a BrowserID audience URL with the followi
         <t>
 </t>
         <t>
-          <figure suppress-title="" align="">
+          <figure suppress-title="true" align="center">
             <artwork> audience = "urn:x-gss:" spn</artwork>
           </figure>
         </t>
@@ -280,7 +280,7 @@ The initial context token is framed per Section 1 of <xref target="RFC2743"/>:</
           <t>
 </t>
           <t>
-            <figure suppress-title="" align="">
+            <figure suppress-title="true" align="center">
               <artwork> GSS-API DEFINITIONS ::=         
      BEGIN
  
@@ -526,7 +526,7 @@ Here is an example assertion containing Elliptic Curve Diffie-Hellman parameters
         <t>
 </t>
         <t>
-          <figure suppress-title="" align="">
+          <figure suppress-title="true" align="center">
             <artwork> { 
      "exp": 1360158396188,
      "ecdh": {
@@ -620,7 +620,7 @@ Here is an example response assertion:</t>
         <t>
 </t>
         <t>
-          <figure suppress-title="" align="">
+          <figure suppress-title="true" align="center">
             <artwork>{
     "exp": 1362960258000,
     "nonce": "bbqT10Gyx3s",
@@ -1005,7 +1005,7 @@ Suppose a mail user agent for the user lukeh@lukktone.com wishes to authenticate
       <t>
 </t>
       <t>
-        <figure suppress-title="" align="">
+        <figure suppress-title="true" align="center">
           <artwork>C: &lt;connects to IMAP port&gt;
 S: * OK
 C: C1 CAPABILITY
@@ -1129,7 +1129,7 @@ Unpacking the mail user agent's AUTHENTICATE message reveals the following:</t>
       <t>
 </t>
       <t>
-        <figure suppress-title="" align="">
+        <figure suppress-title="true" align="center">
           <artwork>n,,c,eyJhbGciOiJSUzI1NiJ9.eyJwdWJsaWMta2V5Ijp7ImFsZ29yaXRob
 SI6IkRTIiwieSI6IjM5MTNlODgyZDhjMzVkMjJmNmQ0MDY5Y2U2MDBkYmNj
 YjM5NGFjYWFhYzY0OWZkN2Y5ZmNkNmM0MTI0NmY1NjI5MGVmMGNjMzc0NzZ
@@ -1172,7 +1172,7 @@ The initial “n,,” is the GS2 header (indicating that there are no channel bi
       <t>
 </t>
       <t>
-        <figure suppress-title="" align="">
+        <figure suppress-title="true" align="center">
           <artwork>{
     "public-key": {
         "algorithm": "DS",
@@ -1210,7 +1210,7 @@ and assertion:</t>
       <t>
 </t>
       <t>
-        <figure suppress-title="" align="">
+        <figure suppress-title="true" align="center">
           <artwork>{
     "nonce": "h5P4KrG8yng",
     "ecdh": {
@@ -1231,7 +1231,7 @@ Turning to the response backed assertion sent from the IMAP server to the mail u
       <t>
 </t>
       <t>
-        <figure suppress-title="" align="">
+        <figure suppress-title="true" align="center">
           <artwork>eyJhbGciOiJSUzI1NiIsIng1YyI6WyJNSUlEempDQ0FyYWdBd0lCQWdJQkJ
 6QU5CZ2txaGtpRzl3MEJBUVVGQURCZE1Rc3dDUVlEVlFRR0V3SkJWVEVlTU
 J3R0ExVUVDZ3dWVUVGRVRDQlRiMlowZDJGeVpTQlFkSGtnVEhSa01TNHdMQ
@@ -1281,7 +1281,7 @@ Here we show the JWT header for the response assertion, as it includes an ASN.1 
       <t>
 </t>
       <t>
-        <figure suppress-title="" align="">
+        <figure suppress-title="true" align="center">
           <artwork>{
     "alg": "RS256",
     "x5c": [
@@ -1320,7 +1320,7 @@ The assertion payload is below (again, for clarity the actual JWT signature has 
       <t>
 </t>
       <t>
-        <figure suppress-title="" align="">
+        <figure suppress-title="true" align="center">
           <artwork>{
     "tkt": {
         "jti": "aeay0GJizDx79Ag--WL-vw6Y9BXxRuC1XsZxry51SUI",
