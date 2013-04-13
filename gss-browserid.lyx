@@ -6907,18 +6907,6 @@ RFC5280
 \end_layout
 
 \begin_layout Subsection
-JavaScript
-\end_layout
-
-\begin_layout Standard
-There are security issues associated with the use of JavaScript for cryptography.
-\end_layout
-
-\begin_layout RevisionRemark
-Expand!
-\end_layout
-
-\begin_layout Subsection
 Host certificates for mutual authentication
 \end_layout
 
