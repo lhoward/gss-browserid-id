@@ -282,7 +282,7 @@ A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol
 status open
 
 \begin_layout Plain Layout
-draft-howard-gss-browserid-01.txt
+draft-howard-gss-browserid-02.txt
 \end_layout
 
 \end_inset
@@ -1076,9 +1076,10 @@ RFC4120
 \begin_layout Standard
 The following ABNF defines the 'name' rule that names of this type must
  match.
- [XXX Should we reference RFC2822 here? The Mozilla BrowserID docs sure
- don't...
- -Nico]
+\end_layout
+
+\begin_layout RevisionRemark
+Should we reference RFC2822 here? The Mozilla BrowserID docs sure don't.
 \end_layout
 
 \begin_layout Standard
@@ -1226,6 +1227,22 @@ the <hostname> becomes the second component (service-host)
 the <domain> name becomes the third component (service-specific)
 \end_layout
 
+\begin_layout Subsubsection
+GSS_C_NT_ANONYMOUS
+\end_layout
+
+\begin_layout Standard
+If the initiator principal's leaf certificate does not contain a 
+\begin_inset Quotes eld
+\end_inset
+
+principal
+\begin_inset Quotes erd
+\end_inset
+
+ claim, then the initiator name has this name type.
+\end_layout
+
 \begin_layout Subsection
 \begin_inset CommandInset label
 LatexCommand label
@@ -1256,8 +1273,8 @@ status open
 
 \end_layout
 
-\begin_layout Standard
-[XXX can we request assignment of a URN?]
+\begin_layout RevisionRemark
+Can we request assignment of a URN?
 \end_layout
 
 \begin_layout Subsection
@@ -1291,6 +1308,11 @@ RFC2743
 \end_inset
 
 .
+\end_layout
+
+\begin_layout RevisionRemark
+Do we wish to say anything about the exported composite name token format?
+ It should be an encoding of the initiator's leaf certificate.
 \end_layout
 
 \begin_layout Subsection
@@ -1475,7 +1497,7 @@ Acceptor context token
 \begin_inset Text
 
 \begin_layout Plain Layout
-TBD
+
 \end_layout
 
 \end_inset
@@ -1745,7 +1767,7 @@ RFC4121
 The innerToken consists of the initiator context token ID concatenated with
  a backed assertion for the audience corresponding to the target name passed
  into GSS_Init_sec_context().
- In addition, the assertion may contain the additional claims, which are
+ In addition, the assertion MAY contain the additional claims, which are
  described later in this document:
 \end_layout
 
@@ -1824,7 +1846,7 @@ The acceptor then verifies the backed identity assertion per the BrowserID
  The acceptor then verifies the channel binding token, if present, and any
  other GSS-specific claims in the assertion.
  In case of failure, a response assertion containing GSS major and minor
- status codes is returned.
+ status codes SHOULD be returned.
 \end_layout
 
 \begin_layout Standard
@@ -1858,24 +1880,34 @@ reference "sub:kd-RRK"
  The acceptor then generates a response assertion containing its ECDH public
  key and context expiration time (note that the context expiration time
  is a purely informational quantity).
- The response assertion is signed using the RP Response Key (RRK) unless
- mutual authentication is desired, in which case it may be signed in the
- acceptor's private key (see 
+ The response assertion will be:
+\end_layout
+
+\begin_layout Itemize
+signed in the acceptor's private key, if mutual authentication was requested,
+ and the acceptor has a key (see
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Extensions-for-mutual"
 
 \end_inset
 
-).
+);
+\end_layout
+
+\begin_layout Itemize
+signed in the RRK, if the encryption type for the selected mechanism is
+ not ENCTYPE_NULL;
+\end_layout
+
+\begin_layout Itemize
+not signed in all other cases.
 \end_layout
 
 \begin_layout Standard
 The response assertion is encoded as a backed assertion, prefixed with the
  acceptor context token ID.
- It will typically have a certificate count of zero, because the signing
- key is the symmetric RRK, or because an X.509 certificate is included directly
- in the assertion's JWT header.
+ It SHALL have a certificate count of zero.
 \end_layout
 
 \begin_layout Standard
@@ -1888,8 +1920,14 @@ reference "sub:kd-CRK"
 
 ) is derived from the ECDH shared secret (if present) and GSS_S_COMPLETE
  is returned, along with the initiator name from the verified assertion.
- Other assertion/certificate properties MAY be made available via GSS_Get_name_a
-ttribute().
+ If the CRK is available, the sequence_state (GSS_C_SEQUENCE_FLAG), conf_avail
+ (GSS_C_CONF_FLAG) and integ_avail (GSS_C_INTEG_FLAG) security context flags
+ are set to TRUE.
+\end_layout
+
+\begin_layout Standard
+Other assertion/certificate properties MAY be made available via GSS_Get_name_at
+tribute().
 \end_layout
 
 \begin_layout Subsubsection
@@ -1911,14 +1949,16 @@ Upon receiving the acceptor context token, the initiator unpacks the response
 
 \begin_layout Standard
 The initiator sets the context expiry time with that received in the response
- assertion, if present; otherwise, the context expires when the user's certifica
-te expires.
+ assertion, if present; otherwise, the context expires when the initiator
+ principal's certificate expires.
 \end_layout
 
 \begin_layout Standard
 The CRK is derived from the ECDH shared secret and GSS_S_COMPLETE is returned
- to indicate the user is authenticated and the context is ready for use.
+ to indicate the initiator is authenticated and the context is ready for
+ use.
  No output token is emitted.
+ Security context flags are set as for the acceptor context.
 \end_layout
 
 \begin_layout Subsection
@@ -1933,8 +1973,8 @@ Mutual authentication
 
 \begin_layout Standard
 Mutual authentication allows the acceptor to be authenticated to the initiator.
- The mechanism SHALL set the returned mutual_state flag (GSS_C_MUTUAL_FLAG)
- to TRUE if mutual authentication succeeded.
+ The mechanism SHALL set the mutual_state security context flag (GSS_C_MUTUAL_FL
+AG) to TRUE if mutual authentication succeeded.
  Support for mutual authentication is OPTIONAL.
 \end_layout
 
@@ -1973,9 +2013,9 @@ If the acceptor has a private key and certificate available and received
 
 \begin_layout Standard
 While the response is a backed assertion, in order to take advantage of
- existing keying infrastructures BrowserID certificates SHOULD NOT be included
+ existing keying infrastructures BrowserID certificates MUST NOT be included
  in the backed assertion.
- Instead, an X.509 certificate SHOULD be included as a value for the "x5c"
+ Rather, an X.509 certificate SHALL be included as a value for the "x5c"
  header property in the assertion (see 
 \begin_inset Flex EntityXRef
 status open
@@ -1987,10 +2027,34 @@ I-D.ietf-jose-json-web-signature
 \end_inset
 
  4.1.6).
+ The certificate MUST be valid for signing; if it has any EKUs it MUST have
+ either the id-kp-serverAuth 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC5280
 \end_layout
 
-\begin_layout Standard
-[XXX should we allow both BrowserID and X.509 certificates?]
+\end_inset
+
+ or id-kp-browserIDServerAuth (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:OID Registry"
+
+\end_inset
+
+) EKU.
+\end_layout
+
+\begin_layout RevisionRemark
+We don't want to burden the initiator with having to implement both methods
+ of authenticating acceptors, and given that initiators and acceptors both
+ will generally need a PKIX implementation, and given that acceptors will
+ need a PKIX credential for TLS, and that there is as yet no standard protocol
+ for automatic provisioning of BrowserID credentials for servers, using
+ PKIX to authenticate the server seems to be the easiest way to go.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2000,25 +2064,15 @@ Initiator mutual authentication context completion
 \begin_layout Standard
 The initiator verifies the assertion signature and that the nonce matches,
  and validates the certificate chain.
- For X.509 certificate chains, trust anchors SHOULD be configurable both
- system-wide and specifically for the BrowserID mechanism.
+ Trust anchors SHOULD be configurable both system-wide and specifically
+ for the BrowserID mechanism.
 \end_layout
 
 \begin_layout Standard
-If X.509 certificates are used, then either the audience URI must be present
- in the URI subjectAltName, or the host component must be present as a value
- for the DNS subjectAltName or as the least significant Common Name RDN.
-\end_layout
-
-\begin_layout Standard
-If BrowserID certificates are used, then either the audience URI must match
- the "uri" property of the "principal" object in the certificate, or the
- host component must match the "hostname" property.
-\end_layout
-
-\begin_layout Standard
-[XXX when using X.509 certificates, do we need to say anything about certificate
- usage?]
+Either the audience URI must be present in the URI subjectAltName, or the
+ host component must be present as a value for the DNS subjectAltName or
+ as the least significant Common Name RDN (if policy requires only the acceptor
+ host name to be authenticated).
 \end_layout
 
 \begin_layout Subsubsection
@@ -2061,7 +2115,7 @@ M,
 
 \begin_layout Standard
 Upon receiving this, the initiator MAY validate the certificate or fingerprint,
- or present either to the user before committing to authenticate.
+ or present either to the initiator before committing to authenticate.
 \end_layout
 
 \begin_layout Standard
@@ -2108,9 +2162,9 @@ There is currently no initiator-sent metadata defined and acceptors should
  The metadata is advisory and the initiator is free to ignore it.
 \end_layout
 
-\begin_layout Standard
-[XXX we should have a way for to suppress this when the initiator is performing
- re-authentication]
+\begin_layout RevisionRemark
+We should have a way for to suppress this when the initiator is performing
+ re-authentication
 \end_layout
 
 \begin_layout Subsection
@@ -2137,7 +2191,7 @@ reference "sub:kd-ARK"
 
 \end_inset
 
-), rather than a user's BrowserID certificate.
+), rather than a initiator principal's BrowserID certificate.
 \end_layout
 
 \begin_layout Standard
@@ -2286,6 +2340,14 @@ reference "sub:kd-ASK"
 ) which is used to verify the response and derive the CRK.
 \end_layout
 
+\begin_layout RevisionRemark
+Question: do we want an option to do an ECDH session key exchange in the
+ fast re-auth case? If we had a GSS req_flag for requesting perfect forward
+ security (PFS) then we'd want to have this option, no? Although, of course,
+ req_flags are optional.
+ Still.
+\end_layout
+
 \begin_layout Subsubsection
 Acceptor re-authentication context token
 \end_layout
@@ -2402,8 +2464,14 @@ reference "sub:kd-CMK"
 
 ) by sending an additional token signed in a key derived from the CMK and
  an acceptor-issued challenge.
- Support for the XRT option is OPTIONAL.
- (Note that the term 
+ Support for the XRT option is OPTIONAL in the acceptor and REQUIRED in
+ the initiator.
+ The initiator is allowed to not request it, but MUST perform XRT if the
+ acceptor requires it.
+\end_layout
+
+\begin_layout Standard
+(Note that the term 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2423,7 +2491,7 @@ Initiator XRT advertisement
 \end_layout
 
 \begin_layout Standard
-The initiator advertises to the acceptor that it supports the XRT option
+The initiator may advertise to the acceptor that it supports the XRT option
  by sending in its request assertion an 
 \begin_inset Quotes eld
 \end_inset
@@ -2467,8 +2535,8 @@ Acceptor XRT advertisement
 \end_layout
 
 \begin_layout Standard
-If the initiator advertised support for the XRT option, and the acceptor
- also supports this option, the acceptor sends a 
+If the initiator advertised support for the XRT option and the acceptor
+ also supports or requires this option, the acceptor sends a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2605,13 +2673,13 @@ The expiry and, if present, issued-at and not-before times of all elements
 \end_layout
 
 \begin_layout Standard
-The GSS context lifetime SHOULD NOT exceed the lifetime of the user's certificat
-e.
+The GSS context lifetime SHOULD NOT exceed the lifetime of the initiator
+ principal's certificate.
 \end_layout
 
 \begin_layout Standard
 The lifetime of a re-authentication ticket SHOULD NOT exceed the lifetime
- of the user's certificate.
+ of the initiator principal's certificate.
  The acceptor MUST validate the ticket expiry time when performing re-authentica
 tion.
 \end_layout
@@ -2701,14 +2769,73 @@ s must be signed with a symmetric key.
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Replay-detection"
+
+\end_inset
+
 Replay detection
 \end_layout
 
 \begin_layout Standard
 If the XRT option is not in effect, the acceptor SHOULD maintain a cache
  of received assertions in order to guard against replay attacks.
- GSS_C_REPLAY_FLAG MUST NOT be returned if the implementation does not support
- replay detection through the use of a replay cache or the XRT option.
+\end_layout
+
+\begin_layout Subsection
+Return flags
+\end_layout
+
+\begin_layout Standard
+The initiator and acceptor should set the returned flags as follows:
+\end_layout
+
+\begin_layout Description
+deleg_state never set
+\end_layout
+
+\begin_layout Description
+mutual_state set if the initiator requested mutual authentication and mutual
+ authentication succeeded
+\end_layout
+
+\begin_layout Description
+replay_det_state set if message protection services are available
+\end_layout
+
+\begin_layout Description
+sequence_state set if message protection services are available
+\end_layout
+
+\begin_layout Description
+anon_state set if the initiator principal's leaf certificate lacks a 
+\begin_inset Quotes eld
+\end_inset
+
+principal
+\begin_inset Quotes erd
+\end_inset
+
+ claim
+\end_layout
+
+\begin_layout Description
+trans_state set if the implementation supports importing and exporting of
+ security contexts
+\end_layout
+
+\begin_layout Description
+prot_ready_state may be set when or after the RP Response Token is produced
+ or consumed
+\end_layout
+
+\begin_layout Description
+conf_avail set if message protection services are available
+\end_layout
+
+\begin_layout Description
+integ_avail set if message protection services are available
 \end_layout
 
 \begin_layout Section
@@ -2824,6 +2951,19 @@ reference "sub:Audience-encoding"
 
 ).
  This claim is REQUIRED.
+\end_layout
+
+\begin_layout RevisionRemark
+Note that if the initiator application specified a target_name of GSS_C_NO_NAME
+ then we could not send this.
+ And if the initiator wanted mutual authentication then we could find out
+ the acceptor's name and provide it via GSS_Inquire_context().
+ This is only really useful and secure with mechanisms like this one where
+ the initiator credential is based on a public/private key pair and either
+ we use key agreement and per-message tokens or channel binding to a secure
+ channel.
+ This really should [have] be[en] expalined in RFC2743...
+ And since we'll be updating it regarding a channel bound flag...
 \end_layout
 
 \begin_layout Subsubsection
@@ -2983,11 +3123,11 @@ name "sub:request-cbt"
 \begin_inset Quotes eld
 \end_inset
 
-cbt
+cb
 \begin_inset Quotes erd
 \end_inset
 
- (Channel binding token)
+ (Channel binding)
 \end_layout
 
 \begin_layout Standard
@@ -3008,26 +3148,6 @@ RFC5929
  of the channel bindings passed to GSS_Init_sec_context() or GSS_Accept_sec_cont
 ext().
  This claim is OPTIONAL.
-\end_layout
-
-\begin_layout Standard
-[XXX should this be 
-\begin_inset Quotes eld
-\end_inset
-
-cb
-\begin_inset Quotes erd
-\end_inset
-
- instead of 
-\begin_inset Quotes eld
-\end_inset
-
-cbt
-\begin_inset Quotes erd
-\end_inset
-
-?]
 \end_layout
 
 \begin_layout Subsubsection
@@ -3240,7 +3360,8 @@ The response assertion is sent from the acceptor to the initiator to provide
  (It is encoded as a backed assertion in order to provide future support
  for mutual authentication using native BrowserID certificates.
  Such support is not specified here; implementations of this version of
- the specification MAY reject response assertions with BrowserID certificates.)
+ the specification SHOULD reject response assertions with BrowserID certificates.
+)
 \end_layout
 
 \begin_layout Standard
@@ -3268,7 +3389,7 @@ The HMAC-SHA256 (HS256) algorithm MUST be supported by implementors of this
 If a key is unavailable, then the signature is absent and the value of the
  "alg" header claim is "none".
  No signature verification is required in this case, however the initiator
- MUST NOT return GSS_C_COMPLETE unless the 
+ MUST then return an error unless the 
 \begin_inset Flex EntityXRef
 status open
 
@@ -3282,16 +3403,7 @@ RFC3961
 \end_layout
 
 \begin_layout Standard
-Response assertions with an audience claim (
-\begin_inset Quotes eld
-\end_inset
-
-aud
-\begin_inset Quotes erd
-\end_inset
-
-) MUST be rejected to prevent reflection attacks.
- Claims not specified here MUST be ignored by the initiator.
+Claims not specified here MUST be ignored by the initiator.
 \end_layout
 
 \begin_layout Standard
@@ -3564,6 +3676,27 @@ This contains a base64 URL encoded random value of at least 64 bits that
  trip option.
 \end_layout
 
+\begin_layout Subsection
+Error (acceptor/RP) assertion
+\end_layout
+
+\begin_layout Standard
+Error tokens are backed assertions containing any or all of the following
+ claims.
+ In additionl, they MUST have the 
+\begin_inset Quotes eld
+\end_inset
+
+iat
+\begin_inset Quotes erd
+\end_inset
+
+ claim, for initiator clock skew correction.
+ All other claims are OPTIONAL or not applicable in error tokens.
+ Conversely, the claims listed below MUST NOT be present in a non-error
+ response assertion.
+\end_layout
+
 \begin_layout Subsubsection
 \begin_inset CommandInset label
 LatexCommand label
@@ -3584,8 +3717,6 @@ gss-maj
 
 \begin_layout Standard
 This contains a GSS major status code represented as a number.
- It MUST NOT be present if the acceptor did not return an error.
- This claim is OPTIONAL.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3608,9 +3739,6 @@ gss-min
 
 \begin_layout Standard
 This contains a GSS minor status code represented as a number.
- It MUST NOT be present if the acceptor did not return an error and MUST
- NOT be present if there is no minor status code for the given major error.
- This claim is OPTIONAL.
 \end_layout
 
 \begin_layout Standard
@@ -4905,7 +5033,7 @@ The following function is used as the base algorithm for deriving keys:
 \end_layout
 
 \begin_layout Standard
-browserid-derive-key(K, salt) = HMAC(K, "BrowserID" || K || salt || 0x01)
+browserid-derive-key(K, usage) = HMAC(K, "BrowserID" || K || usage || 0x01)
 \end_layout
 
 \begin_layout Standard
@@ -4957,13 +5085,15 @@ RP Response Key (RRK)
 \end_layout
 
 \begin_layout Standard
-The response from the acceptor is signed using this key for certificate-signed
- assertions, unless mutual authentication is being performed (in which case
- a private key signature is used):
+Response tokens that are authenticated are signed with the RRK.
+ If mutual authentication without a fast re-authentication ticke is perfomed
+ then this will be a public key signature using the private key for the
+ acceptor's certificate.
+ Otherwise a symmetric key is derived follows:
 \end_layout
 
 \begin_layout Standard
-RRK = browserid-derive-key(CMK, "RRK") 
+RRK = browserid-derive-key(CMK, "RRK")
 \end_layout
 
 \begin_layout Subsection
@@ -5010,6 +5140,20 @@ CRK
 \end_inset
 
 ))
+\end_layout
+
+\begin_layout Standard
+The random-to-key function is defined in 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC3961
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -5065,16 +5209,22 @@ ted contexts.
 \end_layout
 
 \begin_layout Standard
-ASK = browserid-derive-key(ARK, reauth-assertion-as-jwt)
+ASK = browserid-derive-key(ARK, nonce-binary)
 \end_layout
 
 \begin_layout Standard
-The salt (reauth-assertion-as-jwt) is the JWT encoding of the re-authentication
- assertion as sent by the initiator.
- This binds the nonce to the session key.
+The usage (nonce-binary) is the base64 URL decoding of the initiator 
+\begin_inset Quotes eld
+\end_inset
+
+nonce
+\begin_inset Quotes erd
+\end_inset
+
+ claim.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Subsubsection
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:kd-XRTK"
@@ -5095,8 +5245,16 @@ XRTK = browserid-derive-key(CMK, acceptor-jti-binary)
 \end_layout
 
 \begin_layout Standard
-The salt (acceptor-jti-binary) is the base64 URL decoding of the acceptor
- JWT ID claim.
+The usage (acceptor-jti-binary) is the base64 URL decoding of the acceptor
+ 
+\begin_inset Quotes eld
+\end_inset
+
+jwt
+\begin_inset Quotes erd
+\end_inset
+
+ claim.
 \end_layout
 
 \begin_layout Subsection
@@ -5127,15 +5285,22 @@ RFC4402
  Root Key (CRK).
 \end_layout
 
+\begin_layout RevisionRemark
+Can we replace this with a function that imports less of RFC3962? Yes, we
+ should, because otherwise the only things we import from RFC3962 (and 3961)
+ are random-to-key (the identity function in RFC3962) and the crypto bits
+ needed for RFC4121 per-message tokens.
+\end_layout
+
 \begin_layout Section
 Example
 \end_layout
 
 \begin_layout Standard
-Suppose a mail user agent for the user lukeh@lukktone.com wishes to authenticate
- to an IMAP server rand.mit.de.padl.com.
+Suppose a mail user agent for the principal lukeh@lukktone.com wishes to
+ authenticate to an IMAP server rand.mit.de.padl.com.
  They do not have a re-authentication ticket.
- The mail user agent would display a dialog box in which the user would
+ The mail user agent would display a dialog box in which the principal would
  sign in to their IdP and request a fresh assertion be generated.
 \end_layout
 
@@ -6148,7 +6313,7 @@ status open
 
 \begin_layout Plain Layout
 
-    "cbt": "biws",
+    "cb": "biws",
 \end_layout
 
 \begin_layout Plain Layout
@@ -6656,10 +6821,89 @@ Security Considerations
 \end_layout
 
 \begin_layout Standard
-This section only addresses security considerations associated with the
+This document defines a GSS-API security mechanism, and therefore deals
+ in security and has security considerations text embedded throughout.
+ This section only addresses security considerations associated with the
  BrowserID GSS mechanism described in this document.
  It does not address security considerations associated with the BrowserID
  protocol or the GSS-API themselves.
+\end_layout
+
+\begin_layout Standard
+This mechanism provides for authentication of initiator principals using
+ private keys to public key cryptosystems, using the BorwserID specification
+ for user certificates (which are NOT PKIX 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC5280
+\end_layout
+
+\end_inset
+
+ certificates).
+ Authentication of the acceptor principal is optional.
+ Fast re-authentication is supported via acceptor-issued fast re-authentication
+ tickets.
+\end_layout
+
+\begin_layout Standard
+All cryptography for per-message tokens is imported from the Kerberos GSS-API
+ mechanism 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4121
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+This mechanism actually has several mechanism OIDs, composed of a prefix
+ identifying this family of mechanisms followed by an arc identifying the
+ Kerberos 
+\begin_inset Quotes eld
+\end_inset
+
+enctype
+\begin_inset Quotes erd
+\end_inset
+
+ for use with per-message tokens and the GSS_Pseudo_random() funciton.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+null
+\begin_inset Quotes erd
+\end_inset
+
+ enctype is supported, and when it is used then the GSS-API per-message
+ tokens and GSS_Pseudo_random() function are not available, but channel
+ binding and mutual authentication may be available.
+ Also, when using the NULL enctype the fast re-authentication feature is
+ not available because key exchange is only performed the initiator application
+ uses the variant of this mechanism that supports per-message tokens and
+ the GSS_Pseudo_random() function.
+\end_layout
+
+\begin_layout Standard
+Acceptor credentials are PKIX 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC5280
+\end_layout
+
+\end_inset
+
+ certificates and their private keys.
 \end_layout
 
 \begin_layout Subsection
@@ -6670,6 +6914,10 @@ JavaScript
 There are security issues associated with the use of JavaScript for cryptography.
 \end_layout
 
+\begin_layout RevisionRemark
+Expand!
+\end_layout
+
 \begin_layout Subsection
 Host certificates for mutual authentication
 \end_layout
@@ -6677,6 +6925,16 @@ Host certificates for mutual authentication
 \begin_layout Standard
 Allowing a match on only the DNS subjectAltName in an acceptor's X.509 certificat
 e permits different services on the same host to impersonate each other.
+\end_layout
+
+\begin_layout RevisionRemark
+We need to resolve how to map host-based service principal names into PKIX
+ terms.
+ The hostname part we know how to handle (e.g., as the dNSName SAN), but the
+ service name seems best expressed as an optional EKU, in which case we
+ may need an EKU mapping of service names, either algorithm, or via an IANA
+ registry.
+ This issue MUST be addresed before publication.
 \end_layout
 
 \begin_layout Subsection
@@ -6694,7 +6952,9 @@ reference "sub:response-gss-min"
 ) may leak information.
  Implementations may squash status codes and/or avoid returning minor statuses
  entirely.
- 
+ Indeed, applications may even not send back error tokens at all, instead
+ closing the connection or whatever might be appropriate for the application.
+ (This is a generic GSS-API security consideration.)
 \end_layout
 
 \begin_layout Section
@@ -6721,7 +6981,7 @@ Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID (1.3.6.1.4.1.5
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="4" columns="3">
+<lyxtabular version="3" rows="5" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -6837,6 +7097,35 @@ nametypes
 
 \begin_layout Plain Layout
 A sub-arc containing BrowserID name types
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ekus
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A sub-arc containing X.509 EKUs
 \end_layout
 
 \end_inset
@@ -7180,6 +7469,117 @@ reference "sub:GSS_C_NT_BROWSERID_PRINCIPAL"
 
 \end_layout
 
+\begin_layout Standard
+Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID.ekus (1.3.6.1.4.1.5322.24.3)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="3" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Decimal
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Reserved
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Reserved
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+browserIDServerAuth
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Extensions-for-mutual"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 SASL Registry
 \end_layout
@@ -7469,6 +7869,26 @@ status open
 LatexCommand href
 name "RFC5178"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5178.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC5280"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5280.xml"
 
 \end_inset
 
