@@ -5086,10 +5086,10 @@ RP Response Key (RRK)
 
 \begin_layout Standard
 Response tokens that are authenticated are signed with the RRK.
- If mutual authentication without a fast re-authentication ticke is perfomed
+ If mutual authentication without a fast re-authentication ticket is perfomed
  then this will be a public key signature using the private key for the
  acceptor's certificate.
- Otherwise a symmetric key is derived follows:
+ Otherwise a symmetric key is derived as follows:
 \end_layout
 
 \begin_layout Standard
