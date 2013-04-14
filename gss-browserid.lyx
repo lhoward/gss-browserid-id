@@ -1920,9 +1920,9 @@ reference "sub:kd-CRK"
 
 ) is derived from the ECDH shared secret (if present) and GSS_S_COMPLETE
  is returned, along with the initiator name from the verified assertion.
- If the CRK is available, the sequence_state (GSS_C_SEQUENCE_FLAG), conf_avail
- (GSS_C_CONF_FLAG) and integ_avail (GSS_C_INTEG_FLAG) security context flags
- are set to TRUE.
+ If the CRK is available, the replay_det_state (GSS_C_REPLAY_FLAG_, sequence_sta
+te (GSS_C_SEQUENCE_FLAG), conf_avail (GSS_C_CONF_FLAG) and integ_avail (GSS_C_IN
+TEG_FLAG) security context flags are set to TRUE.
 \end_layout
 
 \begin_layout Standard
@@ -2055,6 +2055,16 @@ We don't want to burden the initiator with having to implement both methods
  need a PKIX credential for TLS, and that there is as yet no standard protocol
  for automatic provisioning of BrowserID credentials for servers, using
  PKIX to authenticate the server seems to be the easiest way to go.
+\end_layout
+
+\begin_layout RevisionRemark
+We need to resolve how to map host-based service principal names into PKIX
+ terms.
+ The hostname part we know how to handle (e.g., as the dNSName SAN), but the
+ service name seems best expressed as an optional EKU, in which case we
+ may need an EKU mapping of service names, either algorithm, or via an IANA
+ registry.
+ This issue MUST be addresed before publication.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2343,9 +2353,7 @@ reference "sub:kd-ASK"
 \begin_layout RevisionRemark
 Question: do we want an option to do an ECDH session key exchange in the
  fast re-auth case? If we had a GSS req_flag for requesting perfect forward
- security (PFS) then we'd want to have this option, no? Although, of course,
- req_flags are optional.
- Still.
+ security (PFS) then we would want to have this option.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2479,11 +2487,11 @@ extra round trip
 \begin_inset Quotes erd
 \end_inset
 
- is something of a misnomer; it only adds an additional leg to the context
+ is something of a misnomer; it only adds an additional token to the context
  token exchange.
  It is anticipated however that this mechanism will most commonly be used
  with pseudo-mechanisms or application protocols that require an even number
- of legs.)
+ of tokens.)
 \end_layout
 
 \begin_layout Subsubsection
@@ -2552,7 +2560,7 @@ reference "sub:response-jti"
 \end_inset
 
 ) in the response assertion, containing a random base 64 URL encoded value.
- This value SHOULD be at least 64 bits in length.
+ This value MUST be at least 64 bits in length.
  (This top-level 
 \begin_inset Quotes eld
 \end_inset
@@ -2955,15 +2963,15 @@ reference "sub:Audience-encoding"
 
 \begin_layout RevisionRemark
 Note that if the initiator application specified a target_name of GSS_C_NO_NAME
- then we could not send this.
- And if the initiator wanted mutual authentication then we could find out
- the acceptor's name and provide it via GSS_Inquire_context().
+ then we could omit this (although this may not be permitted by the base
+ protocol).
+ If the initiator wanted mutual authentication then we could find out the
+ acceptor's name and provide it via GSS_Inquire_context().
  This is only really useful and secure with mechanisms like this one where
  the initiator credential is based on a public/private key pair and either
  we use key agreement and per-message tokens or channel binding to a secure
  channel.
- This really should [have] be[en] expalined in RFC2743...
- And since we'll be updating it regarding a channel bound flag...
+ This really should [have] be[en] explained in RFC2743.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3681,9 +3689,9 @@ Error (acceptor/RP) assertion
 \end_layout
 
 \begin_layout Standard
-Error tokens are backed assertions containing any or all of the following
+Error assertions are backed assertions containing any or all of the following
  claims.
- In additionl, they MUST have the 
+ In addition, they MUST have the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -3692,7 +3700,8 @@ iat
 \end_inset
 
  claim, for initiator clock skew correction.
- All other claims are OPTIONAL or not applicable in error tokens.
+ All other response assertion claims are OPTIONAL or not applicable in error
+ assertions.
  Conversely, the claims listed below MUST NOT be present in a non-error
  response assertion.
 \end_layout
@@ -5085,11 +5094,13 @@ RP Response Key (RRK)
 \end_layout
 
 \begin_layout Standard
-Response tokens that are authenticated are signed with the RRK.
- If mutual authentication without a fast re-authentication ticket is perfomed
- then this will be a public key signature using the private key for the
- acceptor's certificate.
- Otherwise a symmetric key is derived as follows:
+If mutual authentication without a fast re-authentication ticket is perfomed
+ then the response assertion will be signed with a public key signature
+ using the private key for the acceptor's certificate.
+\end_layout
+
+\begin_layout Standard
+Otherwise a symmetric RP Response Key (RRK) is derived as follows:
 \end_layout
 
 \begin_layout Standard
@@ -5107,7 +5118,7 @@ Context Root Key (CRK)
 \end_layout
 
 \begin_layout Standard
-The Context Root Key is used for 
+The Context Root Key (CRK) is used for 
 \begin_inset Flex EntityXRef
 status open
 
@@ -5286,7 +5297,7 @@ RFC4402
 \end_layout
 
 \begin_layout RevisionRemark
-Can we replace this with a function that imports less of RFC3962? Yes, we
+Can we replace this with a function that imports less of RFC3962? We arguably
  should, because otherwise the only things we import from RFC3962 (and 3961)
  are random-to-key (the identity function in RFC3962) and the crypto bits
  needed for RFC4121 per-message tokens.
@@ -6340,6 +6351,18 @@ status open
 Note the channel binding token that protects the GS2 header.
 \end_layout
 
+\begin_layout RevisionRemark
+The encoded example needs to be regenearted to reflect that 
+\begin_inset Quotes eld
+\end_inset
+
+cb
+\begin_inset Quotes erd
+\end_inset
+
+ is now used for channel bindings.
+\end_layout
+
 \begin_layout Standard
 Turning to the response backed assertion sent from the IMAP server to the
  mail user agent, we have the following after base64 decoding:
@@ -6866,24 +6889,18 @@ RFC4121
 \begin_layout Standard
 This mechanism actually has several mechanism OIDs, composed of a prefix
  identifying this family of mechanisms followed by an arc identifying the
- Kerberos 
-\begin_inset Quotes eld
+ 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC3961
+\end_layout
+
 \end_inset
 
-enctype
-\begin_inset Quotes erd
-\end_inset
-
- for use with per-message tokens and the GSS_Pseudo_random() funciton.
- The 
-\begin_inset Quotes eld
-\end_inset
-
-null
-\begin_inset Quotes erd
-\end_inset
-
- enctype is supported, and when it is used then the GSS-API per-message
+ enctype for use with per-message tokens and the GSS_Pseudo_random() funciton.
+ The NULL enctype is supported, and when it is used then the GSS-API per-message
  tokens and GSS_Pseudo_random() function are not available, but channel
  binding and mutual authentication may be available.
  Also, when using the NULL enctype the fast re-authentication feature is
@@ -6913,16 +6930,7 @@ Host certificates for mutual authentication
 \begin_layout Standard
 Allowing a match on only the DNS subjectAltName in an acceptor's X.509 certificat
 e permits different services on the same host to impersonate each other.
-\end_layout
-
-\begin_layout RevisionRemark
-We need to resolve how to map host-based service principal names into PKIX
- terms.
- The hostname part we know how to handle (e.g., as the dNSName SAN), but the
- service name seems best expressed as an optional EKU, in which case we
- may need an EKU mapping of service names, either algorithm, or via an IANA
- registry.
- This issue MUST be addresed before publication.
+ This should be subject to local policy.
 \end_layout
 
 \begin_layout Subsection
