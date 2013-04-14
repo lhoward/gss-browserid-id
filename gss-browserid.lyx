@@ -1920,7 +1920,7 @@ reference "sub:kd-CRK"
 
 ) is derived from the ECDH shared secret (if present) and GSS_S_COMPLETE
  is returned, along with the initiator name from the verified assertion.
- If the CRK is available, the replay_det_state (GSS_C_REPLAY_FLAG_, sequence_sta
+ If the CRK is available, the replay_det_state (GSS_C_REPLAY_FLAG), sequence_sta
 te (GSS_C_SEQUENCE_FLAG), conf_avail (GSS_C_CONF_FLAG) and integ_avail (GSS_C_IN
 TEG_FLAG) security context flags are set to TRUE.
 \end_layout
@@ -2038,7 +2038,7 @@ RFC5280
 
 \end_inset
 
- or id-kp-browserIDServerAuth (see 
+ or browserIDServerAuth (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:OID Registry"
@@ -2057,16 +2057,6 @@ We don't want to burden the initiator with having to implement both methods
  PKIX to authenticate the server seems to be the easiest way to go.
 \end_layout
 
-\begin_layout RevisionRemark
-We need to resolve how to map host-based service principal names into PKIX
- terms.
- The hostname part we know how to handle (e.g., as the dNSName SAN), but the
- service name seems best expressed as an optional EKU, in which case we
- may need an EKU mapping of service names, either algorithm, or via an IANA
- registry.
- This issue MUST be addresed before publication.
-\end_layout
-
 \begin_layout Subsubsection
 Initiator mutual authentication context completion
 \end_layout
@@ -2083,6 +2073,16 @@ Either the audience URI must be present in the URI subjectAltName, or the
  host component must be present as a value for the DNS subjectAltName or
  as the least significant Common Name RDN (if policy requires only the acceptor
  host name to be authenticated).
+\end_layout
+
+\begin_layout RevisionRemark
+We need to resolve how to map host-based service principal names into PKIX
+ terms.
+ The hostname part we know how to handle (e.g., as the dNSName SAN), but the
+ service name may best be expressed as an optional EKU (rather than a URI
+ as specified above), in which case we may need an EKU mapping of service
+ names, either algorithm, or via an IANA registry.
+ This issue MUST be addresed before publication.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2543,8 +2543,8 @@ Acceptor XRT advertisement
 \end_layout
 
 \begin_layout Standard
-If the initiator advertised support for the XRT option and the acceptor
- also supports or requires this option, the acceptor sends a 
+If the initiator requested the XRT option and the acceptor supports it,
+ or the acceptor requires it, the acceptor sends a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2559,9 +2559,14 @@ reference "sub:response-jti"
 
 \end_inset
 
-) in the response assertion, containing a random base 64 URL encoded value.
+) in the response assertion containing a random base 64 URL encoded value.
  This value MUST be at least 64 bits in length.
- (This top-level 
+ The acceptor then returns GSS_C_CONTINUE_NEEDED to indicate that an additional
+ context token is expected from the initiator.
+\end_layout
+
+\begin_layout Standard
+(Note that this top-level 
 \begin_inset Quotes eld
 \end_inset
 
@@ -2585,8 +2590,7 @@ jti
 \begin_inset Quotes erd
 \end_inset
 
- ticket identifier claim.) The acceptor then returns GSS_C_CONTINUE_NEEDED
- to indicate that an additional context token is expected from the initiator.
+ ticket identifier claim.) 
 \end_layout
 
 \begin_layout Subsubsection
@@ -2594,8 +2598,7 @@ Initiator XRT context token
 \end_layout
 
 \begin_layout Standard
-If the initiator requested the XRT option and the acceptor indicated support
- for it by including a 
+If the acceptor indicated support for the XRT option by including a 
 \begin_inset Quotes eld
 \end_inset
 
@@ -6854,7 +6857,7 @@ This document defines a GSS-API security mechanism, and therefore deals
 
 \begin_layout Standard
 This mechanism provides for authentication of initiator principals using
- private keys to public key cryptosystems, using the BorwserID specification
+ private keys to public key cryptosystems, using the BrowserID specification
  for user certificates (which are NOT PKIX 
 \begin_inset Flex EntityXRef
 status collapsed
@@ -7667,6 +7670,14 @@ Note: This mechanism describes the GSS BrowserID mechanism used with the
  aes128-cts-hmac-sha1-96 enctype.
  The GSS-API OID for this mechanism is 1.3.6.1.4.1.5322.24.1.17.
  As described in RFC 5801 a PLUS variant of this mechanism is also required.
+\end_layout
+
+\begin_layout RevisionRemark
+We could use the NULL enctype variant for SASL, as the GS2 bridge does not
+ use message protection services.
+ However, because that mechanisms is unkeyed, re-authentication would not
+ be available.
+ Defining a single AES128 mechanism is consistent with GSS EAP.
 \end_layout
 
 \begin_layout Section
