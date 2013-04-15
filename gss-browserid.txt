@@ -9,7 +9,7 @@ Expires: October 17, 2013                                   Cryptonector
 
 
  A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol
-                   draft-howard-gss-browserid-02.txt
+                   draft-howard-gss-browserid-03.txt
 
 Abstract
 
@@ -158,7 +158,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    11.     References . . . . . . . . . . . . . . . . . . . . . . . . 43
    11.1.   Normative References . . . . . . . . . . . . . . . . . . . 43
    11.2.   Informative References . . . . . . . . . . . . . . . . . . 44
-           Authors' Addresses . . . . . . . . . . . . . . . . . . . . 45
+           Authors' Addresses . . . . . . . . . . . . . . . . . . . . 46
 
 
 
@@ -731,18 +731,19 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
 4.2.1.  Initiator mutual authentication context token
 
-   If the initiator requested the mutual_state flag, a nonce (see
-   Section 6.1.7) is included in the assertion to bind the initiator and
-   acceptor tokens.  The presence of a nonce in a certificate-signed
-   assertion indicates that mutual authentication is desired.
+   If the initiator requested the mutual_state flag, it sends in its
+   request assertion an "opts" claim (see Section 6.1.9) containing the
+   "ma" value.  It also includes a nonce (see Section 6.1.7) in order to
+   bind the initiator and acceptor assertions.
 
 4.2.2.  Acceptor mutual authentication context token
 
-   If the acceptor has a private key and certificate available and
-   received a nonce in the initiator assertion, it signs the response
-   using a private key rather than the RP Response Key (RRK).  The
-   response includes the nonce from the initiator's assertion, to bind
-   the two.
+   If the acceptor has a private key and certificate available and the
+   initiator indicated it desired mutual authentication by including the
+   "ma" protocol option, the acceptor signs the response using a private
+   key rather than the RP Response Key (RRK).  The response includes the
+   nonce from the initiator's assertion.  The acceptor MUST reject
+   requests for mutual authentication lacking a nonce.
 
    While the response is a backed assertion, in order to take advantage
    of existing keying infrastructures BrowserID certificates MUST NOT be
@@ -762,9 +763,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 4.2.3.  Initiator mutual authentication context completion
 
    The initiator verifies the assertion signature and that the nonce
-   matches, and validates the certificate chain.  Trust anchors SHOULD
-   be configurable both system-wide and specifically for the BrowserID
-   mechanism.
+   matches, and validates the certificate chain according to [RFC5280].
 
    If the initiator policy requires the acceptor service name to be
    validated in addition to the acceptor host name, the service name
@@ -774,9 +773,10 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
    o  An algorithmically mapped service-name EKU (TBD)
 
-   o  A spn expressed as a realm-less KRB5PrincipalName in the id-
-      pkinit-san otherName SAN (see [RFC4556] Section 3.2.2)
+   o  A service-name expressed as a SRVName SAN (see [RFC4985])
 
+   o  A spn expressed as a KRB5PrincipalName in the id-pkinit-san
+      otherName SAN (see [RFC4556] Section 3.2.2; the realm is ignored)
 
 
 
@@ -793,10 +793,10 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    [[anchor5: We need to limit to one or two of these approaches.]]
 
    If the initiator policy only requires the acceptor host name to be
-   authenticated, or an EKU binding is used (rather than the id-pkinit-
-   san or URI SAN, which contain a host name), then the host component
-   of the service name (service-host) MUST be present as a value for the
-   dNSName SAN or as the least significant Common Name RDN.
+   authenticated, or an EKU binding is used (rather than the SANs, which
+   contain a host name), then the host component of the service name
+   (service-host) MUST be present as a value for the dNSName SAN or as
+   the least significant Common Name RDN.
 
    If the acceptor name contains a service-specific component and the
    initiator policy requires this to be authenticated, note only the id-
@@ -1299,6 +1299,8 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    +------+------------------------------------------------------------+
    | Name |                         Description                        |
    +------+------------------------------------------------------------+
+   |  ma  |          The initiator requested GSS_C_MUTUAL_FLAG         |
+   |      |                                                            |
    |  xrt |   The initiator supports the extra round trip option (see  |
    |      |                        Section 4.4)                        |
    |      |                                                            |
@@ -1335,8 +1337,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
    Claims not specified here MUST be ignored by the initiator.
 
-   Here is an example response assertion:
-
 
 
 
@@ -1344,6 +1344,8 @@ Howard & Williams       Expires October 17, 2013               [Page 24]
 
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
+
+   Here is an example response assertion:
 
        {
            "exp": 1362960258000,
@@ -1389,8 +1391,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    The nonce as received from the initiator.  This MUST NOT be present
    unless a nonce was received from the initiator, and the acceptor is
    signing the assertion with a private key.
-
-
 
 
 
@@ -2390,6 +2390,10 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
               Kerberos Encryption Types Used by Microsoft Windows",
               RFC 4757, December 2006.
 
+   [RFC4985]  Santesson, S., "Internet X.509 Public Key Infrastructure
+              Subject Alternative Name for Expression of Service Name",
+              RFC 4985, August 2007.
+
    [RFC5178]  Williams, N. and A. Melnikov, "Generic Security Service
               Application Program Interface (GSS-API)
               Internationalization and Domain-Based Service Names and
@@ -2397,10 +2401,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
    [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
               Housley, R., and W. Polk, "Internet X.509 Public Key
-              Infrastructure Certificate and Certificate Revocation List
-              (CRL) Profile", RFC 5280, May 2008.
-
-   [RFC5801]  Josefsson, S. and N. Williams, "Using Generic Security
 
 
 
@@ -2409,6 +2409,10 @@ Howard & Williams       Expires October 17, 2013               [Page 43]
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
 
+              Infrastructure Certificate and Certificate Revocation List
+              (CRL) Profile", RFC 5280, May 2008.
+
+   [RFC5801]  Josefsson, S. and N. Williams, "Using Generic Security
               Service Application Program Interface (GSS-API) Mechanisms
               in Simple Authentication and Security Layer (SASL): The
               GS2 Mechanism Family", RFC 5801, July 2010.
@@ -2453,6 +2457,14 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
    [RFC4120]  Neuman, C., Yu, T., Hartman, S., and K. Raeburn, "The
               Kerberos Network Authentication Service (V5)", RFC 4120,
+
+
+
+Howard & Williams       Expires October 17, 2013               [Page 44]
+
+Internet-Draft          BrowserID SASL & GSS-API              April 2013
+
+
               July 2005.
 
 
@@ -2460,7 +2472,51 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
 
 
-Howard & Williams       Expires October 17, 2013               [Page 44]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Howard & Williams       Expires October 17, 2013               [Page 45]
 
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
@@ -2516,5 +2572,5 @@ Authors' Addresses
 
 
 
-Howard & Williams       Expires October 17, 2013               [Page 45]
+Howard & Williams       Expires October 17, 2013               [Page 46]
 

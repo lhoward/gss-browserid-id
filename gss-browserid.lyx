@@ -282,7 +282,7 @@ A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol
 status open
 
 \begin_layout Plain Layout
-draft-howard-gss-browserid-02.txt
+draft-howard-gss-browserid-03.txt
 \end_layout
 
 \end_inset
@@ -1987,16 +1987,39 @@ Initiator mutual authentication context token
 \end_layout
 
 \begin_layout Standard
-If the initiator requested the mutual_state flag, a nonce (see 
+If the initiator requested the mutual_state flag, it sends in its request
+ assertion an 
+\begin_inset Quotes eld
+\end_inset
+
+opts
+\begin_inset Quotes erd
+\end_inset
+
+ claim (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:request-opts"
+
+\end_inset
+
+) containing the 
+\begin_inset Quotes eld
+\end_inset
+
+ma
+\begin_inset Quotes erd
+\end_inset
+
+ value.
+ It also includes a nonce (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:request-nonce"
 
 \end_inset
 
-) is included in the assertion to bind the initiator and acceptor tokens.
- The presence of a nonce in a certificate-signed assertion indicates that
- mutual authentication is desired.
+) in order to bind the initiator and acceptor assertions.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2004,11 +2027,19 @@ Acceptor mutual authentication context token
 \end_layout
 
 \begin_layout Standard
-If the acceptor has a private key and certificate available and received
- a nonce in the initiator assertion, it signs the response using a private
- key rather than the RP Response Key (RRK).
- The response includes the nonce from the initiator's assertion, to bind
- the two.
+If the acceptor has a private key and certificate available and the initiator
+ indicated it desired mutual authentication by including the 
+\begin_inset Quotes eld
+\end_inset
+
+ma
+\begin_inset Quotes erd
+\end_inset
+
+ protocol option, the acceptor signs the response using a private key rather
+ than the RP Response Key (RRK).
+ The response includes the nonce from the initiator's assertion.
+ The acceptor MUST reject requests for mutual authentication lacking a nonce.
 \end_layout
 
 \begin_layout Standard
@@ -2045,9 +2076,17 @@ Initiator mutual authentication context completion
 
 \begin_layout Standard
 The initiator verifies the assertion signature and that the nonce matches,
- and validates the certificate chain.
- Trust anchors SHOULD be configurable both system-wide and specifically
- for the BrowserID mechanism.
+ and validates the certificate chain according to 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC5280
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -2075,8 +2114,22 @@ An algorithmically mapped service-name EKU (TBD)
 \end_layout
 
 \begin_layout Itemize
-A spn expressed as a realm-less KRB5PrincipalName in the id-pkinit-san otherName
- SAN (see 
+A service-name expressed as a SRVName SAN (see 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4985
+\end_layout
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+A spn expressed as a KRB5PrincipalName in the id-pkinit-san otherName SAN
+ (see 
 \begin_inset Flex EntityXRef
 status open
 
@@ -2086,7 +2139,7 @@ RFC4556
 
 \end_inset
 
- Section 3.2.2)
+ Section 3.2.2; the realm is ignored)
 \end_layout
 
 \begin_layout Itemize
@@ -2110,10 +2163,10 @@ We need to limit to one or two of these approaches.
 
 \begin_layout Standard
 If the initiator policy only requires the acceptor host name to be authenticated
-, or an EKU binding is used (rather than the id-pkinit-san or URI SAN, which
- contain a host name), then the host component of the service name (service-host
-) MUST be present as a value for the dNSName SAN or as the least significant
- Common Name RDN.
+, or an EKU binding is used (rather than the SANs, which contain a host
+ name), then the host component of the service name (service-host) MUST
+ be present as a value for the dNSName SAN or as the least significant Common
+ Name RDN.
  
 \end_layout
 
@@ -3277,7 +3330,7 @@ This contains a JSON array of string values indicating various protocol
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="4" columns="2">
+<lyxtabular version="3" rows="5" columns="2">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -3296,6 +3349,26 @@ Name
 
 \begin_layout Plain Layout
 Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ma
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+The initiator requested GSS_C_MUTUAL_FLAG
 \end_layout
 
 \end_inset
@@ -7776,6 +7849,26 @@ status open
 LatexCommand href
 name "RFC4757"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4757.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "RFC4985"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4985.xml"
 
 \end_inset
 
