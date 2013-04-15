@@ -2082,7 +2082,7 @@ We need to resolve how to map host-based service principal names into PKIX
  service name may best be expressed as an optional EKU (rather than a URI
  as specified above), in which case we may need an EKU mapping of service
  names, either algorithm, or via an IANA registry.
- This issue MUST be addresed before publication.
+ This issue MUST be addressed before publication.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2248,7 +2248,7 @@ The acceptor must be able to use the ticket identifier to securely retrieve
  One implementation choice may be to use the ticket identifier as a key
  into a dictionary containing this information.
  Another would be to encrypt this information in a long-term secret only
- known to the acceptor and encode the resulting ciphertext in the opaque
+ known to the acceptor and encode the resulting cipher-text in the opaque
  ticket identifier.
 \end_layout
 
@@ -3078,7 +3078,7 @@ nbf
 \end_layout
 
 \begin_layout Standard
-This contains the time, in milliseconds sinces January 1, 1970, from which
+This contains the time, in milliseconds since January 1, 1970, from which
  the assertion begins to be valid.
  This claim is OPTIONAL.
 \end_layout
@@ -5014,7 +5014,7 @@ REAUTH_FAILED
 \begin_inset Text
 
 \begin_layout Plain Layout
-Re-authentication failured
+Re-authentication failure
 \end_layout
 
 \end_inset
@@ -5097,7 +5097,7 @@ RP Response Key (RRK)
 \end_layout
 
 \begin_layout Standard
-If mutual authentication without a fast re-authentication ticket is perfomed
+If mutual authentication without a fast re-authentication ticket is performed
  then the response assertion will be signed with a public key signature
  using the private key for the acceptor's certificate.
 \end_layout
@@ -5264,7 +5264,7 @@ The usage (acceptor-jti-binary) is the base64 URL decoding of the acceptor
 \begin_inset Quotes eld
 \end_inset
 
-jwt
+jti
 \begin_inset Quotes erd
 \end_inset
 
@@ -6355,7 +6355,7 @@ Note the channel binding token that protects the GS2 header.
 \end_layout
 
 \begin_layout RevisionRemark
-The encoded example needs to be regenearted to reflect that 
+The encoded example needs to be regenerated to reflect that 
 \begin_inset Quotes eld
 \end_inset
 
@@ -6857,7 +6857,7 @@ This document defines a GSS-API security mechanism, and therefore deals
 
 \begin_layout Standard
 This mechanism provides for authentication of initiator principals using
- private keys to public key cryptosystems, using the BrowserID specification
+ private keys to public key crypto-systems, using the BrowserID specification
  for user certificates (which are NOT PKIX 
 \begin_inset Flex EntityXRef
 status collapsed
@@ -6902,13 +6902,14 @@ RFC3961
 
 \end_inset
 
- enctype for use with per-message tokens and the GSS_Pseudo_random() funciton.
- The NULL enctype is supported, and when it is used then the GSS-API per-message
- tokens and GSS_Pseudo_random() function are not available, but channel
- binding and mutual authentication may be available.
- Also, when using the NULL enctype the fast re-authentication feature is
- not available because key exchange is only performed the initiator application
- uses the variant of this mechanism that supports per-message tokens and
+ encryption type for use with per-message tokens and the GSS_Pseudo_random()
+ function.
+ The NULL encryption type is supported, and when it is used then the GSS-API
+ per-message tokens and GSS_Pseudo_random() function are not available,
+ but channel binding and mutual authentication may be available.
+ Also, when using the NULL encryption type the fast re-authentication feature
+ is not available because key exchange is only performed the initiator applicati
+on uses the variant of this mechanism that supports per-message tokens and
  the GSS_Pseudo_random() function.
 \end_layout
 
@@ -7667,14 +7668,14 @@ Owner/Change controller: iesg@ietf.org
 
 \begin_layout Standard
 Note: This mechanism describes the GSS BrowserID mechanism used with the
- aes128-cts-hmac-sha1-96 enctype.
+ aes128-cts-hmac-sha1-96 encryption type.
  The GSS-API OID for this mechanism is 1.3.6.1.4.1.5322.24.1.17.
  As described in RFC 5801 a PLUS variant of this mechanism is also required.
 \end_layout
 
 \begin_layout RevisionRemark
-We could use the NULL enctype variant for SASL, as the GS2 bridge does not
- use message protection services.
+We could use the NULL encryption type variant for SASL, as the GS2 bridge
+ does not use message protection services.
  However, because that mechanisms is unkeyed, re-authentication would not
  be available.
  Defining a single AES128 mechanism is consistent with GSS EAP.
