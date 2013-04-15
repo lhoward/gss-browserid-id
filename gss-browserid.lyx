@@ -1730,7 +1730,7 @@ status open
 
 \begin_layout Standard
 Unlike many other GSS-API mechanisms such as Kerberos, this token framing
- is not used by subsequent context or 
+ is not used by subsequent context or by 
 \begin_inset Flex EntityXRef
 status open
 
@@ -1759,8 +1759,8 @@ RFC4121
 
  encryption type supported for message protection services.
  The OID prefix is 1.3.6.1.4.1.5322.24.1.
- The NULL encryption type is valid, in which case key confirmation and message
- protection services are not provided.
+ The NULL encryption type is valid, in which case services that require
+ a key are not available.
 \end_layout
 
 \begin_layout Standard
@@ -2119,7 +2119,7 @@ If the initiator policy only requires the acceptor host name to be authenticated
 
 \begin_layout Standard
 If the acceptor name contains a service-specific component and the initiator
- policy requires this to be authenticated, then only the id-pkinit-san or
+ policy requires this to be authenticated, note only the id-pkinit-san or
  URI SANs provide this binding.
 \end_layout
 
@@ -2211,8 +2211,7 @@ There is currently no initiator-sent metadata defined and acceptors should
 \end_layout
 
 \begin_layout RevisionRemark
-We should have a way for to suppress this when the initiator is performing
- re-authentication
+Delete this section as NegoEx will likely not be progressed.
 \end_layout
 
 \begin_layout Subsection
@@ -2537,7 +2536,7 @@ Initiator XRT advertisement
 \end_layout
 
 \begin_layout Standard
-The initiator may advertise to the acceptor that it supports the XRT option
+The initiator may advertise to the acceptor that it desires the XRT option
  by sending in its request assertion an 
 \begin_inset Quotes eld
 \end_inset
@@ -2828,8 +2827,8 @@ Replay detection
 \end_layout
 
 \begin_layout Standard
-If the XRT option is not in effect, the acceptor SHOULD maintain a cache
- of received assertions in order to guard against replay attacks.
+If the XRT option is not in effect, the acceptor MUST maintain a cache of
+ received assertions in order to guard against replay attacks.
 \end_layout
 
 \begin_layout Subsection
@@ -3408,9 +3407,7 @@ The response assertion is sent from the acceptor to the initiator to provide
  "unbacked".
  (It is encoded as a backed assertion in order to provide future support
  for mutual authentication using native BrowserID certificates.
- Such support is not specified here; implementations of this version of
- the specification SHOULD reject response assertions with BrowserID certificates.
-)
+ Such support is not specified here.)
 \end_layout
 
 \begin_layout Standard
@@ -3435,10 +3432,7 @@ The HMAC-SHA256 (HS256) algorithm MUST be supported by implementors of this
 \end_layout
 
 \begin_layout Standard
-If a key is unavailable, then the signature is absent and the value of the
- "alg" header claim is "none".
- No signature verification is required in this case, however the initiator
- MUST then return an error unless the 
+If the 
 \begin_inset Flex EntityXRef
 status open
 
@@ -3448,7 +3442,9 @@ RFC3961
 
 \end_inset
 
- encryption type for the mechanism is ENCTYPE_NULL.
+ encryption type for the mechanism is ENCTYPE_NULL, then the signature is
+ absent and the value of the "alg" header claim is "none".
+ No signature verification is required in this case.
 \end_layout
 
 \begin_layout Standard
@@ -3745,6 +3741,11 @@ iat
  assertions.
  Conversely, the claims listed below MUST NOT be present in a non-error
  response assertion.
+\end_layout
+
+\begin_layout Standard
+The error assertion MAY be signed if a key is available, otherwise the signature
+ is absent and the value of the "alg" header claim is "none".
 \end_layout
 
 \begin_layout Subsubsection
