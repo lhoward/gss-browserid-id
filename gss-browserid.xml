@@ -15,6 +15,7 @@
 <!ENTITY RFC4121 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4121.xml">
 <!ENTITY RFC4178 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4178.xml">
 <!ENTITY RFC4422 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4422.xml">
+<!ENTITY RFC4556 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4556.xml">
 <!ENTITY RFC4757 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4757.xml">
 <!ENTITY RFC5178 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5178.xml">
 <!ENTITY RFC5280 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5280.xml">
@@ -25,6 +26,7 @@
 <!ENTITY JWS PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-web-signature.xml">
 <!ENTITY JWT PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-json-web-token.xml">
 <!ENTITY NegoEx PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zhu-negoex.xml">
+<!ENTITY PKU2U PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zhu-pku2u.xml">
 <!ENTITY RFC4120 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4120.xml">
 ]>
 <rfc docName="draft-howard-gss-browserid-02.txt" ipr="trust200902" category="exp" updates="">
@@ -377,21 +379,40 @@ If the initiator requested the mutual_state flag, a nonce (see  <xref target="su
           <t>
 If the acceptor has a private key and certificate available and received a nonce in the initiator assertion, it signs the response using a private key rather than the RP Response Key (RRK). The response includes the nonce from the initiator's assertion, to bind the two.</t>
           <t>
-While the response is a backed assertion, in order to take advantage of existing keying infrastructures BrowserID certificates MUST NOT be included in the backed assertion. Rather, an X.509 certificate SHALL be included as a value for the "x5c" header property in the assertion (see <xref target="I-D.ietf-jose-json-web-signature"/> 4.1.6). The certificate MUST be valid for signing; if it has any EKUs it MUST have either the id-kp-serverAuth <xref target="RFC5280"/> or browserIDServerAuth (see  <xref target="sub_OID_Registry"/>) EKU.</t>
+While the response is a backed assertion, in order to take advantage of existing keying infrastructures BrowserID certificates MUST NOT be included in the backed assertion. Rather, an X.509 certificate SHALL be included as a value for the "x5c" header property in the assertion (see <xref target="I-D.ietf-jose-json-web-signature"/> 4.1.6). The certificate MUST be valid for signing.</t>
           <t>
             <cref>
 We don't want to burden the initiator with having to implement both methods of authenticating acceptors, and given that initiators and acceptors both will generally need a PKIX implementation, and given that acceptors will need a PKIX credential for TLS, and that there is as yet no standard protocol for automatic provisioning of BrowserID credentials for servers, using PKIX to authenticate the server seems to be the easiest way to go.</cref>
           </t>
         </section>
-        <section title="Initiator mutual authentication context completion" anchor="d1e1512">
+        <section title="Initiator mutual authentication context completion" anchor="d1e1503">
           <t>
 The initiator verifies the assertion signature and that the nonce matches, and validates the certificate chain. Trust anchors SHOULD be configurable both system-wide and specifically for the BrowserID mechanism.</t>
           <t>
-Either the audience URI must be present in the URI subjectAltName, or the host component must be present as a value for the DNS subjectAltName or as the least significant Common Name RDN (if policy requires only the acceptor host name to be authenticated).</t>
+If the initiator policy requires the acceptor service name to be validated in addition to the acceptor host name, the service name MUST be validated against one of the following:</t>
+          <t>
+            <list style="symbols">
+              <t>
+A service-name EKU from the registry defined by <xref target="I-D.zhu-pku2u"/>
+</t>
+              <t>
+An algorithmically mapped service-name EKU (TBD)</t>
+              <t>
+A spn expressed as a realm-less KRB5PrincipalName in the id-pkinit-san otherName SAN (see <xref target="RFC4556"/> Section 3.2.2)</t>
+              <t>
+A BrowserID audience URN containing the spn, encoded in the URI SAN (see  <xref target="sub_Audience_encoding"/>)</t>
+              <t>
+An out-of-band binding to the certificate</t>
+            </list>
+          </t>
           <t>
             <cref>
-We need to resolve how to map host-based service principal names into PKIX terms. The hostname part we know how to handle (e.g., as the dNSName SAN), but the service name may best be expressed as an optional EKU (rather than a URI as specified above), in which case we may need an EKU mapping of service names, either algorithm, or via an IANA registry. This issue MUST be addressed before publication.</cref>
+We need to limit to one or two of these approaches.</cref>
           </t>
+          <t>
+If the initiator policy only requires the acceptor host name to be authenticated, or an EKU binding is used (rather than an otherName or URI SAN containing the host name), then the host component of the service name (service-host) MUST be present as a value for the dNSName subjectAltName (SAN) or as the least significant Common Name RDN. </t>
+          <t>
+If the acceptor name contains a service-specific component and the initiator policy requires this to be authenticated, then only the id-pkinit-san or audience URN SAN provide this binding.</t>
         </section>
         <section title="Acceptor certificate advertisement" anchor="sub_NegoEx">
           <t><xref target="I-D.zhu-negoex"/> may be used to advertise acceptor certificates.</t>
@@ -422,7 +443,7 @@ Fast re-authentication allows a security context to be established using a secre
 The re-authentication assertion is signed with a HMAC using the Authenticator Root Key (ARK) (see  <xref target="sub_kd_ARK"/>), rather than a initiator principal's BrowserID certificate.</t>
         <t>
 Support for fast re-authentication is OPTIONAL and is indicated by the acceptor returning a ticket in the response assertion.</t>
-        <section title="Ticket generation" anchor="d1e1599">
+        <section title="Ticket generation" anchor="d1e1626">
           <t>
 If the acceptor supports re-authentication, the following steps are added to  <xref target="sub_Acceptor_context_token"/>:</t>
           <t>
@@ -440,7 +461,7 @@ The ticket expiry time by default SHOULD match the initiator's certificate expir
           <t>
 The initiator MAY cache tickets, along with the ARK, received from the acceptor in order to re-authenticate to it at a future time.</t>
         </section>
-        <section title="Initiator re-authentication context token" anchor="d1e1630">
+        <section title="Initiator re-authentication context token" anchor="d1e1658">
           <t>
 The initiator looks in its ticket cache for an unexpired ticket for the desired acceptor. If none is found, the normal certificate-based authentication flow is performed, otherwise:</t>
           <t>
@@ -460,7 +481,7 @@ The initiator generates an Authenticator Session Key (ASK) (see  <xref target="s
 Question: do we want an option to do an ECDH session key exchange in the fast re-auth case? If we had a GSS req_flag for requesting perfect forward security (PFS) then we would want to have this option.</cref>
           </t>
         </section>
-        <section title="Acceptor re-authentication context token" anchor="d1e1681">
+        <section title="Acceptor re-authentication context token" anchor="d1e1708">
           <t>
             <list style="numbers">
               <t>
@@ -478,13 +499,13 @@ The acceptor generates a response and signs and returns it. Note that, unlike th
           <t>
 If the ticket cannot be found, or the authentication fails, the acceptor SHOULD return a REAUTH_FAILED error, permitting the initiator to recover and fallback to generating a BrowserID assertion. It MAY also include its local timestamp (see  <xref target="sub_response_iat"/>) so that the initiator can perform clock skew compensation.</t>
         </section>
-        <section title="Interaction with mutual authentication" anchor="d1e1718">
+        <section title="Interaction with mutual authentication" anchor="d1e1745">
           <t>
 The mutual authentication state of a re-authenticated context is transitive. The initiator MUST NOT set the mutual_state flag for a re-authenticated context unless the original context was mutually authenticated.</t>
           <t>
 As such, the initiator's ticket cache must store the mutual authentication state of the original context.</t>
         </section>
-        <section title="Ticket renewal" anchor="d1e1730">
+        <section title="Ticket renewal" anchor="d1e1758">
           <t>
 Normally, re-authentication tickets are only issued when the initiator authenticated with a certificate-signed assertion. Acceptors MAY issue a new ticket with an expiry beyond the ticket lifetime when the initiator used a re-authentication assertion. The issuing of new tickets MUST be subject to a policy that prevents them from being renewed indefinitely.</t>
         </section>
@@ -494,34 +515,34 @@ Normally, re-authentication tickets are only issued when the initiator authentic
 The extra round-trip (XRT) option adds an additional round trip to the context token exchange. It allows the initiator to prove knowledge of the Context Master Key (CMK) (see  <xref target="sub_kd_CMK"/>) by sending an additional token signed in a key derived from the CMK and an acceptor-issued challenge. Support for the XRT option is OPTIONAL in the acceptor and REQUIRED in the initiator. The initiator is allowed to not request it, but MUST perform XRT if the acceptor requires it.</t>
         <t>
 (Note that the term “extra round trip” is something of a misnomer; it only adds an additional token to the context token exchange. It is anticipated however that this mechanism will most commonly be used with pseudo-mechanisms or application protocols that require an even number of tokens.)</t>
-        <section title="Initiator XRT advertisement" anchor="d1e1757">
+        <section title="Initiator XRT advertisement" anchor="d1e1784">
           <t>
 The initiator may advertise to the acceptor that it supports the XRT option by sending in its request assertion an “opts” claim (see  <xref target="sub_request_opts"/>) containing the “xrt” value. This option MUST be set if the caller requested GSS_C_DCE_STYLE (see <xref target="RFC4757"/>). Otherwise, the setting of this option is implementation dependent.</t>
         </section>
-        <section title="Acceptor XRT advertisement" anchor="d1e1775">
+        <section title="Acceptor XRT advertisement" anchor="d1e1802">
           <t>
 If the initiator requested the XRT option and the acceptor supports it, or the acceptor requires it, the acceptor sends a “jti” claim (see  <xref target="sub_response_jti"/>) in the response assertion containing a random base 64 URL encoded value. This value MUST be at least 64 bits in length. The acceptor then returns GSS_C_CONTINUE_NEEDED to indicate that an additional context token is expected from the initiator.</t>
           <t>
 (Note that this top-level “jti” claim is unrelated to the “nonce” claim or to the “jti” ticket identifier claim.) </t>
         </section>
-        <section title="Initiator XRT context token" anchor="d1e1790">
+        <section title="Initiator XRT context token" anchor="d1e1818">
           <t>
 If the acceptor indicated support for the XRT option by including a “jti” claim in its response, then the initiator sends an additional context token to the acceptor. This token contains the initiator context token ID concatenated with a backed assertion with zero certificates and an empty payload, signed using the XRTK (see  <xref target="sub_kd_XRTK"/>).</t>
         </section>
-        <section title="Acceptor XRT context token validation" anchor="d1e1802">
+        <section title="Acceptor XRT context token validation" anchor="d1e1830">
           <t>
 The acceptor MUST validate the XRT context token by first validating the context token ID, and then verifying the assertion signature with the XRTK. The acceptor SHOULD reject XRT context tokens with a certificate count greater than zero. Unknown claims in the assertion payload MUST be ignored. The acceptor then returns GSS_C_COMPLETE to the caller.</t>
           <t>
 The acceptor MAY avoid using a replay cache when this option is in effect.</t>
         </section>
-        <section title="Interaction with message protection services" anchor="d1e1815">
+        <section title="Interaction with message protection services" anchor="d1e1842">
           <t>
 When the XRT option is in effect, the XRTK is used instead of the CMK to derive the Context Root Key (CRK) (see  <xref target="sub_kd_CRK"/>). Per-message tokens MUST have the AcceptorSubkey flag set (see <xref target="RFC4121"/> Section 4.2.2).</t>
         </section>
       </section>
     </section>
-    <section title="Validation" anchor="d1e1833">
-      <section title="Expiry times" anchor="d1e1839">
+    <section title="Validation" anchor="d1e1860">
+      <section title="Expiry times" anchor="d1e1866">
         <t>
 The expiry and, if present, issued-at and not-before times of all elements in a backed assertion, MUST be validated. This applies equally to re-authentication assertions, public key assertions, and the entire certificate chain. If the expiry time is absent, the issued-at time MUST be present, and the JWT implicitly expires a short, implementation-defined interval after the issued-at time. (A suggested interval is five minutes.)</t>
         <t>
@@ -531,23 +552,23 @@ The lifetime of a re-authentication ticket SHOULD NOT exceed the lifetime of the
         <t>
 Message protections services such as GSS_Wrap() SHOULD be available beyond the GSS context lifetime for maximum application compatibility.</t>
       </section>
-      <section title="Audience" anchor="d1e1857">
+      <section title="Audience" anchor="d1e1885">
         <t>
 If the credential passed to GSS_Accept_sec_context() is not for GSS_C_NO_NAME, then its string representation as a BrowserID principal MUST match the unencoded audience (that is, the audience without the URN prefix defined in  <xref target="sub_Audience_encoding"/>).</t>
       </section>
-      <section title="Channel bindings" anchor="d1e1870">
+      <section title="Channel bindings" anchor="d1e1897">
         <t>
 GSS-API channel binding is a protected facility for naming an enclosing channel between the initiator and acceptor. If the acceptor passed in channel bindings to GSS_Accept_sec_context(), the assertion MUST contain a matching channel binding claim. (Only the application_data component is validated.)</t>
         <t>
 The acceptor SHOULD accept any channel binding provided by the initiator if NULL channel bindings are passed to GSS_Accept_sec_context().</t>
       </section>
-      <section title="Key agreement" anchor="d1e1882">
+      <section title="Key agreement" anchor="d1e1909">
         <t>
 The initiator MUST choose an ECDH curve with an equivalent strength to the negotiated <xref target="RFC4121"/> encryption type. Appropriate curves are given in  <xref target="sub_OID_Registry"/>.</t>
         <t>
 The curve strength MUST be verified by the acceptor. A stronger than required curve MAY be selected by the initiator.</t>
       </section>
-      <section title="Signatures" anchor="d1e1903">
+      <section title="Signatures" anchor="d1e1930">
         <t>
 Signature validation on assertions is the same as for the web usage of BrowserID, with the addition that response assertions may and re-authentication assertions must be signed with a symmetric key. In this case the HMAC algorithm associated with the mechanism OID is used, and there are no certificates in the backed assertion.</t>
       </section>
@@ -555,7 +576,7 @@ Signature validation on assertions is the same as for the web usage of BrowserID
         <t>
 If the XRT option is not in effect, the acceptor SHOULD maintain a cache of received assertions in order to guard against replay attacks.</t>
       </section>
-      <section title="Return flags" anchor="d1e1924">
+      <section title="Return flags" anchor="d1e1951">
         <t>
 The initiator and acceptor should set the returned flags as follows:</t>
         <t>
@@ -582,8 +603,8 @@ The initiator and acceptor should set the returned flags as follows:</t>
         </t>
       </section>
     </section>
-    <section title="Assertion claims" anchor="d1e1980">
-      <section title="Request (initiator/UA) assertion" anchor="d1e1986">
+    <section title="Assertion claims" anchor="d1e2007">
+      <section title="Request (initiator/UA) assertion" anchor="d1e2013">
         <t>
 These claims are included in the assertion sent to the acceptor and are authenticated by the initiator's private key and certificate chain (directly, or in the case of re-authentication assertions, transitively). Claims not specified here MUST be ignored by the acceptor.</t>
         <t>
@@ -671,7 +692,7 @@ RFC4757
           </texttable>
         </section>
       </section>
-      <section title="Response (acceptor/RP) assertion" anchor="d1e2194">
+      <section title="Response (acceptor/RP) assertion" anchor="d1e2222">
         <t>
 The response assertion is sent from the acceptor to the initiator to provide key agreement, and either key confirmation or mutual authentication. It is formatted as a backed assertion, however in the current specification it consists of a single assertion with zero certificates; that is, it is "unbacked". (It is encoded as a backed assertion in order to provide future support for mutual authentication using native BrowserID certificates. Such support is not specified here; implementations of this version of the specification SHOULD reject response assertions with BrowserID certificates.)</t>
         <t>
@@ -731,7 +752,7 @@ This contains a JSON object that may be used for re-authenticating to the accept
 This contains a base64 URL encoded random value of at least 64 bits that is used to uniquely identify the acceptor response, in the case that the extra round trip option is used. It SHOULD not be present unless the initiator requested the extra round trip option.</t>
         </section>
       </section>
-      <section title="Error (acceptor/RP) assertion" anchor="d1e2313">
+      <section title="Error (acceptor/RP) assertion" anchor="d1e2341">
         <t>
 Error assertions are backed assertions containing any or all of the following claims. In addition, they MUST have the “iat” claim, for initiator clock skew correction. All other response assertion claims are OPTIONAL or not applicable in error assertions. Conversely, the claims listed below MUST NOT be present in a non-error response assertion.</t>
         <section title="“gss-maj” (GSS major status code)" anchor="sub_response_gss_maj">
@@ -1007,12 +1028,12 @@ Re-authentication failure</c>
           </texttable>
         </section>
       </section>
-      <section title="XRT assertion" anchor="d1e3048">
+      <section title="XRT assertion" anchor="d1e3076">
         <t>
 No claims are presently defined for the extra round trip assertion. Unknown claims MUST be ignored by the acceptor.</t>
       </section>
     </section>
-    <section title="Key derivation" anchor="d1e3057">
+    <section title="Key derivation" anchor="d1e3085">
       <t>
 The following function is used as the base algorithm for deriving keys:</t>
       <t>
@@ -1078,7 +1099,7 @@ Can we replace this with a function that imports less of RFC3962? We arguably sh
         </t>
       </section>
     </section>
-    <section title="Example" anchor="d1e3217">
+    <section title="Example" anchor="d1e3245">
       <t>
 Suppose a mail user agent for the principal lukeh@lukktone.com wishes to authenticate to an IMAP server rand.mit.de.padl.com. They do not have a re-authentication ticket. The mail user agent would display a dialog box in which the principal would sign in to their IdP and request a fresh assertion be generated.</t>
       <t>
@@ -1421,7 +1442,7 @@ The assertion payload is below (again, for clarity the actual JWT signature has 
       <t>
 Note the fast re-authentication ticket and the nonce echoed back from the initiator.</t>
     </section>
-    <section title="Security Considerations" anchor="d1e3298">
+    <section title="Security Considerations" anchor="d1e3325">
       <t>
 This document defines a GSS-API security mechanism, and therefore deals in security and has security considerations text embedded throughout. This section only addresses security considerations associated with the BrowserID GSS mechanism described in this document. It does not address security considerations associated with the BrowserID protocol or the GSS-API themselves.</t>
       <t>
@@ -1432,16 +1453,16 @@ All cryptography for per-message tokens is imported from the Kerberos GSS-API me
 This mechanism actually has several mechanism OIDs, composed of a prefix identifying this family of mechanisms followed by an arc identifying the <xref target="RFC3961"/> encryption type for use with per-message tokens and the GSS_Pseudo_random() function. The NULL encryption type is supported, and when it is used then the GSS-API per-message tokens and GSS_Pseudo_random() function are not available, but channel binding and mutual authentication may be available. Also, when using the NULL encryption type the fast re-authentication feature is not available because key exchange is only performed the initiator application uses the variant of this mechanism that supports per-message tokens and the GSS_Pseudo_random() function.</t>
       <t>
 Acceptor credentials are PKIX <xref target="RFC5280"/> certificates and their private keys.</t>
-      <section title="Host certificates for mutual authentication" anchor="d1e3343">
+      <section title="Host certificates for mutual authentication" anchor="d1e3370">
         <t>
 Allowing a match on only the DNS subjectAltName in an acceptor's X.509 certificate permits different services on the same host to impersonate each other. This should be subject to local policy.</t>
       </section>
-      <section title="Error statuses" anchor="d1e3352">
+      <section title="Error statuses" anchor="d1e3380">
         <t>
 Returning rich error information in the clear (see  <xref target="sub_response_gss_min"/>) may leak information. Implementations may squash status codes and/or avoid returning minor statuses entirely. Indeed, applications may even not send back error tokens at all, instead closing the connection or whatever might be appropriate for the application. (This is a generic GSS-API security consideration.)</t>
       </section>
     </section>
-    <section title="IANA Considerations" anchor="d1e3365">
+    <section title="IANA Considerations" anchor="d1e3392">
       <t>
 This specification creates a number of IANA registries.</t>
       <section title="OID Registry" anchor="sub_OID_Registry">
@@ -1547,30 +1568,8 @@ GSS_C_NT_BROWSERID_PRINCIPAL</c>
           <c>
 3.1.1</c>
         </texttable>
-        <t>
-Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID.ekus (1.3.6.1.4.1.5322.24.3)</t>
-        <texttable>
-          <ttcol align="center">
-Decimal</ttcol>
-          <ttcol align="center">
-Name</ttcol>
-          <ttcol align="center">
-Description</ttcol>
-          <c>
-0</c>
-          <c>
-Reserved</c>
-          <c>
-Reserved</c>
-          <c>
-1</c>
-          <c>
-browserIDServerAuth</c>
-          <c>
-4.2</c>
-        </texttable>
       </section>
-      <section title="SASL Registry" anchor="d1e3708">
+      <section title="SASL Registry" anchor="d1e3676">
         <t>
 Subject: Registration of SASL mechanisms BROWSERID-AES128 and BROWSERID-AES128-PLUS</t>
         <t>
@@ -1618,6 +1617,7 @@ We could use the NULL encryption type variant for SASL, as the GS2 bridge does n
 &RFC4121;
 &RFC4178;
 &RFC4422;
+&RFC4556;
 &RFC4757;
 &RFC5178;
 &RFC5280;
@@ -1628,6 +1628,7 @@ We could use the NULL encryption type variant for SASL, as the GS2 bridge does n
 &JWS;
 &JWT;
 &NegoEx;
+&PKU2U;
 
 <reference anchor="BrowserID"><front><title>BrowserID Specification</title><author initials="B." surname="Adida" fullname="Ben Adida"><organization>The Mozilla Foundation</organization></author><date year="2013" day="26" month="February"/></front><format type="TXT" target="https://raw.github.com/mozilla/id-specs/prod/browserid/index.md"/></reference>
 </references>

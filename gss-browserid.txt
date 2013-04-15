@@ -89,15 +89,15 @@ Table of Contents
    4.2.2.  Acceptor mutual authentication context token . . . . . . . 14
    4.2.3.  Initiator mutual authentication context completion . . . . 14
    4.2.4.  Acceptor certificate advertisement . . . . . . . . . . . . 15
-   4.3.    Fast re-authentication . . . . . . . . . . . . . . . . . . 15
+   4.3.    Fast re-authentication . . . . . . . . . . . . . . . . . . 16
    4.3.1.  Ticket generation  . . . . . . . . . . . . . . . . . . . . 16
-   4.3.2.  Initiator re-authentication context token  . . . . . . . . 16
+   4.3.2.  Initiator re-authentication context token  . . . . . . . . 17
    4.3.3.  Acceptor re-authentication context token . . . . . . . . . 17
-   4.3.4.  Interaction with mutual authentication . . . . . . . . . . 17
+   4.3.4.  Interaction with mutual authentication . . . . . . . . . . 18
    4.3.5.  Ticket renewal . . . . . . . . . . . . . . . . . . . . . . 18
    4.4.    Extra round-trip (XRT) option  . . . . . . . . . . . . . . 18
-   4.4.1.  Initiator XRT advertisement  . . . . . . . . . . . . . . . 18
-   4.4.2.  Acceptor XRT advertisement . . . . . . . . . . . . . . . . 18
+   4.4.1.  Initiator XRT advertisement  . . . . . . . . . . . . . . . 19
+   4.4.2.  Acceptor XRT advertisement . . . . . . . . . . . . . . . . 19
    4.4.3.  Initiator XRT context token  . . . . . . . . . . . . . . . 19
    4.4.4.  Acceptor XRT context token validation  . . . . . . . . . . 19
    4.4.5.  Interaction with message protection services . . . . . . . 19
@@ -155,10 +155,10 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    10.     IANA Considerations  . . . . . . . . . . . . . . . . . . . 41
    10.1.   OID Registry . . . . . . . . . . . . . . . . . . . . . . . 41
    10.2.   SASL Registry  . . . . . . . . . . . . . . . . . . . . . . 42
-   11.     References . . . . . . . . . . . . . . . . . . . . . . . . 44
-   11.1.   Normative References . . . . . . . . . . . . . . . . . . . 44
-   11.2.   Informative References . . . . . . . . . . . . . . . . . . 45
-           Authors' Addresses . . . . . . . . . . . . . . . . . . . . 46
+   11.     References . . . . . . . . . . . . . . . . . . . . . . . . 43
+   11.1.   Normative References . . . . . . . . . . . . . . . . . . . 43
+   11.2.   Informative References . . . . . . . . . . . . . . . . . . 44
+           Authors' Addresses . . . . . . . . . . . . . . . . . . . . 45
 
 
 
@@ -751,9 +751,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    included in the backed assertion.  Rather, an X.509 certificate SHALL
    be included as a value for the "x5c" header property in the assertion
    (see [I-D.ietf-jose-json-web-signature] 4.1.6).  The certificate MUST
-   be valid for signing; if it has any EKUs it MUST have either the id-
-   kp-serverAuth [RFC5280] or browserIDServerAuth (see Section 10.1)
-   EKU.
+   be valid for signing.
 
    [[anchor4: We don't want to burden the initiator with having to
    implement both methods of authenticating acceptors, and given that
@@ -770,13 +768,15 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    be configurable both system-wide and specifically for the BrowserID
    mechanism.
 
-   Either the audience URI must be present in the URI subjectAltName, or
-   the host component must be present as a value for the DNS
-   subjectAltName or as the least significant Common Name RDN (if policy
-   requires only the acceptor host name to be authenticated).
+   If the initiator policy requires the acceptor service name to be
+   validated in addition to the acceptor host name, the service name
+   MUST be validated against one of the following:
 
-   [[anchor5: We need to resolve how to map host-based service principal
-   names into PKIX terms.  The hostname part we know how to handle
+   o  A service-name EKU from the registry defined by [I-D.zhu-pku2u]
+
+   o  An algorithmically mapped service-name EKU (TBD)
+
+
 
 
 
@@ -785,11 +785,26 @@ Howard & Williams       Expires October 17, 2013               [Page 14]
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
 
-   (e.g., as the dNSName SAN), but the service name may best be
-   expressed as an optional EKU (rather than a URI as specified above),
-   in which case we may need an EKU mapping of service names, either
-   algorithm, or via an IANA registry.  This issue MUST be addressed
-   before publication.]]
+   o  A spn expressed as a realm-less KRB5PrincipalName in the id-
+      pkinit-san otherName SAN (see [RFC4556] Section 3.2.2)
+
+   o  A BrowserID audience URN containing the spn, encoded in the URI
+      SAN (see Section 3.2)
+
+   o  An out-of-band binding to the certificate
+
+   [[anchor5: We need to limit to one or two of these approaches.]]
+
+   If the initiator policy only requires the acceptor host name to be
+   authenticated, or an EKU binding is used (rather than an otherName or
+   URI SAN containing the host name), then the host component of the
+   service name (service-host) MUST be present as a value for the
+   dNSName subjectAltName (SAN) or as the least significant Common Name
+   RDN.
+
+   If the acceptor name contains a service-specific component and the
+   initiator policy requires this to be authenticated, then only the id-
+   pkinit-san or audience URN SAN provide this binding.
 
 4.2.4.  Acceptor certificate advertisement
 
@@ -818,6 +833,14 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    type for the selected mechanism.  The authentication scheme for
    encryption types greater than 255 is not specified here.
 
+
+
+
+Howard & Williams       Expires October 17, 2013               [Page 15]
+
+Internet-Draft          BrowserID SASL & GSS-API              April 2013
+
+
    There is currently no initiator-sent metadata defined and acceptors
    should ignore any sent.  The metadata is advisory and the initiator
    is free to ignore it.
@@ -833,14 +856,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
    The re-authentication assertion is signed with a HMAC using the
    Authenticator Root Key (ARK) (see Section 7.5), rather than a
-
-
-
-Howard & Williams       Expires October 17, 2013               [Page 15]
-
-Internet-Draft          BrowserID SASL & GSS-API              April 2013
-
-
    initiator principal's BrowserID certificate.
 
    Support for fast re-authentication is OPTIONAL and is indicated by
@@ -873,6 +888,15 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    The initiator MAY cache tickets, along with the ARK, received from
    the acceptor in order to re-authenticate to it at a future time.
 
+
+
+
+
+Howard & Williams       Expires October 17, 2013               [Page 16]
+
+Internet-Draft          BrowserID SASL & GSS-API              April 2013
+
+
 4.3.2.  Initiator re-authentication context token
 
    The initiator looks in its ticket cache for an unexpired ticket for
@@ -889,14 +913,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    2.  The initiator signs the re-authentication assertion with the ARK,
        using the hash algorithm associated with the original context key
        (see Section 10.1; HS256 is specified for the encryption types
-
-
-
-Howard & Williams       Expires October 17, 2013               [Page 16]
-
-Internet-Draft          BrowserID SASL & GSS-API              April 2013
-
-
        referenced in this document).
 
    3.  The re-authentication assertion is packed into a backed
@@ -928,6 +944,15 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
        RRK and CRK from this (see Section 7.3 and Section 7.4,
        respectively).
 
+
+
+
+
+Howard & Williams       Expires October 17, 2013               [Page 17]
+
+Internet-Draft          BrowserID SASL & GSS-API              April 2013
+
+
    5.  The acceptor generates a response and signs and returns it.  Note
        that, unlike the certificate-based mutual authentication case,
        the nonce need not be echoed back as the ASK (and thus the RRK)
@@ -945,14 +970,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    The mutual authentication state of a re-authenticated context is
    transitive.  The initiator MUST NOT set the mutual_state flag for a
    re-authenticated context unless the original context was mutually
-
-
-
-Howard & Williams       Expires October 17, 2013               [Page 17]
-
-Internet-Draft          BrowserID SASL & GSS-API              April 2013
-
-
    authenticated.
 
    As such, the initiator's ticket cache must store the mutual
@@ -984,6 +1001,14 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    with pseudo-mechanisms or application protocols that require an even
    number of tokens.)
 
+
+
+
+Howard & Williams       Expires October 17, 2013               [Page 18]
+
+Internet-Draft          BrowserID SASL & GSS-API              April 2013
+
+
 4.4.1.  Initiator XRT advertisement
 
    The initiator may advertise to the acceptor that it supports the XRT
@@ -1000,14 +1025,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    base 64 URL encoded value.  This value MUST be at least 64 bits in
    length.  The acceptor then returns GSS_C_CONTINUE_NEEDED to indicate
    that an additional context token is expected from the initiator.
-
-
-
-
-Howard & Williams       Expires October 17, 2013               [Page 18]
-
-Internet-Draft          BrowserID SASL & GSS-API              April 2013
-
 
    (Note that this top-level "jti" claim is unrelated to the "nonce"
    claim or to the "jti" ticket identifier claim.)
@@ -1039,23 +1056,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    to derive the Context Root Key (CRK) (see Section 7.4).  Per-message
    tokens MUST have the AcceptorSubkey flag set (see [RFC4121] Section
    4.2.2).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2305,18 +2305,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
          |    1    | GSS_C_NT_BROWSERID_PRINCIPAL |    3.1.1    |
          +---------+------------------------------+-------------+
 
-   Prefix:
-   iso.org.dod.internet.private.enterprise.padl.gssBrowserID.ekus
-   (1.3.6.1.4.1.5322.24.3)
-
-              +---------+---------------------+-------------+
-              | Decimal |         Name        | Description |
-              +---------+---------------------+-------------+
-              |    0    |       Reserved      |   Reserved  |
-              |         |                     |             |
-              |    1    | browserIDServerAuth |     4.2     |
-              +---------+---------------------+-------------+
-
 10.2.  SASL Registry
 
    Subject: Registration of SASL mechanisms BROWSERID-AES128 and
@@ -2345,14 +2333,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    as the GS2 bridge does not use message protection services.  However,
    because that mechanisms is unkeyed, re-authentication would not be
    available.  Defining a single AES128 mechanism is consistent with GSS
-
-
-
-Howard & Williams       Expires October 17, 2013               [Page 42]
-
-Internet-Draft          BrowserID SASL & GSS-API              April 2013
-
-
    EAP.]]
 
 
@@ -2368,43 +2348,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Howard & Williams       Expires October 17, 2013               [Page 43]
+Howard & Williams       Expires October 17, 2013               [Page 42]
 
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
@@ -2439,6 +2383,9 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    [RFC4422]  Melnikov, A. and K. Zeilenga, "Simple Authentication and
               Security Layer (SASL)", RFC 4422, June 2006.
 
+   [RFC4556]  Zhu, L. and B. Tung, "Public Key Cryptography for Initial
+              Authentication in Kerberos (PKINIT)", RFC 4556, June 2006.
+
    [RFC4757]  Jaganathan, K., Zhu, L., and J. Brezak, "The RC4-HMAC
               Kerberos Encryption Types Used by Microsoft Windows",
               RFC 4757, December 2006.
@@ -2454,16 +2401,17 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
               (CRL) Profile", RFC 5280, May 2008.
 
    [RFC5801]  Josefsson, S. and N. Williams, "Using Generic Security
-              Service Application Program Interface (GSS-API) Mechanisms
-              in Simple Authentication and Security Layer (SASL): The
-              GS2 Mechanism Family", RFC 5801, July 2010.
 
 
 
-Howard & Williams       Expires October 17, 2013               [Page 44]
+Howard & Williams       Expires October 17, 2013               [Page 43]
 
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
+
+              Service Application Program Interface (GSS-API) Mechanisms
+              in Simple Authentication and Security Layer (SASL): The
+              GS2 Mechanism Family", RFC 5801, July 2010.
 
    [RFC5929]  Altman, J., Williams, N., and L. Zhu, "Channel Bindings
               for TLS", RFC 5929, July 2010.
@@ -2493,6 +2441,11 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
               Extended Negotiation (NEGOEX) Security Mechanism",
               draft-zhu-negoex-04 (work in progress), January 2011.
 
+   [I-D.zhu-pku2u]
+              Zhu, L., Altman, J., and N. Williams, "Public Key
+              Cryptography Based User-to-User Authentication - (PKU2U)",
+              draft-zhu-pku2u-09 (work in progress), November 2008.
+
    [BrowserID]
               Adida, B., "BrowserID Specification", February 2013.
 
@@ -2507,16 +2460,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
 
 
-
-
-
-
-
-
-
-
-
-Howard & Williams       Expires October 17, 2013               [Page 45]
+Howard & Williams       Expires October 17, 2013               [Page 44]
 
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
@@ -2572,5 +2516,5 @@ Authors' Addresses
 
 
 
-Howard & Williams       Expires October 17, 2013               [Page 46]
+Howard & Williams       Expires October 17, 2013               [Page 45]
 

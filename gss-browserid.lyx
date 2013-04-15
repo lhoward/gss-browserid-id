@@ -2027,25 +2027,7 @@ I-D.ietf-jose-json-web-signature
 \end_inset
 
  4.1.6).
- The certificate MUST be valid for signing; if it has any EKUs it MUST have
- either the id-kp-serverAuth 
-\begin_inset Flex EntityXRef
-status collapsed
-
-\begin_layout Plain Layout
-RFC5280
-\end_layout
-
-\end_inset
-
- or browserIDServerAuth (see 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:OID Registry"
-
-\end_inset
-
-) EKU.
+ The certificate MUST be valid for signing.
 \end_layout
 
 \begin_layout RevisionRemark
@@ -2069,20 +2051,77 @@ The initiator verifies the assertion signature and that the nonce matches,
 \end_layout
 
 \begin_layout Standard
-Either the audience URI must be present in the URI subjectAltName, or the
- host component must be present as a value for the DNS subjectAltName or
- as the least significant Common Name RDN (if policy requires only the acceptor
- host name to be authenticated).
+If the initiator policy requires the acceptor service name to be validated
+ in addition to the acceptor host name, the service name MUST be validated
+ against one of the following:
+\end_layout
+
+\begin_layout Itemize
+A service-name EKU from the registry defined by 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+I-D.zhu-pku2u
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+An algorithmically mapped service-name EKU (TBD)
+\end_layout
+
+\begin_layout Itemize
+A spn expressed as a realm-less KRB5PrincipalName in the id-pkinit-san otherName
+ SAN (see 
+\begin_inset Flex EntityXRef
+status open
+
+\begin_layout Plain Layout
+RFC4556
+\end_layout
+
+\end_inset
+
+ Section 3.2.2)
+\end_layout
+
+\begin_layout Itemize
+A BrowserID audience URN containing the spn, encoded in the URI SAN (see
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Audience-encoding"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+An out-of-band binding to the certificate
 \end_layout
 
 \begin_layout RevisionRemark
-We need to resolve how to map host-based service principal names into PKIX
- terms.
- The hostname part we know how to handle (e.g., as the dNSName SAN), but the
- service name may best be expressed as an optional EKU (rather than a URI
- as specified above), in which case we may need an EKU mapping of service
- names, either algorithm, or via an IANA registry.
- This issue MUST be addressed before publication.
+We need to limit to one or two of these approaches.
+\end_layout
+
+\begin_layout Standard
+If the initiator policy only requires the acceptor host name to be authenticated
+, or an EKU binding is used (rather than an otherName or URI SAN containing
+ the host name), then the host component of the service name (service-host)
+ MUST be present as a value for the dNSName subjectAltName (SAN) or as the
+ least significant Common Name RDN.
+ 
+\end_layout
+
+\begin_layout Standard
+If the acceptor name contains a service-specific component and the initiator
+ policy requires this to be authenticated, then only the id-pkinit-san or
+ audience URN SAN provide this binding.
 \end_layout
 
 \begin_layout Subsubsection
@@ -5159,7 +5198,7 @@ CRK
 \begin_layout Standard
 The random-to-key function is defined in 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC3961
@@ -6860,7 +6899,7 @@ This mechanism provides for authentication of initiator principals using
  private keys to public key crypto-systems, using the BrowserID specification
  for user certificates (which are NOT PKIX 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC5280
@@ -6878,7 +6917,7 @@ RFC5280
 All cryptography for per-message tokens is imported from the Kerberos GSS-API
  mechanism 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC4121
@@ -6894,7 +6933,7 @@ This mechanism actually has several mechanism OIDs, composed of a prefix
  identifying this family of mechanisms followed by an arc identifying the
  
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC3961
@@ -6916,7 +6955,7 @@ on uses the variant of this mechanism that supports per-message tokens and
 \begin_layout Standard
 Acceptor credentials are PKIX 
 \begin_inset Flex EntityXRef
-status collapsed
+status open
 
 \begin_layout Plain Layout
 RFC5280
@@ -7469,117 +7508,6 @@ reference "sub:GSS_C_NT_BROWSERID_PRINCIPAL"
 
 \end_layout
 
-\begin_layout Standard
-Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID.ekus (1.3.6.1.4.1.5322.24.3)
-\end_layout
-
-\begin_layout Standard
-\begin_inset Tabular
-<lyxtabular version="3" rows="3" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Decimal
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Name
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Description
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Reserved
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Reserved
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-browserIDServerAuth
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Extensions-for-mutual"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Subsection
 SASL Registry
 \end_layout
@@ -7855,6 +7783,26 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset href
 LatexCommand href
+name "RFC4556"
+target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4556.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
 name "RFC4757"
 target "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4757.xml"
 
@@ -8037,6 +7985,26 @@ status open
 LatexCommand href
 name "NegoEx"
 target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zhu-negoex.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "PKU2U"
+target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zhu-pku2u.xml"
 
 \end_inset
 
