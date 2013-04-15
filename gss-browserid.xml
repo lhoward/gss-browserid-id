@@ -400,7 +400,7 @@ An algorithmically mapped service-name EKU (TBD)</t>
               <t>
 A spn expressed as a realm-less KRB5PrincipalName in the id-pkinit-san otherName SAN (see <xref target="RFC4556"/> Section 3.2.2)</t>
               <t>
-A BrowserID audience URN containing the spn, encoded in the URI SAN (see  <xref target="sub_Audience_encoding"/>)</t>
+A BrowserID audience URN containing the spn, encoded in a URI SAN (see  <xref target="sub_Audience_encoding"/>)</t>
               <t>
 An out-of-band binding to the certificate</t>
             </list>
@@ -410,9 +410,9 @@ An out-of-band binding to the certificate</t>
 We need to limit to one or two of these approaches.</cref>
           </t>
           <t>
-If the initiator policy only requires the acceptor host name to be authenticated, or an EKU binding is used (rather than an otherName or URI SAN containing the host name), then the host component of the service name (service-host) MUST be present as a value for the dNSName subjectAltName (SAN) or as the least significant Common Name RDN. </t>
+If the initiator policy only requires the acceptor host name to be authenticated, or an EKU binding is used (rather than the id-pkinit-san or URI SAN, which contain a host name), then the host component of the service name (service-host) MUST be present as a value for the dNSName SAN or as the least significant Common Name RDN. </t>
           <t>
-If the acceptor name contains a service-specific component and the initiator policy requires this to be authenticated, then only the id-pkinit-san or audience URN SAN provide this binding.</t>
+If the acceptor name contains a service-specific component and the initiator policy requires this to be authenticated, then only the id-pkinit-san or URI SANs provide this binding.</t>
         </section>
         <section title="Acceptor certificate advertisement" anchor="sub_NegoEx">
           <t><xref target="I-D.zhu-negoex"/> may be used to advertise acceptor certificates.</t>
@@ -1493,12 +1493,6 @@ A sub-arc containing BrowserID mechanisms</c>
 nametypes</c>
           <c>
 A sub-arc containing BrowserID name types</c>
-          <c>
-3</c>
-          <c>
-ekus</c>
-          <c>
-A sub-arc containing X.509 EKUs</c>
         </texttable>
         <t>
 Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID.mechanisms (1.3.6.1.4.1.5322.24.1)</t>
@@ -1569,7 +1563,7 @@ GSS_C_NT_BROWSERID_PRINCIPAL</c>
 3.1.1</c>
         </texttable>
       </section>
-      <section title="SASL Registry" anchor="d1e3676">
+      <section title="SASL Registry" anchor="d1e3660">
         <t>
 Subject: Registration of SASL mechanisms BROWSERID-AES128 and BROWSERID-AES128-PLUS</t>
         <t>

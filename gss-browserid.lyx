@@ -2090,8 +2090,7 @@ RFC4556
 \end_layout
 
 \begin_layout Itemize
-A BrowserID audience URN containing the spn, encoded in the URI SAN (see
- 
+A BrowserID audience URN containing the spn, encoded in a URI SAN (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Audience-encoding"
@@ -2111,17 +2110,17 @@ We need to limit to one or two of these approaches.
 
 \begin_layout Standard
 If the initiator policy only requires the acceptor host name to be authenticated
-, or an EKU binding is used (rather than an otherName or URI SAN containing
- the host name), then the host component of the service name (service-host)
- MUST be present as a value for the dNSName subjectAltName (SAN) or as the
- least significant Common Name RDN.
+, or an EKU binding is used (rather than the id-pkinit-san or URI SAN, which
+ contain a host name), then the host component of the service name (service-host
+) MUST be present as a value for the dNSName SAN or as the least significant
+ Common Name RDN.
  
 \end_layout
 
 \begin_layout Standard
 If the acceptor name contains a service-specific component and the initiator
  policy requires this to be authenticated, then only the id-pkinit-san or
- audience URN SAN provide this binding.
+ URI SANs provide this binding.
 \end_layout
 
 \begin_layout Subsubsection
@@ -7020,7 +7019,7 @@ Prefix: iso.org.dod.internet.private.enterprise.padl.gssBrowserID (1.3.6.1.4.1.5
 
 \begin_layout Standard
 \begin_inset Tabular
-<lyxtabular version="3" rows="5" columns="3">
+<lyxtabular version="3" rows="4" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -7136,35 +7135,6 @@ nametypes
 
 \begin_layout Plain Layout
 A sub-arc containing BrowserID name types
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-3
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-ekus
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-A sub-arc containing X.509 EKUs
 \end_layout
 
 \end_inset

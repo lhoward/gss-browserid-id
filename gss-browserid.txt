@@ -788,23 +788,22 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    o  A spn expressed as a realm-less KRB5PrincipalName in the id-
       pkinit-san otherName SAN (see [RFC4556] Section 3.2.2)
 
-   o  A BrowserID audience URN containing the spn, encoded in the URI
-      SAN (see Section 3.2)
+   o  A BrowserID audience URN containing the spn, encoded in a URI SAN
+      (see Section 3.2)
 
    o  An out-of-band binding to the certificate
 
    [[anchor5: We need to limit to one or two of these approaches.]]
 
    If the initiator policy only requires the acceptor host name to be
-   authenticated, or an EKU binding is used (rather than an otherName or
-   URI SAN containing the host name), then the host component of the
-   service name (service-host) MUST be present as a value for the
-   dNSName subjectAltName (SAN) or as the least significant Common Name
-   RDN.
+   authenticated, or an EKU binding is used (rather than the id-pkinit-
+   san or URI SAN, which contain a host name), then the host component
+   of the service name (service-host) MUST be present as a value for the
+   dNSName SAN or as the least significant Common Name RDN.
 
    If the acceptor name contains a service-specific component and the
    initiator policy requires this to be authenticated, then only the id-
-   pkinit-san or audience URN SAN provide this binding.
+   pkinit-san or URI SANs provide this binding.
 
 4.2.4.  Acceptor certificate advertisement
 
@@ -833,6 +832,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    type for the selected mechanism.  The authentication scheme for
    encryption types greater than 255 is not specified here.
 
+   There is currently no initiator-sent metadata defined and acceptors
 
 
 
@@ -841,7 +841,6 @@ Howard & Williams       Expires October 17, 2013               [Page 15]
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
 
-   There is currently no initiator-sent metadata defined and acceptors
    should ignore any sent.  The metadata is advisory and the initiator
    is free to ignore it.
 
@@ -887,6 +886,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
    The initiator MAY cache tickets, along with the ARK, received from
    the acceptor in order to re-authenticate to it at a future time.
+
 
 
 
