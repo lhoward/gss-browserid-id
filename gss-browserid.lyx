@@ -282,7 +282,7 @@ A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol
 status open
 
 \begin_layout Plain Layout
-draft-howard-gss-browserid-03.txt
+draft-howard-gss-browserid-04.txt
 \end_layout
 
 \end_inset
@@ -2090,9 +2090,7 @@ RFC5280
 \end_layout
 
 \begin_layout Standard
-If the initiator policy requires the acceptor service name to be validated
- in addition to the acceptor host name, the service name MUST be validated
- against one of the following:
+Initiators MUST authenticate the service name using the matching rules below:
 \end_layout
 
 \begin_layout Itemize
@@ -2106,11 +2104,15 @@ I-D.zhu-pku2u
 
 \end_inset
 
+; id-kpServerAuth maps to the 
+\begin_inset Quotes eld
+\end_inset
 
-\end_layout
+http
+\begin_inset Quotes erd
+\end_inset
 
-\begin_layout Itemize
-An algorithmically mapped service-name EKU (TBD)
+ service
 \end_layout
 
 \begin_layout Itemize
@@ -2162,18 +2164,22 @@ We need to limit to one or two of these approaches.
 \end_layout
 
 \begin_layout Standard
-If the initiator policy only requires the acceptor host name to be authenticated
-, or an EKU binding is used (rather than the SANs, which contain a host
- name), then the host component of the service name (service-host) MUST
- be present as a value for the dNSName SAN or as the least significant Common
- Name RDN.
+If there are no EKUs, or a single EKU containing id-kp-anyExtendedKeyUsage,
+ and no SAN containing the service name is present, then all service names
+ match.
+ If a SAN containing the service name is present, then any EKUs are ignored.
+\end_layout
+
+\begin_layout Standard
+If the the host component of the service name (service-host) is not expressed
+ in a SAN as specified above, it MUST be present as a value for the dNSName
+ SAN or as the least significant Common Name RDN.
  
 \end_layout
 
 \begin_layout Standard
-If the acceptor name contains a service-specific component and the initiator
- policy requires this to be authenticated, note only the id-pkinit-san or
- URI SANs provide this binding.
+Note only the id-pkinit-san or URI SANs provide the ability to authenticate
+ the a service name containing a service-specific component.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2517,13 +2523,13 @@ Interaction with mutual authentication
 
 \begin_layout Standard
 The mutual authentication state of a re-authenticated context is transitive.
- The initiator MUST NOT set the mutual_state flag for a re-authenticated
- context unless the original context was mutually authenticated.
+ The initiator and acceptor MUST NOT set the mutual_state flag for a re-authenti
+cated context unless the original context was mutually authenticated.
 \end_layout
 
 \begin_layout Standard
-As such, the initiator's ticket cache must store the mutual authentication
- state of the original context.
+As such, the mutual authentication state of the original context must be
+ associated with the ticket.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2956,7 +2962,8 @@ These claims are included in the assertion sent to the acceptor and are
 
 \begin_layout Standard
 Here is an example assertion containing Elliptic Curve Diffie-Hellman parameters
-, along with a nonce indicating that mutual authentication is desired:
+, along with options and nonce claims indicating that mutual authentication
+ is desired:
 \end_layout
 
 \begin_layout Standard
@@ -2966,7 +2973,22 @@ status open
 
 \begin_layout Plain Layout
 
- { 
+ {
+\end_layout
+
+\begin_layout Plain Layout
+
+     "opts": [
+\end_layout
+
+\begin_layout Plain Layout
+
+         "ma"
+\end_layout
+
+\begin_layout Plain Layout
+
+     ], 
 \end_layout
 
 \begin_layout Plain Layout
