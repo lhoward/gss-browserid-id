@@ -2116,20 +2116,6 @@ http
 \end_layout
 
 \begin_layout Itemize
-A service-name expressed as a SRVName SAN (see 
-\begin_inset Flex EntityXRef
-status collapsed
-
-\begin_layout Plain Layout
-RFC4985
-\end_layout
-
-\end_inset
-
-)
-\end_layout
-
-\begin_layout Itemize
 A spn expressed as a KRB5PrincipalName in the id-pkinit-san otherName SAN
  (see 
 \begin_inset Flex EntityXRef
@@ -2157,10 +2143,6 @@ reference "sub:Audience-encoding"
 
 \begin_layout Itemize
 An out-of-band binding to the certificate
-\end_layout
-
-\begin_layout RevisionRemark
-We need to limit to one or two of these approaches.
 \end_layout
 
 \begin_layout Standard
@@ -3772,8 +3754,7 @@ tkt
 \begin_layout Standard
 This contains a JSON object that may be used for re-authenticating to the
  acceptor without acquiring an assertion.
- Its usage is optional.
- It has two parameter: 
+ It has two parameters: 
 \begin_inset Quotes eld
 \end_inset
 
