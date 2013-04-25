@@ -3306,13 +3306,12 @@ tkt
 \begin_inset Quotes erd
 \end_inset
 
- (Ticket identifier)
+ (Ticket)
 \end_layout
 
 \begin_layout Standard
-This is an opaque ticket identifier, when the assertion is being used for
- fast re-authentication.
- This matches the 
+When the assertion is being used for fast re-authentication, this contains
+ a JSON object with a single property, 
 \begin_inset Quotes eld
 \end_inset
 
@@ -3320,9 +3319,42 @@ jti
 \begin_inset Quotes erd
 \end_inset
 
- value sent back in the response assertion ticket.
+.
+ The 
+\begin_inset Quotes eld
+\end_inset
+
+jti
+\begin_inset Quotes erd
+\end_inset
+
+ value matches the 
+\begin_inset Quotes eld
+\end_inset
+
+jti
+\begin_inset Quotes erd
+\end_inset
+
+ value sent back in the response assertion ticket (see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:response-tkt"
+
+\end_inset
+
+).
  This claim is REQUIRED for re-authentication assertions, otherwise it the
  assertion MUST be rejected.
+ Other properties SHOULD NOT be present in the 
+\begin_inset Quotes eld
+\end_inset
+
+tkt
+\begin_inset Quotes erd
+\end_inset
+
+ object.
 \end_layout
 
 \begin_layout Subsubsection

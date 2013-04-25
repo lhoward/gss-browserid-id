@@ -30,7 +30,7 @@
 <!ENTITY PKU2U PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zhu-pku2u.xml">
 <!ENTITY RFC4120 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4120.xml">
 ]>
-<rfc docName="draft-howard-gss-browserid-03.txt" ipr="trust200902" category="exp" updates="">
+<rfc docName="draft-howard-gss-browserid-04.txt" ipr="trust200902" category="exp" updates="">
   <front>
     <title abbrev="BrowserID SASL &amp; GSS-API">A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol</title>
     <author initials="L." surname="Howard" fullname="Luke Howard">
@@ -410,7 +410,7 @@ An out-of-band binding to the certificate</t>
 We need to limit to one or two of these approaches.</cref>
           </t>
           <t>
-If there are no EKUs, or a single EKU containing id-kp-anyExtendedKeyUsage, and no SAN containing the service name is present, then all service names match.</t>
+If there are no EKUs, or a single EKU containing id-kp-anyExtendedKeyUsage, and no SAN containing the service name is present, then all service names match. If a SAN containing the service name is present, then any EKUs are ignored.</t>
           <t>
 If the the host component of the service name (service-host) is not expressed in a SAN as specified above, it MUST be present as a value for the dNSName SAN or as the least significant Common Name RDN. </t>
           <t>
@@ -610,19 +610,22 @@ The initiator and acceptor should set the returned flags as follows:</t>
         <t>
 These claims are included in the assertion sent to the acceptor and are authenticated by the initiator's private key and certificate chain (directly, or in the case of re-authentication assertions, transitively). Claims not specified here MUST be ignored by the acceptor.</t>
         <t>
-Here is an example assertion containing Elliptic Curve Diffie-Hellman parameters, along with a nonce indicating that mutual authentication is desired:</t>
+Here is an example assertion containing Elliptic Curve Diffie-Hellman parameters, along with options and nonce claims indicating that mutual authentication is desired:</t>
         <t>
 </t>
         <t>
           <figure suppress-title="true" align="center">
-            <artwork> { 
+            <artwork> {
+     "opts": [
+         "ma"
+     ], 
      "exp": 1360158396188,
      "ecdh": {
          "crv": "P-256",
          "x": "JR5UPDgMLFPZwOGaKKSF24658tB1DccM1_oHPbCHeZg",
          "y": "S45Esx_6DfE5-xdB3X7sIIJ16MwO0Y_RiDc-i5ZTLQ8"
      },
-     "nonce": "GnK2IBA42iQ",
+     "nonce": "bbqT10Gyx3s",
      "aud": "urn:x-gss:imap/mail.example.com"
  }</artwork>
           </figure>
@@ -663,9 +666,9 @@ This contains channel binding information for binding the GSS context to an oute
           <t>
 This is a random quantity of at least 64 bits, base 64 URL encoded, which is used to bind the request and response assertions in the case a freshly agreed key is not used to sign the response assertion. This claim is REQUIRED if mutual authentication is desired and the assertion is signed using a certificate, or if re-authentication is being performed.</t>
         </section>
-        <section title="“tkt” (Ticket identifier)" anchor="sub_request_tkt">
+        <section title="“tkt” (Ticket)" anchor="sub_request_tkt">
           <t>
-This is an opaque ticket identifier, when the assertion is being used for fast re-authentication. This matches the “jti” value sent back in the response assertion ticket. This claim is REQUIRED for re-authentication assertions, otherwise it the assertion MUST be rejected.</t>
+When the assertion is being used for fast re-authentication, this contains a JSON object with a single property, “jti”. The “jti” value matches the “jti” value sent back in the response assertion ticket (see  <xref target="sub_response_tkt"/>). This claim is REQUIRED for re-authentication assertions, otherwise it the assertion MUST be rejected. Other properties SHOULD NOT be present in the “tkt” object.</t>
         </section>
         <section title="”opts” (Options)" anchor="sub_request_opts">
           <t>
@@ -698,7 +701,7 @@ RFC4757
           </texttable>
         </section>
       </section>
-      <section title="Response (acceptor/RP) assertion" anchor="d1e2252">
+      <section title="Response (acceptor/RP) assertion" anchor="d1e2255">
         <t>
 The response assertion is sent from the acceptor to the initiator to provide key agreement, and either key confirmation or mutual authentication. It is formatted as a backed assertion, however in the current specification it consists of a single assertion with zero certificates; that is, it is "unbacked". (It is encoded as a backed assertion in order to provide future support for mutual authentication using native BrowserID certificates. Such support is not specified here.)</t>
         <t>
@@ -758,7 +761,7 @@ This contains a JSON object that may be used for re-authenticating to the accept
 This contains a base64 URL encoded random value of at least 64 bits that is used to uniquely identify the acceptor response, in the case that the extra round trip option is used. It SHOULD not be present unless the initiator requested the extra round trip option.</t>
         </section>
       </section>
-      <section title="Error (acceptor/RP) assertion" anchor="d1e2371">
+      <section title="Error (acceptor/RP) assertion" anchor="d1e2374">
         <t>
 Error assertions are backed assertions containing any or all of the following claims. In addition, they MUST have the “iat” claim, for initiator clock skew correction. All other response assertion claims are OPTIONAL or not applicable in error assertions. Conversely, the claims listed below MUST NOT be present in a non-error response assertion.</t>
         <t>
@@ -1036,12 +1039,12 @@ Re-authentication failure</c>
           </texttable>
         </section>
       </section>
-      <section title="XRT assertion" anchor="d1e3109">
+      <section title="XRT assertion" anchor="d1e3112">
         <t>
 No claims are presently defined for the extra round trip assertion. Unknown claims MUST be ignored by the acceptor.</t>
       </section>
     </section>
-    <section title="Key derivation" anchor="d1e3118">
+    <section title="Key derivation" anchor="d1e3121">
       <t>
 The following function is used as the base algorithm for deriving keys:</t>
       <t>
@@ -1107,7 +1110,7 @@ Can we replace this with a function that imports less of RFC3962? We arguably sh
         </t>
       </section>
     </section>
-    <section title="Example" anchor="d1e3278">
+    <section title="Example" anchor="d1e3281">
       <t>
 Suppose a mail user agent for the principal lukeh@lukktone.com wishes to authenticate to an IMAP server rand.mit.de.padl.com. They do not have a re-authentication ticket. The mail user agent would display a dialog box in which the principal would sign in to their IdP and request a fresh assertion be generated.</t>
       <t>
@@ -1450,7 +1453,7 @@ The assertion payload is below (again, for clarity the actual JWT signature has 
       <t>
 Note the fast re-authentication ticket and the nonce echoed back from the initiator.</t>
     </section>
-    <section title="Security Considerations" anchor="d1e3358">
+    <section title="Security Considerations" anchor="d1e3361">
       <t>
 This document defines a GSS-API security mechanism, and therefore deals in security and has security considerations text embedded throughout. This section only addresses security considerations associated with the BrowserID GSS mechanism described in this document. It does not address security considerations associated with the BrowserID protocol or the GSS-API themselves.</t>
       <t>
@@ -1461,16 +1464,16 @@ All cryptography for per-message tokens is imported from the Kerberos GSS-API me
 This mechanism actually has several mechanism OIDs, composed of a prefix identifying this family of mechanisms followed by an arc identifying the <xref target="RFC3961"/> encryption type for use with per-message tokens and the GSS_Pseudo_random() function. The NULL encryption type is supported, and when it is used then the GSS-API per-message tokens and GSS_Pseudo_random() function are not available, but channel binding and mutual authentication may be available. Also, when using the NULL encryption type the fast re-authentication feature is not available because key exchange is only performed the initiator application uses the variant of this mechanism that supports per-message tokens and the GSS_Pseudo_random() function.</t>
       <t>
 Acceptor credentials are PKIX <xref target="RFC5280"/> certificates and their private keys.</t>
-      <section title="Host certificates for mutual authentication" anchor="d1e3404">
+      <section title="Host certificates for mutual authentication" anchor="d1e3407">
         <t>
 Allowing a match on only the DNS subjectAltName in an acceptor's X.509 certificate permits different services on the same host to impersonate each other. This should be subject to local policy.</t>
       </section>
-      <section title="Error statuses" anchor="d1e3413">
+      <section title="Error statuses" anchor="d1e3416">
         <t>
 Returning rich error information in the clear (see  <xref target="sub_response_gss_min"/>) may leak information. Implementations may squash status codes and/or avoid returning minor statuses entirely. Indeed, applications may even not send back error tokens at all, instead closing the connection or whatever might be appropriate for the application. (This is a generic GSS-API security consideration.)</t>
       </section>
     </section>
-    <section title="IANA Considerations" anchor="d1e3425">
+    <section title="IANA Considerations" anchor="d1e3428">
       <t>
 This specification creates a number of IANA registries.</t>
       <section title="OID Registry" anchor="sub_OID_Registry">
@@ -1571,7 +1574,7 @@ GSS_C_NT_BROWSERID_PRINCIPAL</c>
 3.1.1</c>
         </texttable>
       </section>
-      <section title="SASL Registry" anchor="d1e3693">
+      <section title="SASL Registry" anchor="d1e3696">
         <t>
 Subject: Registration of SASL mechanisms BROWSERID-AES128 and BROWSERID-AES128-PLUS</t>
         <t>
