@@ -1926,8 +1926,8 @@ TEG_FLAG) security context flags are set to TRUE.
 \end_layout
 
 \begin_layout Standard
-Other assertion/certificate properties MAY be made available via GSS_Get_name_at
-tribute().
+Other assertion/certificate claims MAY be made available via GSS_Get_name_attrib
+ute().
 \end_layout
 
 \begin_layout Subsubsection
@@ -2047,7 +2047,7 @@ While the response is a backed assertion, in order to take advantage of
  existing keying infrastructures BrowserID certificates MUST NOT be included
  in the backed assertion.
  Rather, an X.509 certificate SHALL be included as a value for the "x5c"
- header property in the assertion (see 
+ header parameter in the assertion (see 
 \begin_inset Flex EntityXRef
 status open
 
@@ -2659,34 +2659,6 @@ reference "sub:response-jti"
  This value MUST be at least 64 bits in length.
  The acceptor then returns GSS_C_CONTINUE_NEEDED to indicate that an additional
  context token is expected from the initiator.
-\end_layout
-
-\begin_layout Standard
-(Note that this top-level 
-\begin_inset Quotes eld
-\end_inset
-
-jti
-\begin_inset Quotes erd
-\end_inset
-
- claim is unrelated to the 
-\begin_inset Quotes eld
-\end_inset
-
-nonce
-\begin_inset Quotes erd
-\end_inset
-
- claim or to the 
-\begin_inset Quotes eld
-\end_inset
-
-jti
-\begin_inset Quotes erd
-\end_inset
-
- ticket identifier claim.) 
 \end_layout
 
 \begin_layout Subsubsection
@@ -3311,11 +3283,11 @@ tkt
 
 \begin_layout Standard
 When the assertion is being used for fast re-authentication, this contains
- a JSON object with a single property, 
+ a JSON object with a single parameter, 
 \begin_inset Quotes eld
 \end_inset
 
-jti
+tid
 \begin_inset Quotes erd
 \end_inset
 
@@ -3324,19 +3296,19 @@ jti
 \begin_inset Quotes eld
 \end_inset
 
-jti
+tid
 \begin_inset Quotes erd
 \end_inset
 
- value matches the 
+ parameter matches the 
 \begin_inset Quotes eld
 \end_inset
 
-jti
+tid
 \begin_inset Quotes erd
 \end_inset
 
- value sent back in the response assertion ticket (see 
+ parameter from the initial response assertion ticket (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:response-tkt"
@@ -3346,7 +3318,7 @@ reference "sub:response-tkt"
 ).
  This claim is REQUIRED for re-authentication assertions, otherwise it the
  assertion MUST be rejected.
- Other properties SHOULD NOT be present in the 
+ Other parameters SHOULD NOT be present in the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -3550,7 +3522,7 @@ reference "sub:kd-RRK"
  Alternatively, it may be signed with the acceptor's private RSA or DSA
  key.
  In this case, the acceptor's X.509 certificate is included in the "x5c"
- property of the JWT header.
+ claim of the JWT header.
 \end_layout
 
 \begin_layout Standard
@@ -3570,7 +3542,7 @@ RFC3961
 \end_inset
 
  encryption type for the mechanism is ENCTYPE_NULL, then the signature is
- absent and the value of the "alg" header claim is "none".
+ absent and the value of the "alg" header parameter is "none".
  No signature verification is required in this case.
 \end_layout
 
@@ -3629,7 +3601,7 @@ status open
 
 \begin_layout Plain Layout
 
-        "jti": "Jgg7vKX2sEKlCWBfmLTg_n4qz3NVZxOU-a2B4qYMkXI",
+        "tid": "Jgg7vKX2sEKlCWBfmLTg_n4qz3NVZxOU-a2B4qYMkXI",
 \end_layout
 
 \begin_layout Plain Layout
@@ -3727,7 +3699,7 @@ crv
 \begin_inset Quotes erd
 \end_inset
 
- property MUST NOT be present; it is determined by the initiator.
+ claim MUST NOT be present; it is determined by the initiator.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3801,16 +3773,19 @@ tkt
 This contains a JSON object that may be used for re-authenticating to the
  acceptor without acquiring an assertion.
  Its usage is optional.
- It has two properties: 
+ It has two parameter: 
 \begin_inset Quotes eld
 \end_inset
 
-jti
+
+tid
+\lang english
+
 \begin_inset Quotes erd
 \end_inset
 
-, an opaque identifier to be presented in a re-authentication assertion;
- and 
+, an opaque identifier to be presented in a re-authentication assertion
+ (this need not be a string); and 
 \begin_inset Quotes eld
 \end_inset
 
@@ -3872,7 +3847,7 @@ iat
 
 \begin_layout Standard
 The error assertion MAY be signed if a key is available, otherwise the signature
- is absent and the value of the "alg" header claim is "none".
+ is absent and the value of the "alg" header parameter is "none".
 \end_layout
 
 \begin_layout Subsubsection
@@ -6950,7 +6925,7 @@ status open
 
 \begin_layout Plain Layout
 
-        "jti": "aeay0GJizDx79Ag--WL-vw6Y9BXxRuC1XsZxry51SUI",
+        "tid": "aeay0GJizDx79Ag--WL-vw6Y9BXxRuC1XsZxry51SUI",
 \end_layout
 
 \begin_layout Plain Layout

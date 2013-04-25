@@ -131,7 +131,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    6.2.    Response (acceptor/RP) assertion . . . . . . . . . . . . . 24
    6.2.1.  "iat" (Issued at time) . . . . . . . . . . . . . . . . . . 25
    6.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key agreement) . . . 25
-   6.2.3.  "exp" (Expiry time)  . . . . . . . . . . . . . . . . . . . 25
+   6.2.3.  "exp" (Expiry time)  . . . . . . . . . . . . . . . . . . . 26
    6.2.4.  "nonce" (Mutual authentication nonce)  . . . . . . . . . . 26
    6.2.5.  "tkt" (Ticket) . . . . . . . . . . . . . . . . . . . . . . 26
    6.2.6.  "jti" (JWT ID) . . . . . . . . . . . . . . . . . . . . . . 26
@@ -693,7 +693,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    and integ_avail (GSS_C_INTEG_FLAG) security context flags are set to
    TRUE.
 
-   Other assertion/certificate properties MAY be made available via
+   Other assertion/certificate claims MAY be made available via
    GSS_Get_name_attribute().
 
 4.1.3.  Initiator context completion
@@ -748,9 +748,9 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    While the response is a backed assertion, in order to take advantage
    of existing keying infrastructures BrowserID certificates MUST NOT be
    included in the backed assertion.  Rather, an X.509 certificate SHALL
-   be included as a value for the "x5c" header property in the assertion
-   (see [I-D.ietf-jose-json-web-signature] 4.1.6).  The certificate MUST
-   be valid for signing.
+   be included as a value for the "x5c" header parameter in the
+   assertion (see [I-D.ietf-jose-json-web-signature] 4.1.6).  The
+   certificate MUST be valid for signing.
 
    [[anchor4: We don't want to burden the initiator with having to
    implement both methods of authenticating acceptors, and given that
@@ -1026,9 +1026,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    length.  The acceptor then returns GSS_C_CONTINUE_NEEDED to indicate
    that an additional context token is expected from the initiator.
 
-   (Note that this top-level "jti" claim is unrelated to the "nonce"
-   claim or to the "jti" ticket identifier claim.)
-
 4.4.3.  Initiator XRT context token
 
    If the acceptor indicated support for the XRT option by including a
@@ -1056,6 +1053,9 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    to derive the Context Root Key (CRK) (see Section 7.4).  Per-message
    tokens MUST have the AcceptorSubkey flag set (see [RFC4121] Section
    4.2.2).
+
+
+
 
 
 
@@ -1292,11 +1292,11 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 6.1.8.  "tkt" (Ticket)
 
    When the assertion is being used for fast re-authentication, this
-   contains a JSON object with a single property, "jti".  The "jti"
-   value matches the "jti" value sent back in the response assertion
-   ticket (see Section 6.2.5).  This claim is REQUIRED for re-
+   contains a JSON object with a single parameter, "tid".  The "tid"
+   parameter matches the "tid" parameter from the initial response
+   assertion ticket (see Section 6.2.5).  This claim is REQUIRED for re-
    authentication assertions, otherwise it the assertion MUST be
-   rejected.  Other properties SHOULD NOT be present in the "tkt"
+   rejected.  Other parameters SHOULD NOT be present in the "tkt"
    object.
 
 6.1.9.  "opts" (Options)
@@ -1336,7 +1336,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    assertion is signed with the RP Response Key (RRK) (see Section 7.3).
    Alternatively, it may be signed with the acceptor's private RSA or
    DSA key.  In this case, the acceptor's X.509 certificate is included
-   in the "x5c" property of the JWT header.
+   in the "x5c" claim of the JWT header.
 
 
 
@@ -1349,8 +1349,9 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    of this specification.
 
    If the [RFC3961] encryption type for the mechanism is ENCTYPE_NULL,
-   then the signature is absent and the value of the "alg" header claim
-   is "none".  No signature verification is required in this case.
+   then the signature is absent and the value of the "alg" header
+   parameter is "none".  No signature verification is required in this
+   case.
 
    Claims not specified here MUST be ignored by the initiator.
 
@@ -1364,7 +1365,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
                "y": "Iuqs650FXzXFUD9kHknETfbqiB8XBbCHlJXoysx3rvw"
            },
            "tkt": {
-               "jti": "Jgg7vKX2sEKlCWBfmLTg_n4qz3NVZxOU-a2B4qYMkXI",
+               "tid": "Jgg7vKX2sEKlCWBfmLTg_n4qz3NVZxOU-a2B4qYMkXI",
                "exp": 1362992660000
            }
        }
@@ -1386,13 +1387,12 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    ENCTYPE_NULL, or there is already an established session key, as is
    the case for re-authentication assertions.
 
-   The "crv" property MUST NOT be present; it is determined by the
+   The "crv" claim MUST NOT be present; it is determined by the
    initiator.
 
-6.2.3.  "exp" (Expiry time)
 
-   This contains the time when the context expires, in milliseconds
-   since January 1, 1970.  This claim is OPTIONAL; the initiator should
+
+
 
 
 
@@ -1401,6 +1401,10 @@ Howard & Williams       Expires October 27, 2013               [Page 25]
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
 
+6.2.3.  "exp" (Expiry time)
+
+   This contains the time when the context expires, in milliseconds
+   since January 1, 1970.  This claim is OPTIONAL; the initiator should
    use the certificate or ticket expiry time if absent.
 
 6.2.4.  "nonce" (Mutual authentication nonce)
@@ -1413,9 +1417,9 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
    This contains a JSON object that may be used for re-authenticating to
    the acceptor without acquiring an assertion.  Its usage is optional.
-   It has two properties: "jti", an opaque identifier to be presented in
-   a re-authentication assertion; and "exp", the expiry time of the
-   ticket.  This claim is OPTIONAL.
+   It has two parameter: "tid", an opaque identifier to be presented in
+   a re-authentication assertion (this need not be a string); and "exp",
+   the expiry time of the ticket.  This claim is OPTIONAL.
 
 6.2.6.  "jti" (JWT ID)
 
@@ -1434,8 +1438,8 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    assertion.
 
    The error assertion MAY be signed if a key is available, otherwise
-   the signature is absent and the value of the "alg" header claim is
-   "none".
+   the signature is absent and the value of the "alg" header parameter
+   is "none".
 
 6.3.1.  "gss-maj" (GSS major status code)
 
@@ -1445,10 +1449,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
    This contains a GSS minor status code represented as a number.
 
-   If REAUTH_FAILED is received, the initiator SHOULD attempt to send
-   another initial context token containing a fresh assertion.
-
-   The following protocol minor status codes are defined.  Note that the
 
 
 
@@ -1457,6 +1457,10 @@ Howard & Williams       Expires October 27, 2013               [Page 26]
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
 
+   If REAUTH_FAILED is received, the initiator SHOULD attempt to send
+   another initial context token containing a fresh assertion.
+
+   The following protocol minor status codes are defined.  Note that the
    API representation of these status codes is implementation dependent.
    Status codes with the high bit set are GSS BrowserID protocol errors;
    the remainder are BrowserID protocol errors.
@@ -1501,10 +1505,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    |                           |            |         attribute        |
    |                           |            |                          |
    |   UNKNOWN_PRINCIPAL_TYPE  |     35     |  Unknown principal type  |
-   |                           |            |                          |
-   |        MISSING_CERT       |     36     |    Missing certificate   |
-   |                           |            |                          |
-   |  MISSING_CHANNEL_BINDINGS |     38     | Missing channel bindings |
 
 
 
@@ -1513,6 +1513,10 @@ Howard & Williams       Expires October 27, 2013               [Page 27]
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
 
+   |        MISSING_CERT       |     36     |    Missing certificate   |
+   |                           |            |                          |
+   |  MISSING_CHANNEL_BINDINGS |     38     | Missing channel bindings |
+   |                           |            |                          |
    | CHANNEL_BINDINGS_MISMATCH |     39     |  Channel bindings do not |
    |                           |            |           match          |
    |                           |            |                          |
@@ -1557,10 +1561,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
    |                           |            |        established       |
    |                           |            |                          |
    |     CONTEXT_INCOMPLETE    | 0x8000000A |    Context incomplete    |
-   |                           |            |                          |
-   |     BAD_CONTEXT_TOKEN     | 0x8000000B |  Context token malformed |
-   |                           |            |        or corrupt        |
-   |                           |            |                          |
 
 
 
@@ -1569,6 +1569,9 @@ Howard & Williams       Expires October 27, 2013               [Page 28]
 Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
 
+   |     BAD_CONTEXT_TOKEN     | 0x8000000B |  Context token malformed |
+   |                           |            |        or corrupt        |
+   |                           |            |                          |
    |      BAD_ERROR_TOKEN      | 0x8000000C | Error token malformed or |
    |                           |            |          corrupt         |
    |                           |            |                          |
@@ -1582,9 +1585,6 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
    No claims are presently defined for the extra round trip assertion.
    Unknown claims MUST be ignored by the acceptor.
-
-
-
 
 
 
@@ -2131,7 +2131,7 @@ Internet-Draft          BrowserID SASL & GSS-API              April 2013
 
        {
            "tkt": {
-               "jti": "aeay0GJizDx79Ag--WL-vw6Y9BXxRuC1XsZxry51SUI",
+               "tid": "aeay0GJizDx79Ag--WL-vw6Y9BXxRuC1XsZxry51SUI",
                "exp": 1362997098000
            },
            "ecdh": {
