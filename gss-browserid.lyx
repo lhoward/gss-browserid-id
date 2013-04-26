@@ -3681,7 +3681,7 @@ crv
 \begin_inset Quotes erd
 \end_inset
 
- claim MUST NOT be present; it is determined by the initiator.
+ property MUST NOT be present; it is determined by the initiator.
 \end_layout
 
 \begin_layout Subsubsection
