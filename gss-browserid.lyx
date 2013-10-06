@@ -1265,7 +1265,7 @@ status open
 
 \begin_layout Plain Layout
 
- audience = "urn:x-gss:" spn
+ audience = "urn:ietf:params:gss:spn:" spn
 \end_layout
 
 \end_inset
@@ -2131,10 +2131,13 @@ RFC4556
 \end_layout
 
 \begin_layout Itemize
-A BrowserID audience URN containing the spn, encoded in a URI SAN (see 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Audience-encoding"
+A service-name expressed as a SRVName SAN (see 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+RFC4985
+\end_layout
 
 \end_inset
 
@@ -2982,7 +2985,7 @@ status open
 
 \begin_layout Plain Layout
 
-     "aud": "urn:x-gss:imap/mail.example.com"
+     "aud": "urn:ietf:params:gss:spn:imap/mail.example.com"
 \end_layout
 
 \begin_layout Plain Layout
@@ -3758,10 +3761,7 @@ This contains a JSON object that may be used for re-authenticating to the
 \begin_inset Quotes eld
 \end_inset
 
-
 tid
-\lang english
-
 \begin_inset Quotes erd
 \end_inset
 
@@ -6459,7 +6459,7 @@ status open
 
 \begin_layout Plain Layout
 
-    "aud": "urn:x-gss:imap/rand.mit.de.padl.com"
+    "aud": "urn:ietf:params:gss:spn:imap/rand.mit.de.padl.com"
 \end_layout
 
 \begin_layout Plain Layout
