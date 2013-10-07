@@ -4,8 +4,8 @@
 Network Working Group                                          L. Howard
 Internet-Draft                                                      PADL
 Intended status: Experimental                                N. Williams
-Expires: April 9, 2014                                      Cryptonector
-                                                         October 6, 2013
+Expires: April 10, 2014                                     Cryptonector
+                                                         October 7, 2013
 
 
  A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol
@@ -35,7 +35,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 9, 2014.
+   This Internet-Draft will expire on April 10, 2014.
 
 Copyright Notice
 
@@ -52,7 +52,7 @@ Copyright Notice
 
 
 
-Howard & Williams         Expires April 9, 2014                 [Page 1]
+Howard & Williams        Expires April 10, 2014                 [Page 1]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -75,96 +75,96 @@ Table of Contents
    3.1.3.  GSS_C_NT_HOSTBASED_SERVICE . . . . . . . . . . . . . . . .  8
    3.1.4.  GSS_C_NT_DOMAINBASED_SERVICE . . . . . . . . . . . . . . .  9
    3.1.5.  GSS_C_NT_ANONYMOUS . . . . . . . . . . . . . . . . . . . .  9
-   3.2.    Audience encoding  . . . . . . . . . . . . . . . . . . . .  9
-   3.3.    Name canonicalization  . . . . . . . . . . . . . . . . . .  9
-   3.4.    Exported name token format . . . . . . . . . . . . . . . .  9
-   3.5.    Naming extensions  . . . . . . . . . . . . . . . . . . . . 10
-   4.      Context tokens . . . . . . . . . . . . . . . . . . . . . . 11
-   4.1.    Base protocol  . . . . . . . . . . . . . . . . . . . . . . 11
-   4.1.1.  Initial context token  . . . . . . . . . . . . . . . . . . 11
-   4.1.2.  Acceptor context token . . . . . . . . . . . . . . . . . . 12
-   4.1.3.  Initiator context completion . . . . . . . . . . . . . . . 13
-   4.2.    Mutual authentication  . . . . . . . . . . . . . . . . . . 13
-   4.2.1.  Initiator mutual authentication context token  . . . . . . 14
-   4.2.2.  Acceptor mutual authentication context token . . . . . . . 14
-   4.2.3.  Initiator mutual authentication context completion . . . . 14
-   4.2.4.  Acceptor certificate advertisement . . . . . . . . . . . . 15
-   4.3.    Fast re-authentication . . . . . . . . . . . . . . . . . . 16
-   4.3.1.  Ticket generation  . . . . . . . . . . . . . . . . . . . . 16
-   4.3.2.  Initiator re-authentication context token  . . . . . . . . 16
-   4.3.3.  Acceptor re-authentication context token . . . . . . . . . 17
-   4.3.4.  Interaction with mutual authentication . . . . . . . . . . 18
-   4.3.5.  Ticket renewal . . . . . . . . . . . . . . . . . . . . . . 18
-   4.4.    Extra round-trip (XRT) option  . . . . . . . . . . . . . . 18
-   4.4.1.  Initiator XRT advertisement  . . . . . . . . . . . . . . . 18
-   4.4.2.  Acceptor XRT advertisement . . . . . . . . . . . . . . . . 19
-   4.4.3.  Initiator XRT context token  . . . . . . . . . . . . . . . 19
-   4.4.4.  Acceptor XRT context token validation  . . . . . . . . . . 19
-   4.4.5.  Interaction with message protection services . . . . . . . 19
-   5.      Validation . . . . . . . . . . . . . . . . . . . . . . . . 20
-   5.1.    Expiry times . . . . . . . . . . . . . . . . . . . . . . . 20
-   5.2.    Audience . . . . . . . . . . . . . . . . . . . . . . . . . 20
-   5.3.    Channel bindings . . . . . . . . . . . . . . . . . . . . . 20
+   3.2.    Name canonicalization  . . . . . . . . . . . . . . . . . .  9
+   3.3.    Exported name token format . . . . . . . . . . . . . . . .  9
+   3.4.    Naming extensions  . . . . . . . . . . . . . . . . . . . .  9
+   4.      Context tokens . . . . . . . . . . . . . . . . . . . . . . 10
+   4.1.    Base protocol  . . . . . . . . . . . . . . . . . . . . . . 10
+   4.1.1.  Initial context token  . . . . . . . . . . . . . . . . . . 10
+   4.1.2.  Acceptor context token . . . . . . . . . . . . . . . . . . 11
+   4.1.3.  Initiator context completion . . . . . . . . . . . . . . . 12
+   4.2.    Mutual authentication  . . . . . . . . . . . . . . . . . . 12
+   4.2.1.  Initiator mutual authentication context token  . . . . . . 13
+   4.2.2.  Acceptor mutual authentication context token . . . . . . . 13
+   4.2.3.  Initiator mutual authentication context completion . . . . 13
+   4.2.4.  Acceptor certificate advertisement . . . . . . . . . . . . 14
+   4.3.    Fast re-authentication . . . . . . . . . . . . . . . . . . 15
+   4.3.1.  Ticket generation  . . . . . . . . . . . . . . . . . . . . 15
+   4.3.2.  Initiator re-authentication context token  . . . . . . . . 15
+   4.3.3.  Acceptor re-authentication context token . . . . . . . . . 16
+   4.3.4.  Interaction with mutual authentication . . . . . . . . . . 17
+   4.3.5.  Ticket renewal . . . . . . . . . . . . . . . . . . . . . . 17
+   4.4.    Extra round-trip (XRT) option  . . . . . . . . . . . . . . 17
+   4.4.1.  Initiator XRT advertisement  . . . . . . . . . . . . . . . 17
+   4.4.2.  Acceptor XRT advertisement . . . . . . . . . . . . . . . . 18
+   4.4.3.  Initiator XRT context token  . . . . . . . . . . . . . . . 18
+   4.4.4.  Acceptor XRT context token validation  . . . . . . . . . . 18
+   4.4.5.  Interaction with message protection services . . . . . . . 18
+   5.      Validation . . . . . . . . . . . . . . . . . . . . . . . . 19
+   5.1.    Expiry times . . . . . . . . . . . . . . . . . . . . . . . 19
+   5.2.    Audience . . . . . . . . . . . . . . . . . . . . . . . . . 19
+   5.3.    Channel bindings . . . . . . . . . . . . . . . . . . . . . 19
+   5.4.    Key agreement  . . . . . . . . . . . . . . . . . . . . . . 19
 
 
 
-Howard & Williams         Expires April 9, 2014                 [Page 2]
+Howard & Williams        Expires April 10, 2014                 [Page 2]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
-   5.4.    Key agreement  . . . . . . . . . . . . . . . . . . . . . . 20
-   5.5.    Signatures . . . . . . . . . . . . . . . . . . . . . . . . 21
-   5.6.    Replay detection . . . . . . . . . . . . . . . . . . . . . 21
-   5.7.    Return flags . . . . . . . . . . . . . . . . . . . . . . . 21
-   6.      Assertion claims . . . . . . . . . . . . . . . . . . . . . 22
-   6.1.    Request (initiator/UA) assertion . . . . . . . . . . . . . 22
-   6.1.1.  "aud" (Audience) . . . . . . . . . . . . . . . . . . . . . 22
-   6.1.2.  "exp" (Expiry time)  . . . . . . . . . . . . . . . . . . . 23
-   6.1.3.  "iat" (Issued at time) . . . . . . . . . . . . . . . . . . 23
-   6.1.4.  "nbf" (Not before time)  . . . . . . . . . . . . . . . . . 23
-   6.1.5.  "ecdh" (Elliptic Curve Diffie-Hellman key agreement) . . . 23
-   6.1.6.  "cb" (Channel binding) . . . . . . . . . . . . . . . . . . 23
-   6.1.7.  "nonce" (Mutual authentication nonce)  . . . . . . . . . . 23
-   6.1.8.  "tkt" (Ticket) . . . . . . . . . . . . . . . . . . . . . . 24
-   6.1.9.  "opts" (Options) . . . . . . . . . . . . . . . . . . . . . 24
-   6.2.    Response (acceptor/RP) assertion . . . . . . . . . . . . . 24
-   6.2.1.  "iat" (Issued at time) . . . . . . . . . . . . . . . . . . 25
-   6.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key agreement) . . . 25
-   6.2.3.  "exp" (Expiry time)  . . . . . . . . . . . . . . . . . . . 26
-   6.2.4.  "nonce" (Mutual authentication nonce)  . . . . . . . . . . 26
-   6.2.5.  "tkt" (Ticket) . . . . . . . . . . . . . . . . . . . . . . 26
-   6.2.6.  "jti" (JWT ID) . . . . . . . . . . . . . . . . . . . . . . 26
-   6.3.    Error (acceptor/RP) assertion  . . . . . . . . . . . . . . 26
-   6.3.1.  "gss-maj" (GSS major status code)  . . . . . . . . . . . . 26
-   6.3.2.  "gss-min" (GSS minor status code)  . . . . . . . . . . . . 26
-   6.4.    XRT assertion  . . . . . . . . . . . . . . . . . . . . . . 29
-   7.      Key derivation . . . . . . . . . . . . . . . . . . . . . . 30
-   7.1.    Diffie-Hellman Key (DHK) . . . . . . . . . . . . . . . . . 30
-   7.2.    Context Master Key (CMK) . . . . . . . . . . . . . . . . . 30
-   7.3.    RP Response Key (RRK)  . . . . . . . . . . . . . . . . . . 30
-   7.4.    Context Root Key (CRK) . . . . . . . . . . . . . . . . . . 30
-   7.5.    Authenticator Root Key (ARK) . . . . . . . . . . . . . . . 31
-   7.6.    Authenticator Session Key (ASK)  . . . . . . . . . . . . . 31
-   7.6.1.  Extra Round Trip Key (XRTK)  . . . . . . . . . . . . . . . 31
-   7.7.    GSS Pseudo-Random Function (PRF) . . . . . . . . . . . . . 31
-   8.      Example  . . . . . . . . . . . . . . . . . . . . . . . . . 32
-   9.      Security Considerations  . . . . . . . . . . . . . . . . . 40
-   9.1.    Host certificates for mutual authentication  . . . . . . . 40
-   9.2.    Error statuses . . . . . . . . . . . . . . . . . . . . . . 40
-   10.     IANA Considerations  . . . . . . . . . . . . . . . . . . . 41
-   10.1.   OID Registry . . . . . . . . . . . . . . . . . . . . . . . 41
-   10.2.   SASL Registry  . . . . . . . . . . . . . . . . . . . . . . 42
-   11.     References . . . . . . . . . . . . . . . . . . . . . . . . 43
-   11.1.   Normative References . . . . . . . . . . . . . . . . . . . 43
-   11.2.   Informative References . . . . . . . . . . . . . . . . . . 44
-           Authors' Addresses . . . . . . . . . . . . . . . . . . . . 46
+   5.5.    Signatures . . . . . . . . . . . . . . . . . . . . . . . . 20
+   5.6.    Replay detection . . . . . . . . . . . . . . . . . . . . . 20
+   5.7.    Return flags . . . . . . . . . . . . . . . . . . . . . . . 20
+   6.      Assertion claims . . . . . . . . . . . . . . . . . . . . . 21
+   6.1.    Request (initiator/UA) assertion . . . . . . . . . . . . . 21
+   6.1.1.  "aud" (Audience) . . . . . . . . . . . . . . . . . . . . . 21
+   6.1.2.  "exp" (Expiry time)  . . . . . . . . . . . . . . . . . . . 22
+   6.1.3.  "iat" (Issued at time) . . . . . . . . . . . . . . . . . . 22
+   6.1.4.  "nbf" (Not before time)  . . . . . . . . . . . . . . . . . 22
+   6.1.5.  "ecdh" (Elliptic Curve Diffie-Hellman key agreement) . . . 22
+   6.1.6.  "cb" (Channel binding) . . . . . . . . . . . . . . . . . . 22
+   6.1.7.  "nonce" (Mutual authentication nonce)  . . . . . . . . . . 22
+   6.1.8.  "tkt" (Ticket) . . . . . . . . . . . . . . . . . . . . . . 23
+   6.1.9.  "opts" (Options) . . . . . . . . . . . . . . . . . . . . . 23
+   6.2.    Response (acceptor/RP) assertion . . . . . . . . . . . . . 23
+   6.2.1.  "iat" (Issued at time) . . . . . . . . . . . . . . . . . . 24
+   6.2.2.  "ecdh" (Elliptic Curve Diffie-Hellman key agreement) . . . 24
+   6.2.3.  "exp" (Expiry time)  . . . . . . . . . . . . . . . . . . . 25
+   6.2.4.  "nonce" (Mutual authentication nonce)  . . . . . . . . . . 25
+   6.2.5.  "tkt" (Ticket) . . . . . . . . . . . . . . . . . . . . . . 25
+   6.2.6.  "jti" (JWT ID) . . . . . . . . . . . . . . . . . . . . . . 25
+   6.3.    Error (acceptor/RP) assertion  . . . . . . . . . . . . . . 25
+   6.3.1.  "gss-maj" (GSS major status code)  . . . . . . . . . . . . 25
+   6.3.2.  "gss-min" (GSS minor status code)  . . . . . . . . . . . . 25
+   6.4.    XRT assertion  . . . . . . . . . . . . . . . . . . . . . . 28
+   7.      Key derivation . . . . . . . . . . . . . . . . . . . . . . 29
+   7.1.    Diffie-Hellman Key (DHK) . . . . . . . . . . . . . . . . . 29
+   7.2.    Context Master Key (CMK) . . . . . . . . . . . . . . . . . 29
+   7.3.    RP Response Key (RRK)  . . . . . . . . . . . . . . . . . . 29
+   7.4.    Context Root Key (CRK) . . . . . . . . . . . . . . . . . . 29
+   7.5.    Authenticator Root Key (ARK) . . . . . . . . . . . . . . . 30
+   7.6.    Authenticator Session Key (ASK)  . . . . . . . . . . . . . 30
+   7.6.1.  Extra Round Trip Key (XRTK)  . . . . . . . . . . . . . . . 30
+   7.7.    GSS Pseudo-Random Function (PRF) . . . . . . . . . . . . . 30
+   8.      Example  . . . . . . . . . . . . . . . . . . . . . . . . . 31
+   9.      Security Considerations  . . . . . . . . . . . . . . . . . 39
+   9.1.    Host certificates for mutual authentication  . . . . . . . 39
+   9.2.    Error statuses . . . . . . . . . . . . . . . . . . . . . . 39
+   10.     IANA Considerations  . . . . . . . . . . . . . . . . . . . 40
+   10.1.   OID Registry . . . . . . . . . . . . . . . . . . . . . . . 40
+   10.2.   SASL Registry  . . . . . . . . . . . . . . . . . . . . . . 41
+   11.     References . . . . . . . . . . . . . . . . . . . . . . . . 42
+   11.1.   Normative References . . . . . . . . . . . . . . . . . . . 42
+   11.2.   Informative References . . . . . . . . . . . . . . . . . . 43
+           Authors' Addresses . . . . . . . . . . . . . . . . . . . . 45
 
 
 
 
 
-Howard & Williams         Expires April 9, 2014                 [Page 3]
+
+Howard & Williams        Expires April 10, 2014                 [Page 3]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -220,7 +220,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                 [Page 4]
+Howard & Williams        Expires April 10, 2014                 [Page 4]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -276,7 +276,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                 [Page 5]
+Howard & Williams        Expires April 10, 2014                 [Page 5]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -332,7 +332,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                 [Page 6]
+Howard & Williams        Expires April 10, 2014                 [Page 6]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -388,7 +388,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                 [Page 7]
+Howard & Williams        Expires April 10, 2014                 [Page 7]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -444,7 +444,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                 [Page 8]
+Howard & Williams        Expires April 10, 2014                 [Page 8]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -466,16 +466,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
    If the initiator principal's leaf certificate does not contain a
    "principal" claim, then the initiator name has this name type.
 
-3.2.  Audience encoding
-
-   A GSS-API service name is encoded into a BrowserID audience URL with
-   the following syntax, where spn is defined above:
-
-                  audience = "urn:ietf:params:gss:spn:" spn
-
-   [[anchor2: Can we request assignment of a URN?]]
-
-3.3.  Name canonicalization
+3.2.  Name canonicalization
 
    The BrowserID GSS-API mechanism performs no name canonicalization.
    The mechanism's GSS_Canonicalize_name() returns an MN whose display
@@ -484,28 +475,17 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
    might only issue credentials for canonical names, but credential
    acquisition is out of scope here.
 
-3.4.  Exported name token format
+3.3.  Exported name token format
 
    The exported name token format for the BrowserID GSS-API mechanism is
    the same as the query form, plus the standard exported name token
    format header mandated by the GSS-API [RFC2743].
 
-   [[anchor3: Do we wish to say anything about the exported composite
+   [[anchor2: Do we wish to say anything about the exported composite
    name token format?  It should be an encoding of the initiator's leaf
    certificate.]]
 
-
-
-
-
-
-
-Howard & Williams         Expires April 9, 2014                 [Page 9]
-
-Internet-Draft          BrowserID SASL & GSS-API            October 2013
-
-
-3.5.  Naming extensions
+3.4.  Naming extensions
 
    The acceptor MAY surface attributes from the assertion and any
    certificates using GSS_Get_name_attribute() (see [RFC6680]).  The URN
@@ -520,43 +500,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Howard & Williams         Expires April 9, 2014                [Page 10]
+Howard & Williams        Expires April 10, 2014                 [Page 9]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -612,7 +556,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 11]
+Howard & Williams        Expires April 10, 2014                [Page 10]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -668,7 +612,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 12]
+Howard & Williams        Expires April 10, 2014                [Page 11]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -724,7 +668,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 13]
+Howard & Williams        Expires April 10, 2014                [Page 12]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -752,7 +696,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
    assertion (see [I-D.ietf-jose-json-web-signature] 4.1.6).  The
    certificate MUST be valid for signing.
 
-   [[anchor4: We don't want to burden the initiator with having to
+   [[anchor3: We don't want to burden the initiator with having to
    implement both methods of authenticating acceptors, and given that
    initiators and acceptors both will generally need a PKIX
    implementation, and given that acceptors will need a PKIX credential
@@ -780,12 +724,12 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 14]
+Howard & Williams        Expires April 10, 2014                [Page 13]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
-   o  An out-of-band binding to the certificate
+   o  Optionally, an out-of-band binding to the certificate
 
    If there are no EKUs, or a single EKU containing id-kp-
    anyExtendedKeyUsage, and no SAN containing the service name is
@@ -796,7 +740,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
    expressed in a SAN as specified above, it MUST be present as a value
    for the dNSName SAN or as the least significant Common Name RDN.
 
-   Note only the id-pkinit-san or URI SANs provide the ability to
+   Note only the id-pkinit-san or SRVName SANs provide the ability to
    authenticate the a service name containing a service-specific
    component.
 
@@ -831,12 +775,12 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
    should ignore any sent.  The metadata is advisory and the initiator
    is free to ignore it.
 
-   [[anchor5: Delete this section as NegoEx will likely not be
+   [[anchor4: Delete this section as NegoEx will likely not be
    progressed.]]
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 15]
+Howard & Williams        Expires April 10, 2014                [Page 14]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -892,7 +836,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 16]
+Howard & Williams        Expires April 10, 2014                [Page 15]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -917,7 +861,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
        Section 7.6) which is used to verify the response and derive the
        CRK.
 
-   [[anchor6: Question: do we want an option to do an ECDH session key
+   [[anchor5: Question: do we want an option to do an ECDH session key
    exchange in the fast re-auth case?  If we had a GSS req_flag for
    requesting perfect forward security (PFS) then we would want to have
    this option.]]
@@ -948,7 +892,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 17]
+Howard & Williams        Expires April 10, 2014                [Page 16]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1004,7 +948,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 18]
+Howard & Williams        Expires April 10, 2014                [Page 17]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1060,7 +1004,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 19]
+Howard & Williams        Expires April 10, 2014                [Page 18]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1091,9 +1035,8 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 5.2.  Audience
 
    If the credential passed to GSS_Accept_sec_context() is not for
-   GSS_C_NO_NAME, then its string representation as a BrowserID
-   principal MUST match the unencoded audience (that is, the audience
-   without the URN prefix defined in Section 3.2).
+   GSS_C_NO_NAME, then its string representation as a Section 3.1.1 MUST
+   match the audience claim in the assertion.
 
 5.3.  Channel bindings
 
@@ -1113,15 +1056,15 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
    to the negotiated [RFC4121] encryption type.  Appropriate curves are
    given in Section 10.1.
 
+   The curve strength MUST be verified by the acceptor.  A stronger than
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 20]
+Howard & Williams        Expires April 10, 2014                [Page 19]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
-   The curve strength MUST be verified by the acceptor.  A stronger than
    required curve MAY be selected by the initiator.
 
 5.5.  Signatures
@@ -1172,7 +1115,8 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 21]
+
+Howard & Williams        Expires April 10, 2014                [Page 20]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1202,33 +1146,33 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
                  "y": "S45Esx_6DfE5-xdB3X7sIIJ16MwO0Y_RiDc-i5ZTLQ8"
              },
              "nonce": "bbqT10Gyx3s",
-             "aud": "urn:ietf:params:gss:spn:imap/mail.example.com"
+             "aud": "imap/mail.example.com"
          }
 
    The following claims are permitted in the request assertion:
 
 6.1.1.  "aud" (Audience)
 
-   The audience, formatted as a URN containing the acceptor's principal
-   name (see Section 3.2).  This claim is REQUIRED.
+   The audience is a StringOrURI (see [I-D.ietf-oauth-json-web-token]
+   Section 2) containing the target service's principal name, formatted
+   according to Section 3.1.1.  This claim is REQUIRED.  If the
+   initiator specified a target name of GSS_C_NO_NAME, then the audience
+   is the empty string.
 
-   [[anchor7: Note that if the initiator application specified a
-   target_name of GSS_C_NO_NAME then we could omit this (although this
-   may not be permitted by the base protocol).  If the initiator wanted
-   mutual authentication then we could find out the acceptor's name and
-   provide it via GSS_Inquire_context().  This is only really useful and
-   secure with mechanisms like this one where the initiator credential
-   is based on a public/private key pair and either we use key agreement
-   and per-message tokens or channel binding to a secure channel.  This
-   really should [have] be[en] explained in RFC2743.]]
-
-
-
+   [[anchor6: If the initiator wanted mutual authentication then we
+   could find out the acceptor's name and provide it via
+   GSS_Inquire_context().  This is only really useful and secure with
+   mechanisms like this one where the initiator credential is based on a
+   public/private key pair and either we use key agreement and per-
+   message tokens or channel binding to a secure channel.  This really
+   should [have] be[en] explained in RFC2743.]]
 
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 22]
+
+
+Howard & Williams        Expires April 10, 2014                [Page 21]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1284,7 +1228,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 23]
+Howard & Williams        Expires April 10, 2014                [Page 22]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1340,7 +1284,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 24]
+Howard & Williams        Expires April 10, 2014                [Page 23]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1396,7 +1340,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 25]
+Howard & Williams        Expires April 10, 2014                [Page 24]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1452,7 +1396,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 26]
+Howard & Williams        Expires April 10, 2014                [Page 25]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1508,7 +1452,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 27]
+Howard & Williams        Expires April 10, 2014                [Page 26]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1564,7 +1508,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 28]
+Howard & Williams        Expires April 10, 2014                [Page 27]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1620,7 +1564,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 29]
+Howard & Williams        Expires April 10, 2014                [Page 28]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1676,7 +1620,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 30]
+Howard & Williams        Expires April 10, 2014                [Page 29]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1719,7 +1663,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
    protocol key to be used for GSS_Pseudo_random() SHALL by the Context
    Root Key (CRK).
 
-   [[anchor8: Can we replace this with a function that imports less of
+   [[anchor7: Can we replace this with a function that imports less of
    RFC3962?  We arguably should, because otherwise the only things we
    import from RFC3962 (and 3961) are random-to-key (the identity
    function in RFC3962) and the crypto bits needed for RFC4121 per-
@@ -1732,7 +1676,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 31]
+Howard & Williams        Expires April 10, 2014                [Page 30]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1788,7 +1732,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 32]
+Howard & Williams        Expires April 10, 2014                [Page 31]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1844,7 +1788,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 33]
+Howard & Williams        Expires April 10, 2014                [Page 32]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1900,7 +1844,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 34]
+Howard & Williams        Expires April 10, 2014                [Page 33]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1956,7 +1900,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 35]
+Howard & Williams        Expires April 10, 2014                [Page 34]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -1994,25 +1938,25 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
    and assertion:
 
-       {
-           "nonce": "h5P4KrG8yng",
-           "ecdh": {
-               "x": "fjZNpsBjGn_XACmgbNwAsvr88g4FWztobqp5TMb_YF0",
-               "crv": "P-256",
-               "y": "RKEvJz59csav8KcweUv5XqFgt8AWCAkrJBz3PPqLJts"
-           },
-           "cb": "biws",
-           "exp": 1362961216149,
-           "aud": "urn:ietf:params:gss:spn:imap/rand.mit.de.padl.com"
-       }
+        {
+            "nonce": "h5P4KrG8yng",
+            "ecdh": {
+                "x": "fjZNpsBjGn_XACmgbNwAsvr88g4FWztobqp5TMb_YF0",
+                "crv": "P-256",
+                "y": "RKEvJz59csav8KcweUv5XqFgt8AWCAkrJBz3PPqLJts"
+            },
+            "cb": "biws",
+            "exp": 1362961216149,
+            "aud": "imap/rand.mit.de.padl.com"
+        }
 
    Note the channel binding token that protects the GS2 header.
 
-   [[anchor9: The encoded example needs to be regenerated to reflect
+   [[anchor8: The encoded example needs to be regenerated to reflect
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 36]
+Howard & Williams        Expires April 10, 2014                [Page 35]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -2068,7 +2012,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 37]
+Howard & Williams        Expires April 10, 2014                [Page 36]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -2124,7 +2068,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 38]
+Howard & Williams        Expires April 10, 2014                [Page 37]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -2180,7 +2124,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 39]
+Howard & Williams        Expires April 10, 2014                [Page 38]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -2236,7 +2180,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 40]
+Howard & Williams        Expires April 10, 2014                [Page 39]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -2292,7 +2236,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 41]
+Howard & Williams        Expires April 10, 2014                [Page 40]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -2329,8 +2273,8 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
    this mechanism is 1.3.6.1.4.1.5322.24.1.17.  As described in RFC 5801
    a PLUS variant of this mechanism is also required.
 
-   [[anchor10: We could use the NULL encryption type variant for SASL,
-   as the GS2 bridge does not use message protection services.  However,
+   [[anchor9: We could use the NULL encryption type variant for SASL, as
+   the GS2 bridge does not use message protection services.  However,
    because that mechanisms is unkeyed, re-authentication would not be
    available.  Defining a single AES128 mechanism is consistent with GSS
    EAP.]]
@@ -2348,7 +2292,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 42]
+Howard & Williams        Expires April 10, 2014                [Page 41]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -2404,7 +2348,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 43]
+Howard & Williams        Expires April 10, 2014                [Page 42]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -2460,7 +2404,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 44]
+Howard & Williams        Expires April 10, 2014                [Page 43]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -2516,7 +2460,7 @@ Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 45]
+Howard & Williams        Expires April 10, 2014                [Page 44]
 
 Internet-Draft          BrowserID SASL & GSS-API            October 2013
 
@@ -2572,5 +2516,5 @@ Authors' Addresses
 
 
 
-Howard & Williams         Expires April 9, 2014                [Page 46]
+Howard & Williams        Expires April 10, 2014                [Page 45]
 

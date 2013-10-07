@@ -282,7 +282,7 @@ A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol
 status open
 
 \begin_layout Plain Layout
-draft-howard-gss-browserid-05.txt
+draft-howard-gss-browserid-06.txt
 \end_layout
 
 \end_inset
@@ -1244,40 +1244,6 @@ principal
 \end_layout
 
 \begin_layout Subsection
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Audience-encoding"
-
-\end_inset
-
-Audience encoding
-\end_layout
-
-\begin_layout Standard
-A GSS-API service name is encoded into a BrowserID audience URL with the
- following syntax, where spn is defined above:
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
- audience = "urn:ietf:params:gss:spn:" spn
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout RevisionRemark
-Can we request assignment of a URN?
-\end_layout
-
-\begin_layout Subsection
 Name canonicalization
 \end_layout
 
@@ -2145,7 +2111,7 @@ RFC4985
 \end_layout
 
 \begin_layout Itemize
-An out-of-band binding to the certificate
+Optionally, an out-of-band binding to the certificate
 \end_layout
 
 \begin_layout Standard
@@ -2163,7 +2129,7 @@ If the the host component of the service name (service-host) is not expressed
 \end_layout
 
 \begin_layout Standard
-Note only the id-pkinit-san or URI SANs provide the ability to authenticate
+Note only the id-pkinit-san or SRVName SANs provide the ability to authenticate
  the a service name containing a service-specific component.
 \end_layout
 
@@ -2759,16 +2725,14 @@ Audience
 
 \begin_layout Standard
 If the credential passed to GSS_Accept_sec_context() is not for GSS_C_NO_NAME,
- then its string representation as a BrowserID principal MUST match the
- unencoded audience (that is, the audience without the URN prefix defined
- in 
+ then its string representation as a 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Audience-encoding"
+reference "sub:GSS_C_NT_BROWSERID_PRINCIPAL"
 
 \end_inset
 
-).
+ MUST match the audience claim in the assertion.
 \end_layout
 
 \begin_layout Subsection
@@ -2985,7 +2949,7 @@ status open
 
 \begin_layout Plain Layout
 
-     "aud": "urn:ietf:params:gss:spn:imap/mail.example.com"
+     "aud": "imap/mail.example.com"
 \end_layout
 
 \begin_layout Plain Layout
@@ -3021,23 +2985,32 @@ aud
 \end_layout
 
 \begin_layout Standard
-The audience, formatted as a URN containing the acceptor's principal name
- (see 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Audience-encoding"
+The audience is a StringOrURI (see 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+I-D.ietf-oauth-json-web-token
+\end_layout
 
 \end_inset
 
-).
+ Section 2) containing the target service's principal name, formatted according
+ to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:GSS_C_NT_BROWSERID_PRINCIPAL"
+
+\end_inset
+
+.
  This claim is REQUIRED.
+ If the initiator specified a target name of GSS_C_NO_NAME, then the audience
+ is the empty string.
 \end_layout
 
 \begin_layout RevisionRemark
-Note that if the initiator application specified a target_name of GSS_C_NO_NAME
- then we could omit this (although this may not be permitted by the base
- protocol).
- If the initiator wanted mutual authentication then we could find out the
+If the initiator wanted mutual authentication then we could find out the
  acceptor's name and provide it via GSS_Inquire_context().
  This is only really useful and secure with mechanisms like this one where
  the initiator credential is based on a public/private key pair and either
@@ -6459,7 +6432,7 @@ status open
 
 \begin_layout Plain Layout
 
-    "aud": "urn:ietf:params:gss:spn:imap/rand.mit.de.padl.com"
+    "aud": "imap/rand.mit.de.padl.com"
 \end_layout
 
 \begin_layout Plain Layout
