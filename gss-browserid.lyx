@@ -282,7 +282,7 @@ A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol
 status open
 
 \begin_layout Plain Layout
-draft-howard-gss-browserid-06.txt
+draft-howard-gss-browserid-07.txt
 \end_layout
 
 \end_inset
@@ -2725,14 +2725,14 @@ Audience
 
 \begin_layout Standard
 If the credential passed to GSS_Accept_sec_context() is not for GSS_C_NO_NAME,
- then its string representation as a 
+ then its string representation as a BrowserID principal (see 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:GSS_C_NT_BROWSERID_PRINCIPAL"
 
 \end_inset
 
- MUST match the audience claim in the assertion.
+) MUST match the audience claim in the assertion.
 \end_layout
 
 \begin_layout Subsection
