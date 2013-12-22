@@ -24,13 +24,14 @@
 <!ENTITY RFC5929 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5929.xml">
 <!ENTITY RFC6680 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6680.xml">
 <!ENTITY JWA PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-web-algorithms.xml">
+<!ENTITY JWK PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-web-key.xml">
 <!ENTITY JWS PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-web-signature.xml">
 <!ENTITY JWT PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-oauth-json-web-token.xml">
 <!ENTITY NegoEx PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zhu-negoex.xml">
 <!ENTITY PKU2U PUBLIC "" "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.zhu-pku2u.xml">
 <!ENTITY RFC4120 PUBLIC "" "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4120.xml">
 ]>
-<rfc docName="draft-howard-gss-browserid-06.txt" ipr="trust200902" category="exp" updates="">
+<rfc docName="draft-howard-gss-browserid-07.txt" ipr="trust200902" category="exp" updates="">
   <front>
     <title abbrev="BrowserID SASL &amp; GSS-API">A SASL and GSS-API Mechanism for the BrowserID Authentication Protocol</title>
     <author initials="L." surname="Howard" fullname="Luke Howard">
@@ -52,7 +53,7 @@
         <email>nico@cryptonector.com</email>
       </address>
     </author>
-    <date month="October" year="2013"/>
+    <date month="December" year="2013"/>
     <area>
 Security Area
 </area>
@@ -533,7 +534,7 @@ Message protections services such as GSS_Wrap() SHOULD be available beyond the G
       </section>
       <section title="Audience" anchor="d1e1863">
         <t>
-If the credential passed to GSS_Accept_sec_context() is not for GSS_C_NO_NAME, then its string representation as a  <xref target="sub_GSS_C_NT_BROWSERID_PRINCIPAL"/> MUST match the audience claim in the assertion.</t>
+If the credential passed to GSS_Accept_sec_context() is not for GSS_C_NO_NAME, then its string representation as a BrowserID principal (see  <xref target="sub_GSS_C_NT_BROWSERID_PRINCIPAL"/>) MUST match the audience claim in the assertion.</t>
       </section>
       <section title="Channel bindings" anchor="d1e1875">
         <t>
@@ -597,7 +598,8 @@ Here is an example assertion containing Elliptic Curve Diffie-Hellman parameters
          "ma"
      ], 
      "exp": 1360158396188,
-     "ecdh": {
+     "epk": {
+         "kty": "EC",
          "crv": "P-256",
          "x": "JR5UPDgMLFPZwOGaKKSF24658tB1DccM1_oHPbCHeZg",
          "y": "S45Esx_6DfE5-xdB3X7sIIJ16MwO0Y_RiDc-i5ZTLQ8"
@@ -629,11 +631,11 @@ This contains the time the assertion was issued (in milliseconds since January 1
           <t>
 This contains the time, in milliseconds since January 1, 1970, from which the assertion begins to be valid. This claim is OPTIONAL.</t>
         </section>
-        <section title="&quot;ecdh&quot; (Elliptic Curve Diffie-Hellman key agreement)" anchor="sub_request_ecdh">
+        <section title="&quot;epk&quot; (Ephemeral Public Key)" anchor="sub_request_ecdh">
           <t>
-These contain ECDH key parameters for deriving a shared session key with the relying party: "crv" contains the curve, "x" the X coordinate and "y" the Y coordinate (see <xref target="I-D.ietf-oauth-json-web-token"/> Section 5.2).</t>
+These contain key parameters for deriving a shared session key with the relying party, represented as a JSON Web Key <xref target="I-D.ietf-jose-json-web-key"/> public key value. The key type MUST be EC and the parameters for Elliptic Curve Public Keys specified in <xref target="I-D.ietf-jose-json-web-algorithms"/> Section 6.2.1 MUST be present.</t>
           <t>
-The “ecdh” claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL, or there is already a prior session key (as is the case for re-authentication assertions).</t>
+The “epk” claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL, or there is already a prior session key (as is the case for re-authentication assertions).</t>
         </section>
         <section title="“cb” (Channel binding)" anchor="sub_request_cbt">
           <t>
@@ -678,7 +680,7 @@ RFC4757
           </texttable>
         </section>
       </section>
-      <section title="Response (acceptor/RP) assertion" anchor="d1e2220">
+      <section title="Response (acceptor/RP) assertion" anchor="d1e2226">
         <t>
 The response assertion is sent from the acceptor to the initiator to provide key agreement, and either key confirmation or mutual authentication. It is formatted as a backed assertion, however in the current specification it consists of a single assertion with zero certificates; that is, it is "unbacked". (It is encoded as a backed assertion in order to provide future support for mutual authentication using native BrowserID certificates. Such support is not specified here.)</t>
         <t>
@@ -698,7 +700,7 @@ Here is an example response assertion:</t>
             <artwork>{
     "exp": 1362960258000,
     "nonce": "bbqT10Gyx3s",
-    "ecdh": {
+    "epk": {
         "x": "bvNF6V1rpMeQyGOKCj0kBaOaSh3tlhUcbffaji4uCEI",
         "y": "Iuqs650FXzXFUD9kHknETfbqiB8XBbCHlJXoysx3rvw"
     },
@@ -715,11 +717,11 @@ The following claims are permitted in the response assertion:</t>
           <t>
 The current acceptor time, in milliseconds since January 1, 1970. This allows the initiator to compensate for clock differences when generating assertions. This claim is OPTIONAL.</t>
         </section>
-        <section title="“ecdh” (Elliptic Curve Diffie-Hellman key agreement)" anchor="sub_response_ecdh">
+        <section title="“epk” (Ephemeral Public Key)" anchor="sub_response_ecdh">
           <t>
-This contains a JSON object containing the coordinates of the acceptor's ECDH public key: "x" contains the X coordinate and "y" the Y coordinate (see <xref target="I-D.ietf-oauth-json-web-token"/> Section 5.2). This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL, or there is already an established session key, as is the case for re-authentication assertions.</t>
+This contains a JSON object containing the x and y coordinates of the acceptor's ECDH public key (see <xref target="I-D.ietf-jose-json-web-algorithms"/> Section 6.2.1). This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL, or there is already an established session key, as is the case for re-authentication assertions.</t>
           <t>
-The “crv” property MUST NOT be present; it is determined by the initiator.</t>
+The “crv” and “kty” properties SHOULD NOT be present; they are determined by the initiator.</t>
         </section>
         <section title="“exp” (Expiry time)" anchor="sub_response_exp">
           <t>
@@ -738,7 +740,7 @@ This contains a JSON object that may be used for re-authenticating to the accept
 This contains a base64 URL encoded random value of at least 64 bits that is used to uniquely identify the acceptor response, in the case that the extra round trip option is used. It SHOULD not be present unless the initiator requested the extra round trip option.</t>
         </section>
       </section>
-      <section title="Error (acceptor/RP) assertion" anchor="d1e2339">
+      <section title="Error (acceptor/RP) assertion" anchor="d1e2345">
         <t>
 Error assertions are backed assertions containing any or all of the following claims. In addition, they MUST have the “iat” claim, for initiator clock skew correction. All other response assertion claims are OPTIONAL or not applicable in error assertions. Conversely, the claims listed below MUST NOT be present in a non-error response assertion.</t>
         <t>
@@ -1016,12 +1018,12 @@ Re-authentication failure</c>
           </texttable>
         </section>
       </section>
-      <section title="XRT assertion" anchor="d1e3077">
+      <section title="XRT assertion" anchor="d1e3083">
         <t>
 No claims are presently defined for the extra round trip assertion. Unknown claims MUST be ignored by the acceptor.</t>
       </section>
     </section>
-    <section title="Key derivation" anchor="d1e3086">
+    <section title="Key derivation" anchor="d1e3092">
       <t>
 The following function is used as the base algorithm for deriving keys:</t>
       <t>
@@ -1087,7 +1089,7 @@ Can we replace this with a function that imports less of RFC3962? We arguably sh
         </t>
       </section>
     </section>
-    <section title="Example" anchor="d1e3246">
+    <section title="Example" anchor="d1e3252">
       <t>
 Suppose a mail user agent for the principal lukeh@lukktone.com wishes to authenticate to an IMAP server rand.mit.de.padl.com. They do not have a re-authentication ticket. The mail user agent would display a dialog box in which the principal would sign in to their IdP and request a fresh assertion be generated.</t>
       <t>
@@ -1301,9 +1303,10 @@ and assertion:</t>
         <figure suppress-title="true" align="center">
           <artwork>{
     "nonce": "h5P4KrG8yng",
-    "ecdh": {
+    "epk": {
         "x": "fjZNpsBjGn_XACmgbNwAsvr88g4FWztobqp5TMb_YF0",
         "crv": "P-256",
+        "kty": "EC",
         "y": "RKEvJz59csav8KcweUv5XqFgt8AWCAkrJBz3PPqLJts"
     },
     "cb": "biws",
@@ -1418,7 +1421,7 @@ The assertion payload is below (again, for clarity the actual JWT signature has 
         "tid": "aeay0GJizDx79Ag--WL-vw6Y9BXxRuC1XsZxry51SUI",
         "exp": 1362997098000
     },
-    "ecdh": {
+    "epk": {
         "x": "J1IWbH2A5C3chOUIqmfXpP_RQEEOmd2ExXoKrqQQXLM",
         "y": "_2Etxbz_vJeeUUby2rfdekTTPURpbGJH7kyIWqmkIEg"
     },
@@ -1430,7 +1433,7 @@ The assertion payload is below (again, for clarity the actual JWT signature has 
       <t>
 Note the fast re-authentication ticket and the nonce echoed back from the initiator.</t>
     </section>
-    <section title="Security Considerations" anchor="d1e3326">
+    <section title="Security Considerations" anchor="d1e3332">
       <t>
 This document defines a GSS-API security mechanism, and therefore deals in security and has security considerations text embedded throughout. This section only addresses security considerations associated with the BrowserID GSS mechanism described in this document. It does not address security considerations associated with the BrowserID protocol or the GSS-API themselves.</t>
       <t>
@@ -1441,16 +1444,16 @@ All cryptography for per-message tokens is imported from the Kerberos GSS-API me
 This mechanism actually has several mechanism OIDs, composed of a prefix identifying this family of mechanisms followed by an arc identifying the <xref target="RFC3961"/> encryption type for use with per-message tokens and the GSS_Pseudo_random() function. The NULL encryption type is supported, and when it is used then the GSS-API per-message tokens and GSS_Pseudo_random() function are not available, but channel binding and mutual authentication may be available. Also, when using the NULL encryption type the fast re-authentication feature is not available because key exchange is only performed the initiator application uses the variant of this mechanism that supports per-message tokens and the GSS_Pseudo_random() function.</t>
       <t>
 Acceptor credentials are PKIX <xref target="RFC5280"/> certificates and their private keys.</t>
-      <section title="Host certificates for mutual authentication" anchor="d1e3372">
+      <section title="Host certificates for mutual authentication" anchor="d1e3378">
         <t>
 Allowing a match on only the DNS subjectAltName in an acceptor's X.509 certificate permits different services on the same host to impersonate each other. This should be subject to local policy.</t>
       </section>
-      <section title="Error statuses" anchor="d1e3381">
+      <section title="Error statuses" anchor="d1e3387">
         <t>
 Returning rich error information in the clear (see  <xref target="sub_response_gss_min"/>) may leak information. Implementations may squash status codes and/or avoid returning minor statuses entirely. Indeed, applications may even not send back error tokens at all, instead closing the connection or whatever might be appropriate for the application. (This is a generic GSS-API security consideration.)</t>
       </section>
     </section>
-    <section title="IANA Considerations" anchor="d1e3393">
+    <section title="IANA Considerations" anchor="d1e3399">
       <t>
 This specification creates a number of IANA registries.</t>
       <section title="OID Registry" anchor="sub_OID_Registry">
@@ -1551,7 +1554,7 @@ GSS_C_NT_BROWSERID_PRINCIPAL</c>
 3.1.1</c>
         </texttable>
       </section>
-      <section title="SASL Registry" anchor="d1e3661">
+      <section title="SASL Registry" anchor="d1e3667">
         <t>
 Subject: Registration of SASL mechanisms BROWSERID-AES128 and BROWSERID-AES128-PLUS</t>
         <t>
@@ -1608,6 +1611,7 @@ We could use the NULL encryption type variant for SASL, as the GS2 bridge does n
 &RFC5929;
 &RFC6680;
 &JWA;
+&JWK;
 &JWS;
 &JWT;
 &NegoEx;

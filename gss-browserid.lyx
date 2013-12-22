@@ -2919,7 +2919,12 @@ status open
 
 \begin_layout Plain Layout
 
-     "ecdh": {
+     "epk": {
+\end_layout
+
+\begin_layout Plain Layout
+
+         "kty": "EC",
 \end_layout
 
 \begin_layout Plain Layout
@@ -3132,23 +3137,34 @@ name "sub:request-ecdh"
 
 \end_inset
 
-"ecdh" (Elliptic Curve Diffie-Hellman key agreement)
+"epk" (Ephemeral Public Key)
 \end_layout
 
 \begin_layout Standard
-These contain ECDH key parameters for deriving a shared session key with
- the relying party: "crv" contains the curve, "x" the X coordinate and "y"
- the Y coordinate (see 
+These contain key parameters for deriving a shared session key with the
+ relying party, represented as a JSON Web Key 
 \begin_inset Flex EntityXRef
-status open
+status collapsed
 
 \begin_layout Plain Layout
-I-D.ietf-oauth-json-web-token
+I-D.ietf-jose-json-web-key
 \end_layout
 
 \end_inset
 
- Section 5.2).
+ public key value.
+ The key type MUST be EC and the parameters for Elliptic Curve Public Keys
+ specified in 
+\begin_inset Flex EntityXRef
+status collapsed
+
+\begin_layout Plain Layout
+I-D.ietf-jose-json-web-algorithms
+\end_layout
+
+\end_inset
+
+ Section 6.2.1 MUST be present.
 \end_layout
 
 \begin_layout Standard
@@ -3156,7 +3172,7 @@ The
 \begin_inset Quotes eld
 \end_inset
 
-ecdh
+epk
 \begin_inset Quotes erd
 \end_inset
 
@@ -3534,7 +3550,7 @@ status open
 
 \begin_layout Plain Layout
 
-    "ecdh": {
+    "epk": {
 \end_layout
 
 \begin_layout Plain Layout
@@ -3622,27 +3638,26 @@ name "sub:response-ecdh"
 \begin_inset Quotes eld
 \end_inset
 
-ecdh
+epk
 \begin_inset Quotes erd
 \end_inset
 
- (Elliptic Curve Diffie-Hellman key agreement)
+ (Ephemeral Public Key)
 \end_layout
 
 \begin_layout Standard
-This contains a JSON object containing the coordinates of the acceptor's
- ECDH public key: "x" contains the X coordinate and "y" the Y coordinate
- (see 
+This contains a JSON object containing the x and y coordinates of the acceptor's
+ ECDH public key (see 
 \begin_inset Flex EntityXRef
 status open
 
 \begin_layout Plain Layout
-I-D.ietf-oauth-json-web-token
+I-D.ietf-jose-json-web-algorithms
 \end_layout
 
 \end_inset
 
- Section 5.2).
+ Section 6.2.1).
  This claim is REQUIRED unless the associated encryption type is ENCTYPE_NULL,
  or there is already an established session key, as is the case for re-authentic
 ation assertions.
@@ -3657,7 +3672,15 @@ crv
 \begin_inset Quotes erd
 \end_inset
 
- property MUST NOT be present; it is determined by the initiator.
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+kty
+\begin_inset Quotes erd
+\end_inset
+
+ properties SHOULD NOT be present; they are determined by the initiator.
 \end_layout
 
 \begin_layout Subsubsection
@@ -6397,7 +6420,7 @@ status open
 
 \begin_layout Plain Layout
 
-    "ecdh": {
+    "epk": {
 \end_layout
 
 \begin_layout Plain Layout
@@ -6408,6 +6431,11 @@ status open
 \begin_layout Plain Layout
 
         "crv": "P-256",
+\end_layout
+
+\begin_layout Plain Layout
+
+        "kty": "EC",
 \end_layout
 
 \begin_layout Plain Layout
@@ -6894,7 +6922,7 @@ status open
 
 \begin_layout Plain Layout
 
-    "ecdh": {
+    "epk": {
 \end_layout
 
 \begin_layout Plain Layout
@@ -7972,6 +8000,26 @@ status open
 LatexCommand href
 name "JWA"
 target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-web-algorithms.xml"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex BibXML
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset href
+LatexCommand href
+name "JWK"
+target "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-jose-json-web-key.xml"
 
 \end_inset
 
